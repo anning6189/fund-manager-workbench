@@ -1,0 +1,15 @@
+{
+  "source_id": "CR.SRC.GILDATA.NEWS",
+  "event_type": "industry_data_release",
+  "event_time": "2026-08-12T19:31:12+08:00",
+  "available_at": "2026-08-12T19:31:12+08:00",
+  "sector_code": "CR.D.AU",
+  "title": "新能源汽车月度与累计新车销量占比出现新的阶段性突破",
+  "summary": "Gildata资讯舆情库返回的新华社摘要称，2026年7月新能源汽车月度新车销量占比首次超过60%，累计占比首次超过50%。该记录仅作为许可闸门后的资讯线索，正式研究须回到中汽协或新华社原始发布核验。",
+  "materiality_score": 0.65,
+  "license_status": "contract_and_redistribution_terms_pending_verification",
+  "publication_allowed": false,
+  "ingestion_target": "raw_license_gate",
+  "retrieved_at": "2026-08-13T06:50:00Z",
+  "no_fund_holdings_or_positions": true
+}

@@ -1,0 +1,7 @@
+{
+  "package_id": "CR.SEED.STAGE6.CORE.001",
+  "source_id": "CR.SRC.CNINFO",
+  "retrieved_at": "2026-08-13T12:00:00+08:00",
+  "license_tag": "public_filing_research_use",
+  "note": "同一package_id不同内容，仅用于测试冲突隔离"
+}

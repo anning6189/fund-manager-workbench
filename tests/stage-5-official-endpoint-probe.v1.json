@@ -1,0 +1,39 @@
+{
+  "report_id": "CR.REPORT.STAGE5.OFFICIAL.ENDPOINT_PROBE.001",
+  "tested_at": "2026-08-12T16:44:00+08:00",
+  "security_controls": ["https_only", "source_host_allowlist", "dns_resolution", "private_and_loopback_ip_block", "redirect_host_check"],
+  "summary": {
+    "official_sources_tested": 13,
+    "usable_access_path": 13,
+    "head_http_200": 11,
+    "get_http_200_head_403": 1,
+    "release_page_http_200_interactive_query_403": 1,
+    "document_download_hash_pass": 1
+  },
+  "probes": [
+    {"source_id":"CR.SRC.CNINFO","path":"https://static.cninfo.com.cn/finalpage/2024-03-28/1219429374.PDF","method":"HEAD","status_code":200,"latency_ms":238,"status":"success"},
+    {"source_id":"CR.SRC.SZSE","path":"https://www.szse.cn/disclosure/listed/notice/index.html","method":"HEAD","status_code":200,"latency_ms":361,"status":"success"},
+    {"source_id":"CR.SRC.SSE","path":"https://www.sse.com.cn/disclosure/listedinfo/announcement/","method":"HEAD","status_code":200,"latency_ms":3599,"status":"success"},
+    {"source_id":"CR.SRC.BSE","path":"https://www.bse.cn/disclosure/announcement.html","method":"HEAD","status_code":200,"latency_ms":378,"status":"success"},
+    {"source_id":"CR.SRC.NBS","path":"https://www.stats.gov.cn/sj/zxfb/","method":"HEAD","status_code":200,"latency_ms":560,"status":"success_release_page","limitation":"data.stats.gov.cn interactive query returned 403 for current program request"},
+    {"source_id":"CR.SRC.CUSTOMS","path":"https://online.customs.gov.cn/","method":"GET","status_code":200,"latency_ms":1300,"status":"success_get","limitation":"HEAD returned 403; selected detail queries may require registration"},
+    {"source_id":"CR.SRC.MOFCOM","path":"https://data.mofcom.gov.cn/","method":"HEAD","status_code":200,"latency_ms":307,"status":"success"},
+    {"source_id":"CR.SRC.MIIT","path":"https://www.miit.gov.cn/","method":"HEAD","status_code":200,"latency_ms":397,"status":"success"},
+    {"source_id":"CR.SRC.GOVCN","path":"https://www.gov.cn/zhengce/","method":"HEAD","status_code":200,"latency_ms":334,"status":"success"},
+    {"source_id":"CR.SRC.NDRC","path":"https://www.ndrc.gov.cn/","method":"HEAD","status_code":200,"latency_ms":280,"status":"success"},
+    {"source_id":"CR.SRC.SAMR","path":"https://www.samr.gov.cn/","method":"HEAD","status_code":200,"latency_ms":270,"status":"success"},
+    {"source_id":"CR.SRC.PBOC","path":"https://www.pbc.gov.cn/","method":"HEAD","status_code":200,"latency_ms":257,"status":"success"},
+    {"source_id":"CR.SRC.MCT","path":"https://www.mct.gov.cn/","method":"HEAD","status_code":200,"latency_ms":400,"status":"success"}
+  ],
+  "document_ingestion_probe": {
+    "source_id": "CR.SRC.CNINFO",
+    "title": "美的集团2023年年度报告",
+    "download_status": "pass",
+    "byte_length": 6617110,
+    "content_type": "application/pdf",
+    "content_hash": "sha256:22f4915d91ada74a37eab8d074aef4c15420f3b1a8b5f5bd5777c00f97d58b86",
+    "document_id": "CR.DOC.22F4915D91ADA74A37EAB8D0",
+    "locator": "PDF p.9,p.160,p.162",
+    "temporary_file_not_committed": true
+  }
+}

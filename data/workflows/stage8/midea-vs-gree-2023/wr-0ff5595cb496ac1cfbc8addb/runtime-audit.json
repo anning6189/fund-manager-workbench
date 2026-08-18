@@ -1,0 +1,304 @@
+{
+  "engine_version": "1.1.0",
+  "run": {
+    "run_id": "wr:0ff5595cb496ac1cfbc8addb",
+    "package_id": "CR.WORKFLOW.PKG.STAGE8.COMPARE.001",
+    "status": "completed",
+    "started_at": "2026-08-13T06:03:59.444Z",
+    "completed_at": "2026-08-13T08:18:19.380Z",
+    "resumed_count": 0,
+    "publication_status": "internal_research_ready",
+    "human_review_required": 0,
+    "output_directory": "C:\\Users\\chi\\Documents\\ChatGPT\\New project\\tools\\..\\data\\workflows\\stage8\\midea-vs-gree-2023\\wr-0ff5595cb496ac1cfbc8addb",
+    "summary_json": "{}"
+  },
+  "tasks": [
+    {
+      "task_id": "scope_guard",
+      "role_id": "research_director",
+      "lane": "control",
+      "wave_no": 0,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T06:03:59.491Z",
+      "completed_at": "2026-08-13T06:03:59.496Z",
+      "dependencies_json": "[]",
+      "error_json": null
+    },
+    {
+      "task_id": "entity_resolution",
+      "role_id": "entity_scope_agent",
+      "lane": "core",
+      "wave_no": 1,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T06:03:59.523Z",
+      "completed_at": "2026-08-13T06:03:59.543Z",
+      "dependencies_json": "[\"scope_guard\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "document_retrieval",
+      "role_id": "evidence_retrieval_agent",
+      "lane": "core",
+      "wave_no": 2,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T06:03:59.562Z",
+      "completed_at": "2026-08-13T06:03:59.605Z",
+      "dependencies_json": "[\"entity_resolution\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "fact_retrieval",
+      "role_id": "evidence_retrieval_agent",
+      "lane": "core",
+      "wave_no": 2,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T06:03:59.562Z",
+      "completed_at": "2026-08-13T06:03:59.609Z",
+      "dependencies_json": "[\"entity_resolution\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "model_execution",
+      "role_id": "model_agent",
+      "lane": "model",
+      "wave_no": 3,
+      "status": "completed",
+      "required": 0,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T06:03:59.638Z",
+      "completed_at": "2026-08-13T06:03:59.720Z",
+      "dependencies_json": "[\"fact_retrieval\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "claim_composition",
+      "role_id": "claim_agent",
+      "lane": "analysis",
+      "wave_no": 4,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T06:03:59.743Z",
+      "completed_at": "2026-08-13T06:03:59.747Z",
+      "dependencies_json": "[\"fact_retrieval\",\"document_retrieval\",\"model_execution\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "evidence_audit",
+      "role_id": "evidence_auditor",
+      "lane": "quality",
+      "wave_no": 5,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T06:03:59.833Z",
+      "completed_at": "2026-08-13T06:03:59.853Z",
+      "dependencies_json": "[\"claim_composition\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "skeptic_review",
+      "role_id": "skeptic_agent",
+      "lane": "quality",
+      "wave_no": 5,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T06:03:59.833Z",
+      "completed_at": "2026-08-13T06:03:59.876Z",
+      "dependencies_json": "[\"claim_composition\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "report_render",
+      "role_id": "report_agent",
+      "lane": "delivery",
+      "wave_no": 6,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T06:03:59.915Z",
+      "completed_at": "2026-08-13T06:03:59.960Z",
+      "dependencies_json": "[\"evidence_audit\",\"skeptic_review\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "compliance_review",
+      "role_id": "compliance_agent",
+      "lane": "quality",
+      "wave_no": 7,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T06:04:00.000Z",
+      "completed_at": "2026-08-13T06:04:00.005Z",
+      "dependencies_json": "[\"report_render\"]",
+      "error_json": null
+    }
+  ],
+  "events": [
+    {
+      "event_type": "run_planned",
+      "severity": "info",
+      "task_id": null,
+      "occurred_at": "2026-08-13T06:03:59.444Z",
+      "detail_json": "{\"package_hash\":\"sha256:67a5726605725e003b791f8a511f079ce8679b659be0c1823fd6e428a7fc5fa2\"}"
+    },
+    {
+      "event_type": "run_started",
+      "severity": "info",
+      "task_id": null,
+      "occurred_at": "2026-08-13T06:03:59.475Z",
+      "detail_json": "{}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "scope_guard",
+      "occurred_at": "2026-08-13T06:03:59.493Z",
+      "detail_json": "{\"wave_no\":0}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "scope_guard",
+      "occurred_at": "2026-08-13T06:03:59.507Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "entity_resolution",
+      "occurred_at": "2026-08-13T06:03:59.525Z",
+      "detail_json": "{\"wave_no\":1}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "entity_resolution",
+      "occurred_at": "2026-08-13T06:03:59.544Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "document_retrieval",
+      "occurred_at": "2026-08-13T06:03:59.564Z",
+      "detail_json": "{\"wave_no\":2}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "fact_retrieval",
+      "occurred_at": "2026-08-13T06:03:59.564Z",
+      "detail_json": "{\"wave_no\":2}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "document_retrieval",
+      "occurred_at": "2026-08-13T06:03:59.607Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "fact_retrieval",
+      "occurred_at": "2026-08-13T06:03:59.621Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "model_execution",
+      "occurred_at": "2026-08-13T06:03:59.641Z",
+      "detail_json": "{\"wave_no\":3}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "model_execution",
+      "occurred_at": "2026-08-13T06:03:59.722Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "claim_composition",
+      "occurred_at": "2026-08-13T06:03:59.745Z",
+      "detail_json": "{\"wave_no\":4}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "claim_composition",
+      "occurred_at": "2026-08-13T06:03:59.760Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "evidence_audit",
+      "occurred_at": "2026-08-13T06:03:59.835Z",
+      "detail_json": "{\"wave_no\":5}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "skeptic_review",
+      "occurred_at": "2026-08-13T06:03:59.835Z",
+      "detail_json": "{\"wave_no\":5}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "evidence_audit",
+      "occurred_at": "2026-08-13T06:03:59.855Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "skeptic_review",
+      "occurred_at": "2026-08-13T06:03:59.891Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "report_render",
+      "occurred_at": "2026-08-13T06:03:59.917Z",
+      "detail_json": "{\"wave_no\":6}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "report_render",
+      "occurred_at": "2026-08-13T06:03:59.962Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "compliance_review",
+      "occurred_at": "2026-08-13T06:04:00.002Z",
+      "detail_json": "{\"wave_no\":7}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "compliance_review",
+      "occurred_at": "2026-08-13T06:04:00.018Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    }
+  ],
+  "reviews": []
+}

@@ -1,0 +1,74 @@
+{
+  "spec_version": "1.0.0",
+  "adapter_family": "CR.CONNECTOR.OFFICIAL",
+  "status": "contracts_complete_runtime_fetchers_ready_for_scheduled_binding",
+  "common_security": {
+    "https_only": true,
+    "redirect_limit": 3,
+    "allowed_host_required": true,
+    "private_ip_and_localhost_blocked": true,
+    "max_document_bytes": 52428800,
+    "allowed_content_types": ["text/html", "application/pdf", "application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+    "hash_algorithm": "sha256",
+    "credential_policy": "official public sources must not receive Gildata or other vendor credentials"
+  },
+  "adapters": [
+    {
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.HTTP_DOCUMENT",
+      "supports": ["CNINFO", "SZSE", "SSE", "BSE", "MIIT"],
+      "input_required": ["source_id", "source_url", "cutoff_timestamp", "entity_or_topic_scope"],
+      "extraction": ["title", "publisher", "published_at", "effective_at_if_present", "document_number_if_present", "body_or_pdf", "page_or_section_locator"],
+      "normalization": "document_and_evidence",
+      "version_key": ["source_url", "published_at", "content_hash"],
+      "special_rules": [
+        "法定财报必须区分全文、摘要、英文版和更正稿",
+        "更正稿通过SUCCESSOR_OF关联，不覆盖原稿",
+        "PDF页码同时保存file_page_index与printed_page_number",
+        "网页修改但URL不变时由content_hash生成新document_version"
+      ]
+    },
+    {
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.STATISTICS",
+      "supports": ["NBS", "MOFCOM", "PBOC", "MCT"],
+      "input_required": ["source_id", "indicator_binding", "frequency", "period_scope", "cutoff_timestamp"],
+      "extraction": ["indicator_code", "indicator_name", "value", "unit", "frequency", "period", "release_date", "source_note", "methodology_url"],
+      "normalization": "observation_and_evidence",
+      "version_key": ["indicator_code", "period", "release_date", "content_hash"],
+      "special_rules": [
+        "当期值、累计值、同比和环比为不同指标",
+        "来源机构公布增速与系统复算增速分别保存",
+        "年度、季度、月度序列不得无标记拼接",
+        "修订值与初值并存，历史回答使用截止时点可得版本"
+      ]
+    },
+    {
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.TRADE_STATISTICS",
+      "supports": ["CUSTOMS"],
+      "input_required": ["hs_version", "hs_codes", "trade_direction", "partner_scope", "period_scope", "quantity_unit", "cutoff_timestamp"],
+      "extraction": ["hs_code", "commodity_name", "trade_direction", "partner", "period", "value", "currency", "quantity", "quantity_unit", "release_date"],
+      "normalization": "observation_and_evidence",
+      "version_key": ["hs_version", "hs_code", "trade_direction", "partner", "period", "release_date"],
+      "special_rules": [
+        "HS版本必须随观测保存",
+        "人民币与美元贸易金额不自动混用",
+        "数量单位不一致时禁止直接加总",
+        "商品映射到消费细分类需要MAPS_TO关系和人工审核"
+      ]
+    },
+    {
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.POLICY",
+      "supports": ["GOVCN", "NDRC", "SAMR", "MOFCOM"],
+      "input_required": ["topic_scope", "issuing_authority_scope", "date_window", "cutoff_timestamp"],
+      "extraction": ["title", "issuing_authority", "document_number", "published_at", "effective_at", "expiry_at", "status", "body", "attachments"],
+      "normalization": "document_event_and_evidence",
+      "version_key": ["issuing_authority", "document_number", "document_version", "content_hash"],
+      "special_rules": [
+        "政策发布日期、生效日和失效日分离",
+        "征求意见稿、正式稿、修订稿和废止状态分离",
+        "新闻解读不能替代政策原文",
+        "影响路径属于AGENT_INFERENCE并绑定政策原文证据"
+      ]
+    }
+  ]
+}
+

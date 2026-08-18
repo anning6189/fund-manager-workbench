@@ -1,0 +1,32 @@
+{
+  "package_id": "CR.WORKFLOW.PKG.STAGE8.COMPARE.001",
+  "workflow_id": "CR.WORKFLOW.RESEARCH_ORCHESTRATION.001",
+  "template_id": "P0_04_COMPANY_COMPARISON",
+  "cutoff_timestamp": "2024-05-01T00:00:00+08:00",
+  "reader": "public_fund_manager",
+  "research_question": "比较美的集团与格力电器2023年度经营与财务质量，并给出有限结论、反方解释和下一步跟踪指标。",
+  "scope": {
+    "sector_codes": ["CR.D.AP.WH"],
+    "geographies": ["CN"],
+    "accounting_standard": "CAS",
+    "consolidation_scope": "consolidated",
+    "currency": "CNY"
+  },
+  "entities": [
+    {"entity_id":"cr:legal_entity:midea","security_id":"000333.SZ","display_name":"美的集团"},
+    {"entity_id":"cr:legal_entity:gree","security_id":"000651.SZ","display_name":"格力电器"}
+  ],
+  "metric_queries": [
+    {"metric_id":"CR.CO.REVENUE","period_end":"2022-12-31"},
+    {"metric_id":"CR.CO.REVENUE","period_end":"2023-12-31"},
+    {"metric_id":"CR.CO.OPERATING_COST","period_end":"2023-12-31"},
+    {"metric_id":"CR.CO.PARENT_NET_PROFIT","period_end":"2023-12-31"},
+    {"metric_id":"CR.CO.CFO_NET","period_end":"2023-12-31"}
+  ],
+  "model_packages": [
+    {"path":"data/models/stage7/company-operating-bridge.v1.json","required":false}
+  ],
+  "decision_rule": null,
+  "include_runtime_appendix": true,
+  "output_slug": "midea-vs-gree-2023"
+}

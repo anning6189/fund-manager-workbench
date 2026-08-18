@@ -1,0 +1,72 @@
+{
+  "package_id": "CR.MODEL.PKG.STAGE7.FINANCIAL_FORECAST.001",
+  "model_id": "CR.MODEL.FINANCIAL_FORECAST",
+  "model_type": "financial_forecast",
+  "as_of_timestamp": "2024-05-01T00:00:00+08:00",
+  "environment": "demonstration",
+  "scope": {
+    "scope_key": "CN:MIDEA:CONSOLIDATED:2024E",
+    "entity_id": "cr:legal_entity:midea",
+    "forecast_period": "2024E",
+    "currency": "CNY",
+    "note": "2023A 来自阶段六事实仓；2024E 参数仅用于演示预测引擎，不得误标为正式事实。"
+  },
+  "fact_inputs": [
+    {"input_id": "actual_revenue", "entity_id": "cr:legal_entity:midea", "metric_id": "CR.CO.REVENUE", "period_end": "2023-12-31", "unit": "CNY", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "FACT_OBSERVATION"},
+    {"input_id": "actual_cost", "entity_id": "cr:legal_entity:midea", "metric_id": "CR.CO.OPERATING_COST", "period_end": "2023-12-31", "unit": "CNY", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "FACT_OBSERVATION"},
+    {"input_id": "actual_selling_expense", "entity_id": "cr:legal_entity:midea", "metric_id": "CR.CO.SELLING_EXPENSE", "period_end": "2023-12-31", "unit": "CNY", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "FACT_OBSERVATION"},
+    {"input_id": "actual_net_profit", "entity_id": "cr:legal_entity:midea", "metric_id": "CR.CO.PARENT_NET_PROFIT", "period_end": "2023-12-31", "unit": "CNY", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "FACT_OBSERVATION"},
+    {"input_id": "actual_cfo", "entity_id": "cr:legal_entity:midea", "metric_id": "CR.CO.CFO_NET", "period_end": "2023-12-31", "unit": "CNY", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "FACT_OBSERVATION"}
+  ],
+  "scenarios": [
+    {
+      "scenario_id": "bear",
+      "assumptions": [
+        {"input_id": "revenue_growth", "value": 0.04, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示下行情景收入增速。", "confidence": 0.3},
+        {"input_id": "gross_margin", "value": 0.25, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示下行情景毛利率。", "confidence": 0.3},
+        {"input_id": "operating_expense_ratio", "value": 0.145, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示下行情景经营费用率。", "confidence": 0.3},
+        {"input_id": "effective_tax_rate", "value": 0.2, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示下行情景有效税率。", "confidence": 0.3},
+        {"input_id": "cfo_conversion", "value": 1.1, "unit": "multiple", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示下行情景经营现金转换率。", "confidence": 0.3},
+        {"input_id": "capex_ratio", "value": 0.035, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示下行情景资本开支率。", "confidence": 0.3}
+      ]
+    },
+    {
+      "scenario_id": "base",
+      "assumptions": [
+        {"input_id": "revenue_growth", "value": 0.08, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示基准情景收入增速。", "confidence": 0.4},
+        {"input_id": "gross_margin", "value": 0.27, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示基准情景毛利率。", "confidence": 0.4},
+        {"input_id": "operating_expense_ratio", "value": 0.14, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示基准情景经营费用率。", "confidence": 0.4},
+        {"input_id": "effective_tax_rate", "value": 0.19, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示基准情景有效税率。", "confidence": 0.4},
+        {"input_id": "cfo_conversion", "value": 1.2, "unit": "multiple", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示基准情景经营现金转换率。", "confidence": 0.4},
+        {"input_id": "capex_ratio", "value": 0.03, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示基准情景资本开支率。", "confidence": 0.4}
+      ]
+    },
+    {
+      "scenario_id": "bull",
+      "assumptions": [
+        {"input_id": "revenue_growth", "value": 0.12, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示上行情景收入增速。", "confidence": 0.3},
+        {"input_id": "gross_margin", "value": 0.29, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示上行情景毛利率。", "confidence": 0.3},
+        {"input_id": "operating_expense_ratio", "value": 0.135, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示上行情景经营费用率。", "confidence": 0.3},
+        {"input_id": "effective_tax_rate", "value": 0.18, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示上行情景有效税率。", "confidence": 0.3},
+        {"input_id": "cfo_conversion", "value": 1.3, "unit": "multiple", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示上行情景经营现金转换率。", "confidence": 0.3},
+        {"input_id": "capex_ratio", "value": 0.028, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示上行情景资本开支率。", "confidence": 0.3}
+      ]
+    }
+  ],
+  "calculations": [
+    {"output_id": "historical_gross_margin", "output_role": "historical_gross_margin", "formula": "1 - actual_cost / actual_revenue", "unit": "ratio", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "historical_selling_ratio", "output_role": "historical_selling_ratio", "formula": "actual_selling_expense / actual_revenue", "unit": "ratio", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "historical_cfo_conversion", "output_role": "historical_cfo_conversion", "formula": "actual_cfo / actual_net_profit", "unit": "multiple", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "forecast_revenue", "output_role": "forecast_revenue", "formula": "actual_revenue * (1 + revenue_growth)", "unit": "CNY", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "forecast_gross_profit", "output_role": "forecast_gross_profit", "formula": "forecast_revenue * gross_margin", "unit": "CNY", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "forecast_operating_expense", "output_role": "forecast_operating_expense", "formula": "forecast_revenue * operating_expense_ratio", "unit": "CNY", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "forecast_operating_profit", "output_role": "forecast_operating_profit", "formula": "forecast_gross_profit - forecast_operating_expense", "unit": "CNY", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "forecast_net_profit", "output_role": "forecast_net_profit", "formula": "forecast_operating_profit * (1 - effective_tax_rate)", "unit": "CNY", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "forecast_cfo", "output_role": "forecast_cfo", "formula": "forecast_net_profit * cfo_conversion", "unit": "CNY", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "forecast_capex", "output_role": "forecast_capex", "formula": "forecast_revenue * capex_ratio", "unit": "CNY", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "forecast_fcf", "output_role": "forecast_fcf", "formula": "forecast_cfo - forecast_capex", "unit": "CNY", "content_label": "AGENT_CALCULATION"}
+  ],
+  "sensitivities": [
+    {"sensitivity_id": "growth_x_margin", "scenario_id": "base", "x_input_id": "revenue_growth", "x_values": [0.04, 0.08, 0.12], "y_input_id": "gross_margin", "y_values": [0.25, 0.27, 0.29], "output_id": "forecast_net_profit"}
+  ]
+}

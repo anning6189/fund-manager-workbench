@@ -1,0 +1,17 @@
+{
+  "watermarks": [
+    {
+      "stream_name": "master_data",
+      "source_id": "CR.SRC.GILDATA.STOCK_UNIVERSE",
+      "market": "A_SHARE",
+      "sector_code": "ALL",
+      "earliest_period": "2026-08-12",
+      "latest_period": "2026-08-12",
+      "record_count": 1275,
+      "completeness_status": "staged_not_publishable",
+      "license_gate": "license_not_confirmed_for_curated_use",
+      "last_snapshot_id": "CR.COVERAGE.GILDATA.A_SHARE.FULL_CONSUMER.20260812",
+      "updated_at": "2026-08-13T06:40:17.294Z"
+    }
+  ]
+}

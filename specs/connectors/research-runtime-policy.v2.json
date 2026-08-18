@@ -1,0 +1,165 @@
+{
+  "policy_id": "CR.RUNTIME.RESEARCH.V2",
+  "spec_version": "2.0.0",
+  "status": "production_candidate",
+  "objectives": {
+    "correctness": "关键事实在日期、单位、实体、证据定位和来源冲突检查通过后才可进入答案",
+    "latency": "缓存命中时45秒内形成核心答案，冷启动90秒内形成完整研究初稿",
+    "graceful_degradation": "补充来源失败不得拖死核心答案，必须显示缺口和降级状态"
+  },
+  "correctness_guards": {
+    "date_alignment": {
+      "exact_date": "market_as_of_date_must_equal_requested_trading_date",
+      "date_range": "every_record_must_be_inside_inclusive_range",
+      "session_return": "N日收益率必须使用第N个交易日前收盘价为基线，不能使用返回序列第一条收盘价替代",
+      "mismatch_action": "quarantine_and_partition_retry_once"
+    },
+    "unit_and_scale": {
+      "raw_fields_required": ["raw_value", "raw_unit", "normalization_factor", "normalized_value", "normalized_unit"],
+      "recompute_tolerance_ratio": 0.000001,
+      "material_cross_source_difference_ratio": 0.2,
+      "power_of_ten_tolerance_ratio": 0.02,
+      "conflict_action": "official_primary_wins_and_conflicting_record_is_quarantined",
+      "unresolved_material_conflict_action": "block_claim"
+    },
+    "entity_resolution": {
+      "risk_event_required": ["canonical_entity_id", "legal_identifier", "group_relationship", "event_role", "materiality_status", "resolution_method"],
+      "allowed_group_relationships": ["issuer", "consolidated_subsidiary", "controlled_operating_entity"],
+      "name_match_only": "forbidden_for_material_risk_claim",
+      "unverified_signal_action": "exclude_from_core_conclusion"
+    },
+    "evidence_location": {
+      "core_fact_requires": ["stable_source_url_or_document_id", "locator", "published_at", "content_hash"],
+      "research_report_without_original": "third_party_view_only_and_non_blocking",
+      "announcement_summary_without_original": "lead_only_fetch_official_before_core_fact",
+      "news_for_official_fact": "forbidden"
+    }
+  },
+  "output_contract": {
+    "contract_id": "CR.OUTPUT.PM.COMPANY_COMPARISON.V2_1",
+    "primary_reader": "公募基金经理",
+    "default_template": "P0_04_COMPANY_COMPARISON",
+    "presentation_order": [
+      "research_header",
+      "executive_summary",
+      "industry_context",
+      "comparison_dashboard",
+      "company_deep_dives",
+      "market_and_events",
+      "risks_and_counter_evidence",
+      "final_conclusion_and_monitoring",
+      "evidence_index",
+      "runtime_appendix"
+    ],
+    "section_requirements": {
+      "research_header": ["cutoff_timestamp", "scope", "unit_and_accounting_basis", "decision_boundary"],
+      "executive_summary": ["industry_judgment", "company_comparison", "market_signal", "cannot_conclude"],
+      "industry_context": ["verified_facts", "agent_inference", "inference_limits"],
+      "comparison_dashboard": ["single_horizontal_comparison_table", "same_dimension_same_row", "comparability_notes"],
+      "company_deep_dives": ["business_model", "growth_drivers", "financial_quality", "operating_indicators"],
+      "market_and_events": ["market_table", "material_company_disclosures", "third_party_views_separated"],
+      "risks_and_counter_evidence": ["company_specific_risks", "counter_evidence", "risk_database_boundary"],
+      "final_conclusion_and_monitoring": ["limited_conclusion", "next_validation_points", "pm_judgment_required"],
+      "evidence_index": ["claim_level_locator", "source_tier", "source_gap"],
+      "runtime_appendix": ["timing", "task_status", "fallbacks", "instrumentation_errors"]
+    },
+    "formatting_rules": [
+      "结论先行，执行摘要不超过四组要点",
+      "相同维度的公司数据必须在一张横向比较表中展示，禁止拆成两段重复叙述",
+      "行业事实、Agent推断、机构观点必须分层标识",
+      "公司深挖采用相同子结构，便于逐项对照",
+      "风险必须与对应公司和反方证据绑定，禁止使用泛化风险清单",
+      "证据索引置于正文之后，不在正文重复长链接",
+      "运行时间、调用成功率、回退和工具异常只进入独立运行附录，不得打断研究正文",
+      "无明确估值、投资期限和决策规则时，不输出单一赢家或买卖建议"
+    ],
+    "runtime_appendix_policy": {
+      "included_only_for_test_or_explicit_request": true,
+      "must_be_after_research_answer": true,
+      "transport_success_separate_from_data_completeness": true,
+      "empty_result_not_equal_no_risk": true
+    }
+  },
+  "execution_algorithm": {
+    "name": "evidence_first_parallel_dag_v2",
+    "global_max_in_flight": 6,
+    "per_vendor_max_in_flight": 4,
+    "per_host_max_in_flight": 2,
+    "lanes": {
+      "core": ["entity_resolution", "financials", "market_range", "official_announcements", "macro_official"],
+      "enrichment": ["research_reports", "enterprise_risk", "news_leads", "optional_industry_series"]
+    },
+    "phases": [
+      {
+        "phase": "P0_PLAN_AND_CACHE",
+        "deadline_seconds": 3,
+        "actions": ["normalize_request", "resolve_entity_from_cache", "build_cache_keys", "create_bounded_partitions"]
+      },
+      {
+        "phase": "P1_PARALLEL_CORE",
+        "deadline_seconds": 35,
+        "actions": ["financial_per_entity_parallel", "single_market_range_for_all_requested_securities", "announcement_per_issuer_parallel", "official_macro_direct"]
+      },
+      {
+        "phase": "P2_VALIDATE_AND_CONFLICT_FETCH",
+        "deadline_seconds": 20,
+        "actions": ["date_guard", "unit_scale_guard", "cross_source_conflict_check", "fetch_official_original_only_for_material_conflict_or_cache_miss"]
+      },
+      {
+        "phase": "P3_ENRICH_IN_PARALLEL",
+        "deadline_seconds": 22,
+        "actions": ["research_and_risk_parallel", "downgrade_unlocatable_reports", "do_not_wait_for_noncritical_timeout"]
+      },
+      {
+        "phase": "P4_COMPOSE",
+        "deadline_seconds": 10,
+        "actions": ["compose_from_validated_claim_graph", "apply_fixed_output_contract", "emit_core_answer_first", "append_gaps_and_enrichment", "append_runtime_status_last_only_when_requested"]
+      }
+    ],
+    "stop_conditions": [
+      "all_required_core_claims_have_direct_evidence",
+      "additional_source_will_not_change_material_conclusion",
+      "time_budget_reached_emit_validated_partial_with_gaps"
+    ],
+    "forbidden_patterns": [
+      "serial_fetch_all_sources_before_validation",
+      "repeat_same_broad_query",
+      "fetch_full_pdf_when_cached_page_extract_exists",
+      "block_core_answer_on_research_report_or_news_timeout",
+      "use_news_to_confirm_official_filing_fact"
+    ]
+  },
+  "partition_policy": {
+    "financial": {"entities_per_request": 1, "metrics_per_request": 6, "periods_per_request": 2},
+    "market": {"securities_per_request": 4, "minimum_sessions_for_n_day_return": "N_plus_baseline_close"},
+    "announcement": {"issuers_per_request": 1, "document_types_per_request": 3, "maximum_date_window_days": 100},
+    "macro": {"indicator_codes_per_request": 4, "periods_per_request": 4},
+    "research": {"companies_per_request": 1, "maximum_reports": 3, "maximum_date_window_days": 120},
+    "risk": {"legal_entities_per_request": 1, "event_types_per_request": 4}
+  },
+  "retry_policy": {
+    "max_retries": 1,
+    "retryable": ["timeout", "http_429", "http_502", "http_503", "truncated", "date_mismatch", "required_metric_missing"],
+    "retry_action": "reduce_partition_by_half_or_switch_to_official_source",
+    "same_query_retry": "forbidden",
+    "noncritical_timeout_action": "record_gap_and_continue"
+  },
+  "cache_policy": {
+    "key_fields": ["source_id", "entity_or_indicator", "metric_or_document_type", "period", "cutoff_bucket", "document_version"],
+    "annual_report_page_extract": {"ttl_seconds": 31536000, "revalidate_with_content_hash": true},
+    "historical_financial_observation": {"ttl_seconds": 31536000, "invalidate_on_restatement": true},
+    "official_macro_release": {"ttl_seconds": 2592000, "invalidate_on_revision": true},
+    "announcement_index": {"ttl_seconds": 21600, "incremental_from_last_published_at": true},
+    "completed_daily_market_bar": {"ttl_seconds": 2592000, "immutable_after_exchange_final": true},
+    "research_metadata": {"ttl_seconds": 604800, "store_original_locator_when_licensed": true},
+    "enterprise_risk": {"ttl_seconds": 86400, "negative_cache_seconds": 21600},
+    "cache_safety": "license_and_cutoff_gates_apply_on_cache_read_as_well_as_write"
+  },
+  "sla": {
+    "core_answer_cached_seconds": 45,
+    "core_answer_cold_seconds": 65,
+    "full_answer_cold_seconds": 90,
+    "hard_deadline_seconds": 120,
+    "minimum_modeled_improvement_vs_serial": 0.5
+  }
+}

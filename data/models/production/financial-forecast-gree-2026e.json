@@ -1,0 +1,367 @@
+{
+  "package_id": "CR.MODEL.PKG.PROD.FINANCIAL_FORECAST.格力电器.2026E.001",
+  "model_id": "CR.MODEL.FINANCIAL_FORECAST",
+  "model_type": "financial_forecast",
+  "as_of_timestamp": "2026-08-14T00:00:00+08:00",
+  "environment": "production",
+  "scope": {
+    "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+    "entity_id": "cr:legal_entity:gree",
+    "forecast_period": "2026E",
+    "currency": "CNY",
+    "note": "格力电器2026E正式预测；2023A来自阶段六事实仓，2026Q1实际值来自聚源授权数据。"
+  },
+  "fact_inputs": [
+    {
+      "input_id": "actual_revenue",
+      "entity_id": "cr:legal_entity:gree",
+      "metric_id": "CR.CO.REVENUE",
+      "period_end": "2023-12-31",
+      "unit": "CNY",
+      "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+      "content_label": "FACT_OBSERVATION"
+    },
+    {
+      "input_id": "actual_cost",
+      "entity_id": "cr:legal_entity:gree",
+      "metric_id": "CR.CO.OPERATING_COST",
+      "period_end": "2023-12-31",
+      "unit": "CNY",
+      "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+      "content_label": "FACT_OBSERVATION"
+    },
+    {
+      "input_id": "actual_selling_expense",
+      "entity_id": "cr:legal_entity:gree",
+      "metric_id": "CR.CO.SELLING_EXPENSE",
+      "period_end": "2023-12-31",
+      "unit": "CNY",
+      "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+      "content_label": "FACT_OBSERVATION"
+    },
+    {
+      "input_id": "actual_net_profit",
+      "entity_id": "cr:legal_entity:gree",
+      "metric_id": "CR.CO.PARENT_NET_PROFIT",
+      "period_end": "2023-12-31",
+      "unit": "CNY",
+      "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+      "content_label": "FACT_OBSERVATION"
+    },
+    {
+      "input_id": "actual_cfo",
+      "entity_id": "cr:legal_entity:gree",
+      "metric_id": "CR.CO.CFO_NET",
+      "period_end": "2023-12-31",
+      "unit": "CNY",
+      "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+      "content_label": "FACT_OBSERVATION"
+    }
+  ],
+  "scenarios": [
+    {
+      "scenario_id": "bear",
+      "assumptions": [
+        {
+          "input_id": "revenue_growth",
+          "value": 0.015,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "2023A毛利率30.6%、销售费用率8.4%、现金转换1.94x；2026Q1营收+3.52%。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "gross_margin",
+          "value": 0.295,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "2023A毛利率30.6%、销售费用率8.4%、现金转换1.94x；2026Q1营收+3.52%。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "operating_expense_ratio",
+          "value": 0.135,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "2023A毛利率30.6%、销售费用率8.4%、现金转换1.94x；2026Q1营收+3.52%。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "effective_tax_rate",
+          "value": 0.15,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "按公司历史有效税率设定。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "cfo_conversion",
+          "value": 1.7,
+          "unit": "multiple",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "2023A毛利率30.6%、销售费用率8.4%、现金转换1.94x；2026Q1营收+3.52%。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "capex_ratio",
+          "value": 0.025,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "按近年资本开支强度设定。",
+          "confidence": 0.5
+        }
+      ]
+    },
+    {
+      "scenario_id": "base",
+      "assumptions": [
+        {
+          "input_id": "revenue_growth",
+          "value": 0.035,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "2023A毛利率30.6%、销售费用率8.4%、现金转换1.94x；2026Q1营收+3.52%。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "gross_margin",
+          "value": 0.304,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "2023A毛利率30.6%、销售费用率8.4%、现金转换1.94x；2026Q1营收+3.52%。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "operating_expense_ratio",
+          "value": 0.13,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "2023A毛利率30.6%、销售费用率8.4%、现金转换1.94x；2026Q1营收+3.52%。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "effective_tax_rate",
+          "value": 0.15,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "按公司历史有效税率设定。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "cfo_conversion",
+          "value": 1.9,
+          "unit": "multiple",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "2023A毛利率30.6%、销售费用率8.4%、现金转换1.94x；2026Q1营收+3.52%。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "capex_ratio",
+          "value": 0.025,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "按近年资本开支强度设定。",
+          "confidence": 0.5
+        }
+      ]
+    },
+    {
+      "scenario_id": "bull",
+      "assumptions": [
+        {
+          "input_id": "revenue_growth",
+          "value": 0.065,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "2023A毛利率30.6%、销售费用率8.4%、现金转换1.94x；2026Q1营收+3.52%。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "gross_margin",
+          "value": 0.31,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "2023A毛利率30.6%、销售费用率8.4%、现金转换1.94x；2026Q1营收+3.52%。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "operating_expense_ratio",
+          "value": 0.126,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "2023A毛利率30.6%、销售费用率8.4%、现金转换1.94x；2026Q1营收+3.52%。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "effective_tax_rate",
+          "value": 0.15,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "按公司历史有效税率设定。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "cfo_conversion",
+          "value": 2.0,
+          "unit": "multiple",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "2023A毛利率30.6%、销售费用率8.4%、现金转换1.94x；2026Q1营收+3.52%。",
+          "confidence": 0.5
+        },
+        {
+          "input_id": "capex_ratio",
+          "value": 0.025,
+          "unit": "ratio",
+          "scope_key": "CN:GREE:CONSOLIDATED:2026E",
+          "content_label": "SCENARIO_ASSUMPTION",
+          "available_at": "2026-08-14T00:00:00+08:00",
+          "rationale": "按近年资本开支强度设定。",
+          "confidence": 0.5
+        }
+      ]
+    }
+  ],
+  "calculations": [
+    {
+      "output_id": "historical_gross_margin",
+      "output_role": "historical_gross_margin",
+      "formula": "1 - actual_cost / actual_revenue",
+      "unit": "ratio",
+      "content_label": "AGENT_CALCULATION"
+    },
+    {
+      "output_id": "historical_selling_ratio",
+      "output_role": "historical_selling_ratio",
+      "formula": "actual_selling_expense / actual_revenue",
+      "unit": "ratio",
+      "content_label": "AGENT_CALCULATION"
+    },
+    {
+      "output_id": "historical_cfo_conversion",
+      "output_role": "historical_cfo_conversion",
+      "formula": "actual_cfo / actual_net_profit",
+      "unit": "multiple",
+      "content_label": "AGENT_CALCULATION"
+    },
+    {
+      "output_id": "forecast_revenue",
+      "output_role": "forecast_revenue",
+      "formula": "actual_revenue * (1 + revenue_growth)",
+      "unit": "CNY",
+      "content_label": "AGENT_CALCULATION"
+    },
+    {
+      "output_id": "forecast_gross_profit",
+      "output_role": "forecast_gross_profit",
+      "formula": "forecast_revenue * gross_margin",
+      "unit": "CNY",
+      "content_label": "AGENT_CALCULATION"
+    },
+    {
+      "output_id": "forecast_operating_expense",
+      "output_role": "forecast_operating_expense",
+      "formula": "forecast_revenue * operating_expense_ratio",
+      "unit": "CNY",
+      "content_label": "AGENT_CALCULATION"
+    },
+    {
+      "output_id": "forecast_operating_profit",
+      "output_role": "forecast_operating_profit",
+      "formula": "forecast_gross_profit - forecast_operating_expense",
+      "unit": "CNY",
+      "content_label": "AGENT_CALCULATION"
+    },
+    {
+      "output_id": "forecast_net_profit",
+      "output_role": "forecast_net_profit",
+      "formula": "forecast_operating_profit * (1 - effective_tax_rate)",
+      "unit": "CNY",
+      "content_label": "AGENT_CALCULATION"
+    },
+    {
+      "output_id": "forecast_cfo",
+      "output_role": "forecast_cfo",
+      "formula": "forecast_net_profit * cfo_conversion",
+      "unit": "CNY",
+      "content_label": "AGENT_CALCULATION"
+    },
+    {
+      "output_id": "forecast_capex",
+      "output_role": "forecast_capex",
+      "formula": "forecast_revenue * capex_ratio",
+      "unit": "CNY",
+      "content_label": "AGENT_CALCULATION"
+    },
+    {
+      "output_id": "forecast_fcf",
+      "output_role": "forecast_fcf",
+      "formula": "forecast_cfo - forecast_capex",
+      "unit": "CNY",
+      "content_label": "AGENT_CALCULATION"
+    }
+  ],
+  "sensitivities": [
+    {
+      "sensitivity_id": "CN:GREE:CONSOLIDATED:2026E:sens:growth:net_profit",
+      "scenario_id": "base",
+      "x_input_id": "revenue_growth",
+      "x_values": [
+        0.025,
+        0.035,
+        0.045000000000000005
+      ],
+      "output_id": "forecast_net_profit"
+    },
+    {
+      "sensitivity_id": "CN:GREE:CONSOLIDATED:2026E:sens:gm:growth:net_profit",
+      "scenario_id": "base",
+      "x_input_id": "gross_margin",
+      "x_values": [
+        0.294,
+        0.304,
+        0.314
+      ],
+      "y_input_id": "revenue_growth",
+      "y_values": [
+        0.025,
+        0.035,
+        0.045000000000000005
+      ],
+      "output_id": "forecast_net_profit"
+    }
+  ]
+}

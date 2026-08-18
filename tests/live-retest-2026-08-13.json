@@ -1,0 +1,50 @@
+{
+  "test_name": "消费行业行研Agent综合小测复测",
+  "timezone": "Asia/Shanghai",
+  "started_at": "2026-08-13T10:32:56.865+08:00",
+  "measurement_endpoint": "answer_content_ready_before_client_delivery",
+  "timing_seconds": {
+    "core_data_ready": 68.35,
+    "all_remote_queries_ready": 175.54,
+    "answer_content_ready": 209.07
+  },
+  "remote_task_status": {
+    "core": {
+      "completed": 4,
+      "total": 4,
+      "tasks": [
+        {"name": "pop_mart_financials", "status": "returned", "elapsed_seconds": 20.50},
+        {"name": "miniso_financials", "status": "returned", "elapsed_seconds": 35.65},
+        {"name": "market_prices", "status": "returned", "elapsed_seconds": 48.24},
+        {"name": "macro_consumption", "status": "returned", "elapsed_seconds": 68.33}
+      ]
+    },
+    "enrichment": {
+      "completed": 6,
+      "total": 6,
+      "tasks": [
+        {"name": "pop_mart_announcements", "status": "returned"},
+        {"name": "miniso_announcements", "status": "returned"},
+        {"name": "pop_mart_research", "status": "returned"},
+        {"name": "miniso_research", "status": "returned"},
+        {"name": "pop_mart_enterprise_risk", "status": "returned_empty"},
+        {"name": "miniso_enterprise_risk", "status": "returned_empty"}
+      ],
+      "per_task_timing": "not_recorded_due_to_timer_instrumentation_error"
+    }
+  },
+  "field_coverage": {
+    "live_market_data": "complete_for_2026-08-12_and_20_trading_sessions",
+    "live_financial_data": "partial_requested_fields_returned",
+    "live_macro_data": "returned_2025_annual_not_requested_2026H1",
+    "live_announcements": "returned_with_over_retrieval; pop_mart_boundary_item_not_returned",
+    "live_research": "returned_without_stable_original_report_locators",
+    "live_enterprise_risk": "no_eligible_records_returned_for_both_entities",
+    "fallback": "verified_official_cache_used_for_missing_financial_macro_and_boundary_announcement_fields"
+  },
+  "notes": [
+    "The 209.07-second endpoint is internal answer-content readiness and excludes client rendering and network delivery.",
+    "An empty enterprise-risk result means no eligible structured record was returned; it is not evidence of no risk.",
+    "No score or qualitative evaluation is recorded in this run."
+  ]
+}

@@ -1,0 +1,1454 @@
+{
+  "module": 4,
+  "name": "研究任务库的全面产品化",
+  "status": "passed",
+  "passed": 51,
+  "total": 51,
+  "checks": [
+    {
+      "name": "ten_product_templates",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.1.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\library.db",
+        "templates": 10,
+        "sector_products": 110,
+        "roles": 4,
+        "saved_views": 5,
+        "catalog": {
+          "json_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\catalog\\research-task-library.json",
+          "markdown_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\catalog\\research-task-library.md"
+        },
+        "visibility": "internal"
+      }
+    },
+    {
+      "name": "one_hundred_ten_sector_products",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.1.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\library.db",
+        "templates": 10,
+        "sector_products": 110,
+        "roles": 4,
+        "saved_views": 5,
+        "catalog": {
+          "json_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\catalog\\research-task-library.json",
+          "markdown_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\catalog\\research-task-library.md"
+        },
+        "visibility": "internal"
+      }
+    },
+    {
+      "name": "four_internal_roles",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.1.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\library.db",
+        "templates": 10,
+        "sector_products": 110,
+        "roles": 4,
+        "saved_views": 5,
+        "catalog": {
+          "json_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\catalog\\research-task-library.json",
+          "markdown_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\catalog\\research-task-library.md"
+        },
+        "visibility": "internal"
+      }
+    },
+    {
+      "name": "five_saved_views",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.1.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\library.db",
+        "templates": 10,
+        "sector_products": 110,
+        "roles": 4,
+        "saved_views": 5,
+        "catalog": {
+          "json_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\catalog\\research-task-library.json",
+          "markdown_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\catalog\\research-task-library.md"
+        },
+        "visibility": "internal"
+      }
+    },
+    {
+      "name": "catalog_internal_only",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.1.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\library.db",
+        "templates": 10,
+        "sector_products": 110,
+        "roles": 4,
+        "saved_views": 5,
+        "catalog": {
+          "json_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\catalog\\research-task-library.json",
+          "markdown_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\catalog\\research-task-library.md"
+        },
+        "visibility": "internal"
+      }
+    },
+    {
+      "name": "catalog_json_written",
+      "passed": true,
+      "detail": {
+        "json_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\catalog\\research-task-library.json",
+        "markdown_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\catalog\\research-task-library.md"
+      }
+    },
+    {
+      "name": "catalog_markdown_written",
+      "passed": true,
+      "detail": {
+        "json_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\catalog\\research-task-library.json",
+        "markdown_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\catalog\\research-task-library.md"
+      }
+    },
+    {
+      "name": "all_templates_have_output_contracts",
+      "passed": true,
+      "detail": [
+        {
+          "template_id": "P0_01_INDUSTRY_PANORAMA",
+          "name": "行业全景研究",
+          "category": "industry",
+          "description": "系统梳理产业链、市场规模、竞争格局、景气、公司和估值。",
+          "entity_requirement": "optional",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "markets",
+            "geographies"
+          ],
+          "output_sections": [
+            "executive_summary",
+            "industry_map",
+            "cycle_and_demand",
+            "competition",
+            "company_map",
+            "valuation",
+            "risks_and_catalysts",
+            "evidence_index"
+          ],
+          "default_priority": "normal",
+          "expected_minutes": 20,
+          "tags": [
+            "行业框架",
+            "产业链",
+            "全景"
+          ]
+        },
+        {
+          "template_id": "P0_02_PROSPERITY_TRACKING",
+          "name": "景气跟踪",
+          "category": "monitoring",
+          "description": "跟踪高频、宏观、行业和公司信号，识别景气方向和拐点。",
+          "entity_requirement": "optional",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "lookback_days",
+            "markets"
+          ],
+          "output_sections": [
+            "signal_summary",
+            "high_frequency_data",
+            "trend_and_inflection",
+            "counter_signals",
+            "next_validation_points",
+            "evidence_index"
+          ],
+          "default_priority": "high",
+          "expected_minutes": 12,
+          "tags": [
+            "景气",
+            "高频",
+            "拐点"
+          ]
+        },
+        {
+          "template_id": "P0_03_COMPANY_DEEP_DIVE",
+          "name": "公司深度研究",
+          "category": "company",
+          "description": "研究单一公司的业务、壁垒、财务质量、估值与风险。",
+          "entity_requirement": "one_or_more",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "entities",
+            "period_ends"
+          ],
+          "output_sections": [
+            "investment_question",
+            "business_model",
+            "competitive_advantage",
+            "financial_quality",
+            "valuation_expectations",
+            "risks_and_catalysts",
+            "evidence_index"
+          ],
+          "default_priority": "normal",
+          "expected_minutes": 25,
+          "tags": [
+            "公司深度",
+            "财务",
+            "壁垒"
+          ]
+        },
+        {
+          "template_id": "P0_04_COMPANY_COMPARISON",
+          "name": "公司横向比较",
+          "category": "company",
+          "description": "按统一口径比较两家及以上公司，不预设单一赢家。",
+          "entity_requirement": "two_or_more",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "entities",
+            "metric_queries",
+            "decision_rule"
+          ],
+          "output_sections": [
+            "executive_summary",
+            "comparison_basis",
+            "comparison_table",
+            "company_observations",
+            "counter_analysis",
+            "limited_conclusion",
+            "evidence_index"
+          ],
+          "default_priority": "normal",
+          "expected_minutes": 18,
+          "tags": [
+            "公司比较",
+            "同业",
+            "可比口径"
+          ]
+        },
+        {
+          "template_id": "P0_05_EARNINGS_REVIEW",
+          "name": "财报点评",
+          "category": "event",
+          "description": "分析最新财报的超预期、低预期、经营趋势和后续验证点。",
+          "entity_requirement": "one_or_more",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "entities",
+            "period_ends"
+          ],
+          "output_sections": [
+            "earnings_snapshot",
+            "expectation_comparison",
+            "operating_bridge",
+            "cash_flow_quality",
+            "guidance_and_outlook",
+            "risks",
+            "evidence_index"
+          ],
+          "default_priority": "high",
+          "expected_minutes": 12,
+          "tags": [
+            "财报",
+            "业绩",
+            "事件"
+          ]
+        },
+        {
+          "template_id": "P0_06_EVENT_POLICY_IMPACT",
+          "name": "事件与政策影响",
+          "category": "event",
+          "description": "分析事件或政策沿消费产业链的传导、受益受损与验证条件。",
+          "entity_requirement": "optional",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "event_id",
+            "entities"
+          ],
+          "output_sections": [
+            "event_facts",
+            "policy_scope",
+            "transmission_chain",
+            "affected_sectors_and_companies",
+            "scenarios",
+            "validation_points",
+            "evidence_index"
+          ],
+          "default_priority": "high",
+          "expected_minutes": 10,
+          "tags": [
+            "政策",
+            "事件",
+            "传导"
+          ]
+        },
+        {
+          "template_id": "P0_07_COMPETITION_LANDSCAPE",
+          "name": "竞争格局研究",
+          "category": "industry",
+          "description": "研究份额、集中度、竞争行为、进入壁垒和格局变化。",
+          "entity_requirement": "optional",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "entities",
+            "geographies"
+          ],
+          "output_sections": [
+            "market_definition",
+            "participant_map",
+            "share_and_concentration",
+            "competitive_behavior",
+            "barriers",
+            "change_signals",
+            "evidence_index"
+          ],
+          "default_priority": "normal",
+          "expected_minutes": 18,
+          "tags": [
+            "竞争格局",
+            "份额",
+            "集中度"
+          ]
+        },
+        {
+          "template_id": "P0_08_MARKET_SIZE",
+          "name": "市场规模测算",
+          "category": "model",
+          "description": "用量价、渗透率和场景法测算市场规模并披露假设。",
+          "entity_requirement": "optional",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "geographies",
+            "scenario_assumptions"
+          ],
+          "output_sections": [
+            "definition_and_scope",
+            "methodology",
+            "historical_size",
+            "volume_price_bridge",
+            "scenarios",
+            "sensitivity",
+            "evidence_index"
+          ],
+          "default_priority": "normal",
+          "expected_minutes": 20,
+          "tags": [
+            "市场规模",
+            "量价",
+            "测算"
+          ]
+        },
+        {
+          "template_id": "P0_09_VALUATION_EXPECTATIONS",
+          "name": "估值与预期差",
+          "category": "model",
+          "description": "分析当前估值、隐含预期、预测修订和关键敏感性。",
+          "entity_requirement": "one_or_more",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "entities",
+            "valuation_methods",
+            "scenario_assumptions"
+          ],
+          "output_sections": [
+            "valuation_snapshot",
+            "historical_band",
+            "peer_comparison",
+            "implied_expectations",
+            "sensitivity",
+            "risks",
+            "evidence_index"
+          ],
+          "default_priority": "normal",
+          "expected_minutes": 18,
+          "tags": [
+            "估值",
+            "预期差",
+            "敏感性"
+          ]
+        },
+        {
+          "template_id": "P0_10_RISK_CATALYST_MONITOR",
+          "name": "风险与催化监控",
+          "category": "monitoring",
+          "description": "持续跟踪风险、催化剂、阈值和证伪信号。",
+          "entity_requirement": "optional",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "entities",
+            "lookback_days",
+            "monitor_alert_id"
+          ],
+          "output_sections": [
+            "open_signals",
+            "catalysts",
+            "risks",
+            "thresholds",
+            "falsification_signals",
+            "next_actions",
+            "evidence_index"
+          ],
+          "default_priority": "high",
+          "expected_minutes": 8,
+          "tags": [
+            "风险",
+            "催化剂",
+            "监控"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "all_templates_have_parameter_fields",
+      "passed": true,
+      "detail": [
+        {
+          "template_id": "P0_01_INDUSTRY_PANORAMA",
+          "name": "行业全景研究",
+          "category": "industry",
+          "description": "系统梳理产业链、市场规模、竞争格局、景气、公司和估值。",
+          "entity_requirement": "optional",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "markets",
+            "geographies"
+          ],
+          "output_sections": [
+            "executive_summary",
+            "industry_map",
+            "cycle_and_demand",
+            "competition",
+            "company_map",
+            "valuation",
+            "risks_and_catalysts",
+            "evidence_index"
+          ],
+          "default_priority": "normal",
+          "expected_minutes": 20,
+          "tags": [
+            "行业框架",
+            "产业链",
+            "全景"
+          ]
+        },
+        {
+          "template_id": "P0_02_PROSPERITY_TRACKING",
+          "name": "景气跟踪",
+          "category": "monitoring",
+          "description": "跟踪高频、宏观、行业和公司信号，识别景气方向和拐点。",
+          "entity_requirement": "optional",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "lookback_days",
+            "markets"
+          ],
+          "output_sections": [
+            "signal_summary",
+            "high_frequency_data",
+            "trend_and_inflection",
+            "counter_signals",
+            "next_validation_points",
+            "evidence_index"
+          ],
+          "default_priority": "high",
+          "expected_minutes": 12,
+          "tags": [
+            "景气",
+            "高频",
+            "拐点"
+          ]
+        },
+        {
+          "template_id": "P0_03_COMPANY_DEEP_DIVE",
+          "name": "公司深度研究",
+          "category": "company",
+          "description": "研究单一公司的业务、壁垒、财务质量、估值与风险。",
+          "entity_requirement": "one_or_more",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "entities",
+            "period_ends"
+          ],
+          "output_sections": [
+            "investment_question",
+            "business_model",
+            "competitive_advantage",
+            "financial_quality",
+            "valuation_expectations",
+            "risks_and_catalysts",
+            "evidence_index"
+          ],
+          "default_priority": "normal",
+          "expected_minutes": 25,
+          "tags": [
+            "公司深度",
+            "财务",
+            "壁垒"
+          ]
+        },
+        {
+          "template_id": "P0_04_COMPANY_COMPARISON",
+          "name": "公司横向比较",
+          "category": "company",
+          "description": "按统一口径比较两家及以上公司，不预设单一赢家。",
+          "entity_requirement": "two_or_more",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "entities",
+            "metric_queries",
+            "decision_rule"
+          ],
+          "output_sections": [
+            "executive_summary",
+            "comparison_basis",
+            "comparison_table",
+            "company_observations",
+            "counter_analysis",
+            "limited_conclusion",
+            "evidence_index"
+          ],
+          "default_priority": "normal",
+          "expected_minutes": 18,
+          "tags": [
+            "公司比较",
+            "同业",
+            "可比口径"
+          ]
+        },
+        {
+          "template_id": "P0_05_EARNINGS_REVIEW",
+          "name": "财报点评",
+          "category": "event",
+          "description": "分析最新财报的超预期、低预期、经营趋势和后续验证点。",
+          "entity_requirement": "one_or_more",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "entities",
+            "period_ends"
+          ],
+          "output_sections": [
+            "earnings_snapshot",
+            "expectation_comparison",
+            "operating_bridge",
+            "cash_flow_quality",
+            "guidance_and_outlook",
+            "risks",
+            "evidence_index"
+          ],
+          "default_priority": "high",
+          "expected_minutes": 12,
+          "tags": [
+            "财报",
+            "业绩",
+            "事件"
+          ]
+        },
+        {
+          "template_id": "P0_06_EVENT_POLICY_IMPACT",
+          "name": "事件与政策影响",
+          "category": "event",
+          "description": "分析事件或政策沿消费产业链的传导、受益受损与验证条件。",
+          "entity_requirement": "optional",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "event_id",
+            "entities"
+          ],
+          "output_sections": [
+            "event_facts",
+            "policy_scope",
+            "transmission_chain",
+            "affected_sectors_and_companies",
+            "scenarios",
+            "validation_points",
+            "evidence_index"
+          ],
+          "default_priority": "high",
+          "expected_minutes": 10,
+          "tags": [
+            "政策",
+            "事件",
+            "传导"
+          ]
+        },
+        {
+          "template_id": "P0_07_COMPETITION_LANDSCAPE",
+          "name": "竞争格局研究",
+          "category": "industry",
+          "description": "研究份额、集中度、竞争行为、进入壁垒和格局变化。",
+          "entity_requirement": "optional",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "entities",
+            "geographies"
+          ],
+          "output_sections": [
+            "market_definition",
+            "participant_map",
+            "share_and_concentration",
+            "competitive_behavior",
+            "barriers",
+            "change_signals",
+            "evidence_index"
+          ],
+          "default_priority": "normal",
+          "expected_minutes": 18,
+          "tags": [
+            "竞争格局",
+            "份额",
+            "集中度"
+          ]
+        },
+        {
+          "template_id": "P0_08_MARKET_SIZE",
+          "name": "市场规模测算",
+          "category": "model",
+          "description": "用量价、渗透率和场景法测算市场规模并披露假设。",
+          "entity_requirement": "optional",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "geographies",
+            "scenario_assumptions"
+          ],
+          "output_sections": [
+            "definition_and_scope",
+            "methodology",
+            "historical_size",
+            "volume_price_bridge",
+            "scenarios",
+            "sensitivity",
+            "evidence_index"
+          ],
+          "default_priority": "normal",
+          "expected_minutes": 20,
+          "tags": [
+            "市场规模",
+            "量价",
+            "测算"
+          ]
+        },
+        {
+          "template_id": "P0_09_VALUATION_EXPECTATIONS",
+          "name": "估值与预期差",
+          "category": "model",
+          "description": "分析当前估值、隐含预期、预测修订和关键敏感性。",
+          "entity_requirement": "one_or_more",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "entities",
+            "valuation_methods",
+            "scenario_assumptions"
+          ],
+          "output_sections": [
+            "valuation_snapshot",
+            "historical_band",
+            "peer_comparison",
+            "implied_expectations",
+            "sensitivity",
+            "risks",
+            "evidence_index"
+          ],
+          "default_priority": "normal",
+          "expected_minutes": 18,
+          "tags": [
+            "估值",
+            "预期差",
+            "敏感性"
+          ]
+        },
+        {
+          "template_id": "P0_10_RISK_CATALYST_MONITOR",
+          "name": "风险与催化监控",
+          "category": "monitoring",
+          "description": "持续跟踪风险、催化剂、阈值和证伪信号。",
+          "entity_requirement": "optional",
+          "parameter_fields": [
+            "cutoff_timestamp",
+            "research_question",
+            "entities",
+            "lookback_days",
+            "monitor_alert_id"
+          ],
+          "output_sections": [
+            "open_signals",
+            "catalysts",
+            "risks",
+            "thresholds",
+            "falsification_signals",
+            "next_actions",
+            "evidence_index"
+          ],
+          "default_priority": "high",
+          "expected_minutes": 8,
+          "tags": [
+            "风险",
+            "催化剂",
+            "监控"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_release_policy",
+      "passed": true,
+      "detail": {
+        "bootstrap_products": "internal_active_from_accepted_module2_contract",
+        "new_or_changed_template": "named_human_research_reviewer_required",
+        "research_output": "stage8_automatic_internal_release_after_quality_gates",
+        "external_publication": false
+      }
+    },
+    {
+      "name": "research_output_direct_release",
+      "passed": true,
+      "detail": {
+        "bootstrap_products": "internal_active_from_accepted_module2_contract",
+        "new_or_changed_template": "named_human_research_reviewer_required",
+        "research_output": "stage8_automatic_internal_release_after_quality_gates",
+        "external_publication": false
+      }
+    },
+    {
+      "name": "external_publication_disabled",
+      "passed": true,
+      "detail": {
+        "bootstrap_products": "internal_active_from_accepted_module2_contract",
+        "new_or_changed_template": "named_human_research_reviewer_required",
+        "research_output": "stage8_automatic_internal_release_after_quality_gates",
+        "external_publication": false
+      }
+    },
+    {
+      "name": "portfolio_boundary_quality_gate",
+      "passed": true,
+      "detail": [
+        "all_10_templates_present",
+        "all_110_sector_products_present",
+        "parameter_schema_valid",
+        "search_and_facets_work",
+        "role_permission_enforced",
+        "named_submitter_required",
+        "idempotent_submission",
+        "stage8_request_compiles",
+        "job_events_auditable",
+        "data_readiness_explicit",
+        "no_fund_holdings_or_position_inference",
+        "no_automatic_trade_instruction",
+        "no_automatic_external_publication",
+        "automatic_internal_release_only_after_required_quality_gates"
+      ]
+    },
+    {
+      "name": "search_all_returns_110",
+      "passed": true,
+      "detail": 110
+    },
+    {
+      "name": "search_facets_cover_11_sectors",
+      "passed": true,
+      "detail": {
+        "sectors": {
+          "CR.D.AF": 10,
+          "CR.D.AP": 10,
+          "CR.D.AU": 10,
+          "CR.D.HL": 10,
+          "CR.S.FB": 10,
+          "CR.S.PH": 10,
+          "CR.S.PT": 10,
+          "CR.V.CE": 10,
+          "CR.V.FS": 10,
+          "CR.V.RT": 10,
+          "CR.V.TL": 10
+        },
+        "categories": {
+          "industry": 22,
+          "monitoring": 22,
+          "company": 22,
+          "event": 22,
+          "model": 22
+        },
+        "templates": {
+          "P0_01_INDUSTRY_PANORAMA": 11,
+          "P0_02_PROSPERITY_TRACKING": 11,
+          "P0_03_COMPANY_DEEP_DIVE": 11,
+          "P0_04_COMPANY_COMPARISON": 11,
+          "P0_05_EARNINGS_REVIEW": 11,
+          "P0_06_EVENT_POLICY_IMPACT": 11,
+          "P0_07_COMPETITION_LANDSCAPE": 11,
+          "P0_08_MARKET_SIZE": 11,
+          "P0_09_VALUATION_EXPECTATIONS": 11,
+          "P0_10_RISK_CATALYST_MONITOR": 11
+        },
+        "data_readiness": {
+          "ready_with_data_gaps": 110
+        }
+      }
+    },
+    {
+      "name": "search_facets_cover_10_templates",
+      "passed": true,
+      "detail": {
+        "sectors": {
+          "CR.D.AF": 10,
+          "CR.D.AP": 10,
+          "CR.D.AU": 10,
+          "CR.D.HL": 10,
+          "CR.S.FB": 10,
+          "CR.S.PH": 10,
+          "CR.S.PT": 10,
+          "CR.V.CE": 10,
+          "CR.V.FS": 10,
+          "CR.V.RT": 10,
+          "CR.V.TL": 10
+        },
+        "categories": {
+          "industry": 22,
+          "monitoring": 22,
+          "company": 22,
+          "event": 22,
+          "model": 22
+        },
+        "templates": {
+          "P0_01_INDUSTRY_PANORAMA": 11,
+          "P0_02_PROSPERITY_TRACKING": 11,
+          "P0_03_COMPANY_DEEP_DIVE": 11,
+          "P0_04_COMPANY_COMPARISON": 11,
+          "P0_05_EARNINGS_REVIEW": 11,
+          "P0_06_EVENT_POLICY_IMPACT": 11,
+          "P0_07_COMPETITION_LANDSCAPE": 11,
+          "P0_08_MARKET_SIZE": 11,
+          "P0_09_VALUATION_EXPECTATIONS": 11,
+          "P0_10_RISK_CATALYST_MONITOR": 11
+        },
+        "data_readiness": {
+          "ready_with_data_gaps": 110
+        }
+      }
+    },
+    {
+      "name": "keyword_and_category_search_works",
+      "passed": true,
+      "detail": 11
+    },
+    {
+      "name": "sector_filter_returns_ten",
+      "passed": true,
+      "detail": 10
+    },
+    {
+      "name": "exact_product_filter_returns_one",
+      "passed": true,
+      "detail": {
+        "query": "",
+        "filters": {
+          "sector_code": "CR.D.AP",
+          "category": null,
+          "template_id": "P0_04_COMPANY_COMPARISON"
+        },
+        "result_count": 1,
+        "facets": {
+          "sectors": {
+            "CR.D.AP": 1
+          },
+          "categories": {
+            "company": 1
+          },
+          "templates": {
+            "P0_04_COMPANY_COMPARISON": 1
+          },
+          "data_readiness": {
+            "ready_with_data_gaps": 1
+          }
+        },
+        "results": [
+          {
+            "product_id": "product:981ad72b036aaa30c393c4a8",
+            "title": "家电与消费电子 · 公司横向比较",
+            "sector_code": "CR.D.AP",
+            "template_id": "P0_04_COMPANY_COMPARISON",
+            "template_name": "公司横向比较",
+            "category": "company",
+            "expected_minutes": 18,
+            "data_readiness": "ready_with_data_gaps",
+            "is_favorite": 0,
+            "tags": [
+              "CR.D.AP",
+              "company",
+              "公司比较",
+              "可比口径",
+              "同业",
+              "家电与消费电子"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "product_detail_has_metrics",
+      "passed": true,
+      "detail": 41
+    },
+    {
+      "name": "product_detail_routes_ten_streams",
+      "passed": true,
+      "detail": [
+        {
+          "registered_source_routes": 1,
+          "stream_name": "master_data"
+        },
+        {
+          "registered_source_routes": 1,
+          "stream_name": "market_daily"
+        },
+        {
+          "registered_source_routes": 2,
+          "stream_name": "financials"
+        },
+        {
+          "registered_source_routes": 5,
+          "stream_name": "announcements"
+        },
+        {
+          "registered_source_routes": 3,
+          "stream_name": "macro"
+        },
+        {
+          "registered_source_routes": 4,
+          "stream_name": "official_industry_releases"
+        },
+        {
+          "registered_source_routes": 3,
+          "stream_name": "official_policy_documents"
+        },
+        {
+          "registered_source_routes": 1,
+          "stream_name": "research_metadata"
+        },
+        {
+          "registered_source_routes": 1,
+          "stream_name": "news_leads"
+        },
+        {
+          "registered_source_routes": 1,
+          "stream_name": "enterprise_risk"
+        }
+      ]
+    },
+    {
+      "name": "product_detail_has_version",
+      "passed": true,
+      "detail": [
+        {
+          "product_version_id": "product-version:f32dfdd6822ebd113980024b",
+          "version": "1.0.0",
+          "content_hash": "sha256:45908c4fd58e4a57f0c5e1be3cedd1af0c6374785fc5a329df2702a39bdaaf36",
+          "release_status": "internal_active",
+          "released_by": "module2_acceptance",
+          "released_at": "2026-08-13T08:52:39.781Z",
+          "release_notes": "Initial productization from the accepted 110-task contract"
+        }
+      ]
+    },
+    {
+      "name": "data_readiness_is_explicit",
+      "passed": true,
+      "detail": "ready_with_data_gaps"
+    },
+    {
+      "name": "fund_manager_can_favorite",
+      "passed": true,
+      "detail": {
+        "user_id": "基金经理甲",
+        "product_id": "product:981ad72b036aaa30c393c4a8",
+        "favorite": true
+      }
+    },
+    {
+      "name": "favorite_visible_in_search",
+      "passed": true,
+      "detail": {
+        "product_id": "product:981ad72b036aaa30c393c4a8",
+        "title": "家电与消费电子 · 公司横向比较",
+        "sector_code": "CR.D.AP",
+        "template_id": "P0_04_COMPANY_COMPARISON",
+        "template_name": "公司横向比较",
+        "category": "company",
+        "expected_minutes": 18,
+        "data_readiness": "ready_with_data_gaps",
+        "is_favorite": 1,
+        "tags": [
+          "CR.D.AP",
+          "company",
+          "公司比较",
+          "可比口径",
+          "同业",
+          "家电与消费电子"
+        ]
+      }
+    },
+    {
+      "name": "unknown_role_search_denied",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "fund_manager_can_submit_job",
+      "passed": true,
+      "detail": {
+        "job_id": "job:af80fb67bb6aa00df7579540",
+        "product_id": "product:981ad72b036aaa30c393c4a8",
+        "submitted_by": "基金经理甲",
+        "submitter_role": "public_fund_manager",
+        "request_hash": "sha256:14026c99994698d96c086df62bb77720fda60c7112f305007e9662430efc494b",
+        "cutoff_timestamp": "2024-04-30T16:00:00.000Z",
+        "parameters_json": "{\"cutoff_timestamp\":\"2024-05-01T00:00:00+08:00\",\"decision_rule\":null,\"entities\":[{\"display_name\":\"美的集团\",\"entity_id\":\"cr:legal_entity:midea\",\"security_id\":\"000333.SZ\"},{\"display_name\":\"格力电器\",\"entity_id\":\"cr:legal_entity:gree\",\"security_id\":\"000651.SZ\"}],\"metric_queries\":[{\"metric_id\":\"CR.CO.REVENUE\",\"period_end\":\"2022-12-31\"},{\"metric_id\":\"CR.CO.REVENUE\",\"period_end\":\"2023-12-31\"},{\"metric_id\":\"CR.CO.OPERATING_COST\",\"period_end\":\"2023-12-31\"},{\"metric_id\":\"CR.CO.PARENT_NET_PROFIT\",\"period_end\":\"2023-12-31\"},{\"metric_id\":\"CR.CO.CFO_NET\",\"period_end\":\"2023-12-31\"}],\"priority\":\"normal\",\"research_question\":\"比较美的集团和格力电器2023年度经营与财务质量，给出有限结论和验证点。\"}",
+        "priority": "normal",
+        "status": "queued",
+        "data_readiness": "ready_with_data_gaps",
+        "workflow_request_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\jobs\\job-af80fb67bb6aa00df7579540\\workflow-request.json",
+        "workflow_run_id": null,
+        "result_artifact_path": null,
+        "error_json": null,
+        "created_at": "2026-08-13T08:52:42.570Z",
+        "started_at": null,
+        "completed_at": null,
+        "updated_at": "2026-08-13T08:52:42.570Z"
+      }
+    },
+    {
+      "name": "stage8_workflow_request_compiled",
+      "passed": true,
+      "detail": {
+        "package_id": "CR.TASKLIB.JOB.AF80FB67BB6AA00DF7579540",
+        "workflow_id": "CR.WORKFLOW.RESEARCH_ORCHESTRATION.001",
+        "template_id": "P0_04_COMPANY_COMPARISON",
+        "cutoff_timestamp": "2024-05-01T00:00:00+08:00",
+        "reader": "public_fund_manager",
+        "research_question": "比较美的集团和格力电器2023年度经营与财务质量，给出有限结论和验证点。",
+        "scope": {
+          "sector_codes": [
+            "CR.D.AP"
+          ],
+          "geographies": [
+            "CN"
+          ],
+          "markets": [
+            "A_SHARE"
+          ],
+          "accounting_standard": "CAS",
+          "consolidation_scope": "consolidated",
+          "currency": "CNY"
+        },
+        "entities": [
+          {
+            "entity_id": "cr:legal_entity:midea",
+            "security_id": "000333.SZ",
+            "display_name": "美的集团"
+          },
+          {
+            "entity_id": "cr:legal_entity:gree",
+            "security_id": "000651.SZ",
+            "display_name": "格力电器"
+          }
+        ],
+        "metric_queries": [
+          {
+            "metric_id": "CR.CO.REVENUE",
+            "period_end": "2022-12-31"
+          },
+          {
+            "metric_id": "CR.CO.REVENUE",
+            "period_end": "2023-12-31"
+          },
+          {
+            "metric_id": "CR.CO.OPERATING_COST",
+            "period_end": "2023-12-31"
+          },
+          {
+            "metric_id": "CR.CO.PARENT_NET_PROFIT",
+            "period_end": "2023-12-31"
+          },
+          {
+            "metric_id": "CR.CO.CFO_NET",
+            "period_end": "2023-12-31"
+          }
+        ],
+        "model_packages": [],
+        "decision_rule": null,
+        "include_runtime_appendix": true,
+        "output_slug": "task-library/job-af80fb67bb6aa00df7579540"
+      }
+    },
+    {
+      "name": "compiled_request_keeps_exact_cutoff",
+      "passed": true,
+      "detail": {
+        "package_id": "CR.TASKLIB.JOB.AF80FB67BB6AA00DF7579540",
+        "workflow_id": "CR.WORKFLOW.RESEARCH_ORCHESTRATION.001",
+        "template_id": "P0_04_COMPANY_COMPARISON",
+        "cutoff_timestamp": "2024-05-01T00:00:00+08:00",
+        "reader": "public_fund_manager",
+        "research_question": "比较美的集团和格力电器2023年度经营与财务质量，给出有限结论和验证点。",
+        "scope": {
+          "sector_codes": [
+            "CR.D.AP"
+          ],
+          "geographies": [
+            "CN"
+          ],
+          "markets": [
+            "A_SHARE"
+          ],
+          "accounting_standard": "CAS",
+          "consolidation_scope": "consolidated",
+          "currency": "CNY"
+        },
+        "entities": [
+          {
+            "entity_id": "cr:legal_entity:midea",
+            "security_id": "000333.SZ",
+            "display_name": "美的集团"
+          },
+          {
+            "entity_id": "cr:legal_entity:gree",
+            "security_id": "000651.SZ",
+            "display_name": "格力电器"
+          }
+        ],
+        "metric_queries": [
+          {
+            "metric_id": "CR.CO.REVENUE",
+            "period_end": "2022-12-31"
+          },
+          {
+            "metric_id": "CR.CO.REVENUE",
+            "period_end": "2023-12-31"
+          },
+          {
+            "metric_id": "CR.CO.OPERATING_COST",
+            "period_end": "2023-12-31"
+          },
+          {
+            "metric_id": "CR.CO.PARENT_NET_PROFIT",
+            "period_end": "2023-12-31"
+          },
+          {
+            "metric_id": "CR.CO.CFO_NET",
+            "period_end": "2023-12-31"
+          }
+        ],
+        "model_packages": [],
+        "decision_rule": null,
+        "include_runtime_appendix": true,
+        "output_slug": "task-library/job-af80fb67bb6aa00df7579540"
+      }
+    },
+    {
+      "name": "compiled_request_has_no_fund_fields",
+      "passed": true,
+      "detail": "clean"
+    },
+    {
+      "name": "job_submission_idempotent",
+      "passed": true,
+      "detail": {
+        "job_id": "job:af80fb67bb6aa00df7579540",
+        "product_id": "product:981ad72b036aaa30c393c4a8",
+        "submitted_by": "基金经理甲",
+        "submitter_role": "public_fund_manager",
+        "request_hash": "sha256:14026c99994698d96c086df62bb77720fda60c7112f305007e9662430efc494b",
+        "cutoff_timestamp": "2024-04-30T16:00:00.000Z",
+        "parameters_json": "{\"cutoff_timestamp\":\"2024-05-01T00:00:00+08:00\",\"decision_rule\":null,\"entities\":[{\"display_name\":\"美的集团\",\"entity_id\":\"cr:legal_entity:midea\",\"security_id\":\"000333.SZ\"},{\"display_name\":\"格力电器\",\"entity_id\":\"cr:legal_entity:gree\",\"security_id\":\"000651.SZ\"}],\"metric_queries\":[{\"metric_id\":\"CR.CO.REVENUE\",\"period_end\":\"2022-12-31\"},{\"metric_id\":\"CR.CO.REVENUE\",\"period_end\":\"2023-12-31\"},{\"metric_id\":\"CR.CO.OPERATING_COST\",\"period_end\":\"2023-12-31\"},{\"metric_id\":\"CR.CO.PARENT_NET_PROFIT\",\"period_end\":\"2023-12-31\"},{\"metric_id\":\"CR.CO.CFO_NET\",\"period_end\":\"2023-12-31\"}],\"priority\":\"normal\",\"research_question\":\"比较美的集团和格力电器2023年度经营与财务质量，给出有限结论和验证点。\"}",
+        "priority": "normal",
+        "status": "queued",
+        "data_readiness": "ready_with_data_gaps",
+        "workflow_request_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\jobs\\job-af80fb67bb6aa00df7579540\\workflow-request.json",
+        "workflow_run_id": null,
+        "result_artifact_path": null,
+        "error_json": null,
+        "created_at": "2026-08-13T08:52:42.570Z",
+        "started_at": null,
+        "completed_at": null,
+        "updated_at": "2026-08-13T08:52:42.570Z"
+      }
+    },
+    {
+      "name": "agent_cannot_be_named_submitter",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "company_comparison_requires_two_entities",
+      "passed": true,
+      "detail": [
+        {
+          "code": "entity_count_invalid",
+          "message": "Template requires at least 2 entities",
+          "path": "$.entities"
+        }
+      ]
+    },
+    {
+      "name": "fund_holdings_parameter_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "parameter_not_allowed",
+          "message": "Parameter is not allowed for this template: fund_holdings",
+          "path": "$.fund_holdings"
+        },
+        {
+          "code": "portfolio_field_forbidden",
+          "message": "Fund holdings and position inference are forbidden",
+          "path": "$.fund_holdings"
+        }
+      ]
+    },
+    {
+      "name": "fund_manager_cannot_manage_queue",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "operator_can_run_job",
+      "passed": true,
+      "detail": "completed"
+    },
+    {
+      "name": "job_releases_directly_after_quality_gates",
+      "passed": true,
+      "detail": {
+        "run_id": "wr:6b3cc579918d3771529c98b3",
+        "package_id": "CR.TASKLIB.JOB.AF80FB67BB6AA00DF7579540",
+        "status": "completed",
+        "started_at": "2026-08-13T08:52:43.832Z",
+        "completed_at": "2026-08-13T08:52:44.454Z",
+        "resumed_count": 0,
+        "publication_status": "internal_research_ready",
+        "human_review_required": 0,
+        "output_directory": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\workflow-runs\\task-library\\job-af80fb67bb6aa00df7579540\\wr-6b3cc579918d3771529c98b3",
+        "summary_json": "{}"
+      }
+    },
+    {
+      "name": "job_has_research_report",
+      "passed": true,
+      "detail": [
+        {
+          "artifact_type": "claim_graph",
+          "path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\workflow-runs\\task-library\\job-af80fb67bb6aa00df7579540\\wr-6b3cc579918d3771529c98b3\\claim-graph.json",
+          "content_hash": "d6bede1dbd1f83ea4aa957b7eade81a7095419a1cf5470e7df69c54f32106421"
+        },
+        {
+          "artifact_type": "evidence_audit",
+          "path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\workflow-runs\\task-library\\job-af80fb67bb6aa00df7579540\\wr-6b3cc579918d3771529c98b3\\evidence-audit.json",
+          "content_hash": "9f5f29791d1452b839e8268dbf7cc504b38b2daa65db252bf2fd53fbc55cdc90"
+        },
+        {
+          "artifact_type": "execution_plan",
+          "path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\workflow-runs\\task-library\\job-af80fb67bb6aa00df7579540\\wr-6b3cc579918d3771529c98b3\\execution-plan.json",
+          "content_hash": "9f8dfa5ec254630f9b91b0d6778770ef5328916f05fdb6daa2375986144e2be2"
+        },
+        {
+          "artifact_type": "research_report",
+          "path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\workflow-runs\\task-library\\job-af80fb67bb6aa00df7579540\\wr-6b3cc579918d3771529c98b3\\research-report.md",
+          "content_hash": "b72a600691ef6eab0e7f2e6b629380ccc4c7d5d1c3c6477c0c781cb1d6cd0cfc"
+        },
+        {
+          "artifact_type": "runtime_audit",
+          "path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\workflow-runs\\task-library\\job-af80fb67bb6aa00df7579540\\wr-6b3cc579918d3771529c98b3\\runtime-audit.json",
+          "content_hash": "8632dd9e11c71d3a25cd2566ca2fec277b49a557cf6ad21348ab41c319d8afc1"
+        }
+      ]
+    },
+    {
+      "name": "fund_manager_cannot_manage_catalog",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "operator_update_is_draft",
+      "passed": true,
+      "detail": {
+        "product_id": "product:981ad72b036aaa30c393c4a8",
+        "product_version_id": "product-version:97b8baa99c17c0be6a0fa556",
+        "version": "1.1.0",
+        "release_status": "draft",
+        "review_id": "product-review:19a8e12b84442bc0152783bb"
+      }
+    },
+    {
+      "name": "agent_cannot_approve_product_version",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "named_reviewer_can_release_internal_version",
+      "passed": true,
+      "detail": {
+        "product_id": "product:981ad72b036aaa30c393c4a8",
+        "product_version_id": "product-version:97b8baa99c17c0be6a0fa556",
+        "version": "1.1.0",
+        "release_status": "internal_active",
+        "reviewer": "研究复核员乙",
+        "idempotent_replay": false
+      }
+    },
+    {
+      "name": "approved_version_visible",
+      "passed": true,
+      "detail": [
+        {
+          "product_version_id": "product-version:97b8baa99c17c0be6a0fa556",
+          "version": "1.1.0",
+          "content_hash": "sha256:48a9956d3d2a3e215c4e90f179abed77b65283955ec95913bf7e4ce8b0206ad0",
+          "release_status": "internal_active",
+          "released_by": "研究复核员乙",
+          "released_at": "2026-08-13T08:52:45.623Z",
+          "release_notes": "验收批准"
+        },
+        {
+          "product_version_id": "product-version:f32dfdd6822ebd113980024b",
+          "version": "1.0.0",
+          "content_hash": "sha256:45908c4fd58e4a57f0c5e1be3cedd1af0c6374785fc5a329df2702a39bdaaf36",
+          "release_status": "internal_active",
+          "released_by": "module2_acceptance",
+          "released_at": "2026-08-13T08:52:39.781Z",
+          "release_notes": "Initial productization from the accepted 110-task contract"
+        }
+      ]
+    },
+    {
+      "name": "own_job_list_available",
+      "passed": true,
+      "detail": {
+        "count": 1,
+        "jobs": [
+          {
+            "job_id": "job:af80fb67bb6aa00df7579540",
+            "product_id": "product:981ad72b036aaa30c393c4a8",
+            "submitted_by": "基金经理甲",
+            "submitter_role": "public_fund_manager",
+            "request_hash": "sha256:14026c99994698d96c086df62bb77720fda60c7112f305007e9662430efc494b",
+            "cutoff_timestamp": "2024-04-30T16:00:00.000Z",
+            "parameters_json": "{\"cutoff_timestamp\":\"2024-05-01T00:00:00+08:00\",\"decision_rule\":null,\"entities\":[{\"display_name\":\"美的集团\",\"entity_id\":\"cr:legal_entity:midea\",\"security_id\":\"000333.SZ\"},{\"display_name\":\"格力电器\",\"entity_id\":\"cr:legal_entity:gree\",\"security_id\":\"000651.SZ\"}],\"metric_queries\":[{\"metric_id\":\"CR.CO.REVENUE\",\"period_end\":\"2022-12-31\"},{\"metric_id\":\"CR.CO.REVENUE\",\"period_end\":\"2023-12-31\"},{\"metric_id\":\"CR.CO.OPERATING_COST\",\"period_end\":\"2023-12-31\"},{\"metric_id\":\"CR.CO.PARENT_NET_PROFIT\",\"period_end\":\"2023-12-31\"},{\"metric_id\":\"CR.CO.CFO_NET\",\"period_end\":\"2023-12-31\"}],\"priority\":\"normal\",\"research_question\":\"比较美的集团和格力电器2023年度经营与财务质量，给出有限结论和验证点。\"}",
+            "priority": "normal",
+            "status": "completed",
+            "data_readiness": "ready_with_data_gaps",
+            "workflow_request_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\jobs\\job-af80fb67bb6aa00df7579540\\workflow-request.json",
+            "workflow_run_id": "wr:6b3cc579918d3771529c98b3",
+            "result_artifact_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-task-library-jnw3sx5b\\output\\workflow-runs\\task-library\\job-af80fb67bb6aa00df7579540\\wr-6b3cc579918d3771529c98b3\\research-report.md",
+            "error_json": null,
+            "created_at": "2026-08-13T08:52:42.570Z",
+            "started_at": "2026-08-13T08:52:43.698Z",
+            "completed_at": "2026-08-13T08:52:44.602Z",
+            "updated_at": "2026-08-13T08:52:44.602Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "task_library_audit_schema_complete",
+      "passed": true,
+      "detail": [
+        "task_library_favorites",
+        "task_library_job_events",
+        "task_library_jobs",
+        "task_library_product_versions",
+        "task_library_products",
+        "task_library_reviews",
+        "task_library_role_permissions",
+        "task_library_saved_views",
+        "task_library_templates",
+        "task_library_usage_events"
+      ]
+    },
+    {
+      "name": "database_counts_correct",
+      "passed": true,
+      "detail": {
+        "task_library_templates": 10,
+        "task_library_products": 110,
+        "task_library_product_versions": 111,
+        "task_library_saved_views": 5,
+        "task_library_jobs": 1,
+        "task_library_job_events": 3,
+        "task_library_reviews": 1,
+        "task_library_usage_events": 13
+      }
+    },
+    {
+      "name": "fts_catalog_has_110_products",
+      "passed": true,
+      "detail": 110
+    },
+    {
+      "name": "no_external_product_visibility",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "job_events_audited",
+      "passed": true,
+      "detail": {
+        "task_library_templates": 10,
+        "task_library_products": 110,
+        "task_library_product_versions": 111,
+        "task_library_saved_views": 5,
+        "task_library_jobs": 1,
+        "task_library_job_events": 3,
+        "task_library_reviews": 1,
+        "task_library_usage_events": 13
+      }
+    },
+    {
+      "name": "product_release_review_audited",
+      "passed": true,
+      "detail": {
+        "task_library_templates": 10,
+        "task_library_products": 110,
+        "task_library_product_versions": 111,
+        "task_library_saved_views": 5,
+        "task_library_jobs": 1,
+        "task_library_job_events": 3,
+        "task_library_reviews": 1,
+        "task_library_usage_events": 13
+      }
+    },
+    {
+      "name": "usage_events_audited",
+      "passed": true,
+      "detail": {
+        "task_library_templates": 10,
+        "task_library_products": 110,
+        "task_library_product_versions": 111,
+        "task_library_saved_views": 5,
+        "task_library_jobs": 1,
+        "task_library_job_events": 3,
+        "task_library_reviews": 1,
+        "task_library_usage_events": 13
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "consumer-fund-manager-workbench",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "description": "面向公募基金经理的本机消费行业研究工作台",
+  "scripts": {
+    "check": "node --check public/app.js"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "type": "module"
+}

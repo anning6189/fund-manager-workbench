@@ -1,0 +1,109 @@
+{
+  "contract_id": "CR.CONNECTOR.CONTRACT",
+  "spec_version": "1.1.0",
+  "purpose": "将MCP、政府统计页面、交易所公告、政策文件和商业数据库规范化为可通过阶段三、四准入门的统一记录。",
+  "request_schema": {
+    "required": [
+      "query_id", "task_type", "cutoff_timestamp", "availability_mode", "source_ids",
+      "entity_scope", "metric_scope", "period_scope", "document_scope", "field_projection"
+    ],
+    "task_type_values": ["observation_query", "document_search", "entity_query", "universe_query", "policy_search", "research_search", "news_search"],
+    "empty_scope_rule": "不适用的scope使用空数组；不得省略cutoff_timestamp和source_ids。",
+    "field_projection_rule": "连接器可以返回额外字段，但适配层只能把请求字段和强制审计字段送入下游。"
+  },
+  "response_schema": {
+    "required": [
+      "connector_metadata", "observations", "documents", "entities", "universe_members",
+      "discarded_records", "quality_summary"
+    ],
+    "connector_metadata_required": [
+      "connector_name", "adapter_id", "adapter_version", "query_id", "retrieved_at",
+      "raw_record_count", "accepted_record_count", "discarded_record_count", "truncated",
+      "retry_count", "source_ids"
+    ],
+    "quality_summary_required": [
+      "status", "errors", "warnings", "coverage_ratio", "freshness_status", "license_status",
+      "point_in_time_status", "evidence_completeness_ratio"
+    ],
+    "status_values": ["pass", "pass_with_warnings", "incomplete", "blocked", "failed"]
+  },
+  "canonical_record_schemas": {
+    "observation": {
+      "required": [
+        "observation_id", "metric_id", "entity_id", "value", "unit", "period_start", "period_end",
+        "as_of_date", "published_at", "available_at", "retrieved_at", "source_id", "evidence_id", "value_status"
+      ],
+      "financial_conditionals": [
+        "statement_scope", "consolidation_scope", "accounting_standard", "currency", "scale",
+        "restatement_status", "fiscal_period_type"
+      ]
+    },
+    "document": {
+      "required": [
+        "document_id", "source_id", "source_type", "title", "publisher", "published_at", "available_at",
+        "retrieved_at", "source_url", "locator", "content_hash", "license_tag", "access_class",
+        "evidence_tier", "document_version", "language"
+      ]
+    },
+    "entity": {
+      "required": ["entity_id", "entity_type", "canonical_name", "source_id", "observed_at", "evidence_id"],
+      "identifier_rule": "上市公司至少包含统一社会信用代码或有效证券代码之一；两个标识冲突时阻断自动合并。"
+    },
+    "universe_member": {
+      "required": ["universe_id", "entity_id", "security_id", "classification_scheme", "classification_code", "valid_from", "valid_to", "as_of_date", "source_id"],
+      "fund_data_rule": "禁止包含基金持仓、组合暴露或仓位推断字段。"
+    }
+  },
+  "pipeline": [
+    "authenticate_from_secret_store",
+    "partition_request",
+    "execute_with_timeout",
+    "capture_raw_response_metadata",
+    "parse_without_semantic_guessing",
+    "normalize_entity_metric_time_unit",
+    "validate_requested_date_alignment",
+    "validate_unit_scale_lineage",
+    "resolve_group_entity_tree",
+    "apply_license_gate",
+    "apply_point_in_time_gate",
+    "apply_scope_whitelists",
+    "deduplicate",
+    "bind_evidence",
+    "run_research_input_validator",
+    "emit_audit_log"
+  ],
+  "timeouts_and_retries": {
+    "connection_timeout_seconds": 10,
+    "request_timeout_seconds": 25,
+    "max_retries": 1,
+    "retryable": ["timeout", "http_429", "http_502", "http_503", "truncated", "provider_transient_error", "date_mismatch"],
+    "non_retryable": ["authentication_failed", "license_block", "future_information_leakage", "entity_unresolved", "metric_ambiguous", "unit_scale_conflict"],
+    "backoff": "exponential_with_jitter",
+    "partition_before_final_retry": true,
+    "same_query_retry_forbidden": true,
+    "noncritical_timeout_action": "emit_gap_and_continue"
+  },
+  "storage_zones": {
+    "raw": "原始响应和原始文档；保留来源、抓取时间、哈希和访问控制，不直接供Agent回答。",
+    "normalized": "标准化实体、观测、文档和证券池；保留原字段映射。",
+    "curated": "通过许可、时点、证据和质量门的研究数据。",
+    "quarantine": "许可不明、口径冲突、实体未消歧、未来信息或不可定位证据。"
+  },
+  "audit_and_observability": {
+    "required_events": ["query_started", "query_completed", "query_retried", "record_discarded", "query_blocked", "source_health_changed"],
+    "metrics": [
+      "availability_rate", "p50_latency_ms", "p95_latency_ms", "timeout_rate", "raw_records",
+      "accepted_records", "discard_rate", "over_retrieval_ratio", "evidence_completeness_ratio",
+      "future_leakage_blocks", "license_blocks", "freshness_lag_seconds", "cache_hit_rate",
+      "critical_path_latency_ms", "date_mismatch_blocks", "unit_scale_conflict_blocks",
+      "risk_entity_unverified_blocks"
+    ],
+    "redaction": ["token", "authorization_header", "cookie", "personal_sensitive_data_not_required_for_research"]
+  },
+  "hard_blocks": [
+    "authentication_failed", "license_unknown_for_required_use", "future_information_leakage",
+    "truncated_after_retries", "entity_unresolved", "metric_ambiguous", "statement_scope_unknown",
+    "evidence_locator_missing", "content_hash_missing", "material_source_conflict_unresolved",
+    "requested_date_mismatch", "unit_scale_conflict", "material_risk_entity_unverified"
+  ]
+}

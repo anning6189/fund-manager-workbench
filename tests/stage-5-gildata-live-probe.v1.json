@@ -1,0 +1,24 @@
+{
+  "report_id": "CR.REPORT.STAGE5.GILDATA.LIVE_PROBE.001",
+  "tested_at": "2026-08-12T16:20:00+08:00",
+  "server": "gildata_aidata",
+  "credential_redacted": true,
+  "scope": "connectivity_and_response_shape_only",
+  "license_gate": "contract_terms_pending_verification",
+  "summary": {
+    "capabilities_tested": 7,
+    "transport_success": 7,
+    "clean_precision_pass": 0,
+    "post_filter_required": 7,
+    "timeouts_observed_outside_final_probe_set": 1
+  },
+  "probes": [
+    {"source_id":"CR.SRC.GILDATA.FINQUERY","tool":"FinQuery","latency_seconds":12.2,"transport_status":"success","semantic_status":"success_with_over_retrieval","requested_sample":"美的集团全称与2023年度营业收入","verified_values":["美的集团股份有限公司","2023年度营业收入3720.37亿元"],"required_filters":["exact_security","metric","period","statement_scope","official_filing_cross_check"]},
+    {"source_id":"CR.SRC.GILDATA.ANNOUNCEMENT","tool":"AnnouncementData","latency_seconds":18.1,"transport_status":"success","semantic_status":"success_with_material_over_retrieval","requested_sample":"美的集团2023年年度报告中文版一份","verified_values":["公告日期2024-03-28","命中2023年年度报告"],"required_filters":["issuer","title","language","cutoff","official_url","locator"]},
+    {"source_id":"CR.SRC.GILDATA.MACRO_INDUSTRY","tool":"MacroIndustryData","latency_seconds":16.6,"transport_status":"success","semantic_status":"success_with_extra_period_and_derived_rows","requested_sample":"2024年中国社会消费品零售总额及增速","verified_values":["483344.7亿元","同比3.5%","原始来源标注国家统计局"],"required_filters":["indicator_code","frequency","period","official_origin","revision_snapshot"]},
+    {"source_id":"CR.SRC.GILDATA.RESEARCH","tool":"FinancialResearchReport","latency_seconds":6.2,"transport_status":"success","semantic_status":"success_with_low_precision_and_over_retrieval","requested_sample":"2024年家电行业研报一份","verified_values":["返回中包含家电行业报告"],"required_filters":["sector","date","report_identity","copyright_excerpt_limit","fact_cross_check"]},
+    {"source_id":"CR.SRC.GILDATA.NEWS","tool":"NewsDataQuery","latency_seconds":21.4,"transport_status":"success","semantic_status":"success_with_extreme_over_retrieval","requested_sample":"近期消费政策新闻一条","verified_values":["返回新闻集合且包含消费政策线索"],"required_filters":["date_window","topic","source_identity","event_deduplication","official_policy_cross_check"]},
+    {"source_id":"CR.SRC.GILDATA.ENTERPRISE","tool":"IcEnterpriseDataQuery","latency_seconds":18.3,"transport_status":"success","semantic_status":"success_with_extra_fields","requested_sample":"美的集团统一社会信用代码、经营状态、法定代表人","verified_values":["91440606722473344C","在营（开业）","方洪波"],"required_filters":["legal_identity","observed_at","official_registry_cross_check","data_minimization"]},
+    {"source_id":"CR.SRC.GILDATA.STOCK_UNIVERSE","tool":"SmartStockSelection","latency_seconds":8.9,"transport_status":"success","semantic_status":"success_with_extra_market_fields","requested_sample":"申万家用电器A股证券池前三只，仅代码和名称","verified_values":["返回证券池103只并包含前三只"],"required_filters":["universe_definition","classification_version","as_of_date","field_projection","no_fund_holding_logic"]}
+  ]
+}

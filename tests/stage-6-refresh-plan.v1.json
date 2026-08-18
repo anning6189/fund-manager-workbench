@@ -1,0 +1,462 @@
+﻿{
+  "generated_at": "2026-08-13T03:36:16.651Z",
+  "task_count": 22,
+  "due_count": 22,
+  "curated_due_count": 14,
+  "license_gated_due_count": 8,
+  "tasks": [
+    {
+      "task_id": "refresh:CR.SRC.BSE:announcements",
+      "source_id": "CR.SRC.BSE",
+      "source_name": "����֤ȯ������",
+      "stream_name": "announcements",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "https://www.bse.cn/disclosure/announcement.html",
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.HTTP_DOCUMENT",
+      "ingestion_target": "curated",
+      "blocking_gate": null,
+      "required_post_filters": [
+        "https",
+        "publisher_identity",
+        "publication_time",
+        "content_hash",
+        "locator"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.CNINFO:announcements",
+      "source_id": "CR.SRC.CNINFO",
+      "source_name": "�޳���Ѷ��������Ϣ��¶",
+      "stream_name": "announcements",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "https://www.cninfo.com.cn/",
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.HTTP_DOCUMENT",
+      "ingestion_target": "curated",
+      "blocking_gate": null,
+      "required_post_filters": [
+        "https",
+        "announcement_record_or_pdf",
+        "sha256",
+        "issuer_and_security_match",
+        "published_at",
+        "page_or_table_locator"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.GILDATA.ANNOUNCEMENT:announcements",
+      "source_id": "CR.SRC.GILDATA.ANNOUNCEMENT",
+      "source_name": "Gildata�����",
+      "stream_name": "announcements",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "mcp__gildata_aidata__AnnouncementData",
+      "adapter_id": "CR.CONNECTOR.GILDATA.ANNOUNCEMENT",
+      "ingestion_target": "raw_license_gate",
+      "blocking_gate": "license_not_confirmed_for_curated_use",
+      "required_post_filters": [
+        "title_exact_match",
+        "issuer_exact_match",
+        "language_filter",
+        "cutoff_filter",
+        "official_url_preferred",
+        "locator_required",
+        "over_retrieval_filter"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.SSE:announcements",
+      "source_id": "CR.SRC.SSE",
+      "source_name": "�Ϻ�֤ȯ������",
+      "stream_name": "announcements",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "https://www.sse.com.cn/disclosure/listedinfo/announcement/",
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.HTTP_DOCUMENT",
+      "ingestion_target": "curated",
+      "blocking_gate": null,
+      "required_post_filters": [
+        "https",
+        "publisher_identity",
+        "publication_time",
+        "content_hash",
+        "locator"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.SZSE:announcements",
+      "source_id": "CR.SRC.SZSE",
+      "source_name": "����֤ȯ������",
+      "stream_name": "announcements",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "https://www.szse.cn/disclosure/listed/notice/index.html",
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.HTTP_DOCUMENT",
+      "ingestion_target": "curated",
+      "blocking_gate": null,
+      "required_post_filters": [
+        "https",
+        "publisher_identity",
+        "publication_time",
+        "content_hash",
+        "locator"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.GILDATA.ENTERPRISE:enterprise_risk",
+      "source_id": "CR.SRC.GILDATA.ENTERPRISE",
+      "source_name": "Gildata��������ҵ���տ�",
+      "stream_name": "enterprise_risk",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "mcp__gildata_aidata__IcEnterpriseDataQuery",
+      "adapter_id": "CR.CONNECTOR.GILDATA.ENTERPRISE",
+      "ingestion_target": "raw_license_gate",
+      "blocking_gate": "license_not_confirmed_for_curated_use",
+      "required_post_filters": [
+        "legal_name_or_credit_code_exact_match",
+        "observed_at_required",
+        "official_registry_cross_check_for_material_risk",
+        "personal_data_minimization"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.CNINFO:financials",
+      "source_id": "CR.SRC.CNINFO",
+      "source_name": "�޳���Ѷ��������Ϣ��¶",
+      "stream_name": "financials",
+      "due": true,
+      "cursor": "cninfo:1219928418",
+      "watermark_available_at": "2024-04-30T23:59:59+08:00",
+      "endpoint_or_tool": "https://www.cninfo.com.cn/",
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.HTTP_DOCUMENT",
+      "ingestion_target": "curated",
+      "blocking_gate": null,
+      "required_post_filters": [
+        "https",
+        "announcement_record_or_pdf",
+        "sha256",
+        "issuer_and_security_match",
+        "published_at",
+        "page_or_table_locator"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.GILDATA.FINQUERY:financials",
+      "source_id": "CR.SRC.GILDATA.FINQUERY",
+      "source_name": "Gildata���ڽṹ������",
+      "stream_name": "financials",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "mcp__gildata_aidata__FinQuery",
+      "adapter_id": "CR.CONNECTOR.GILDATA.FINANCIAL_RESEARCH",
+      "ingestion_target": "raw_license_gate",
+      "blocking_gate": "license_not_confirmed_for_curated_use",
+      "required_post_filters": [
+        "exact_security_filter",
+        "metric_whitelist",
+        "period_whitelist",
+        "statement_scope_required",
+        "over_retrieval_filter",
+        "official_filing_cross_check"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.GILDATA.MACRO_INDUSTRY:macro",
+      "source_id": "CR.SRC.GILDATA.MACRO_INDUSTRY",
+      "source_name": "Gildata�����ҵʱ���",
+      "stream_name": "macro",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "mcp__gildata_aidata__MacroIndustryData",
+      "adapter_id": "CR.CONNECTOR.GILDATA.MACRO_INDUSTRY",
+      "ingestion_target": "raw_license_gate",
+      "blocking_gate": "license_not_confirmed_for_curated_use",
+      "required_post_filters": [
+        "indicator_code_binding",
+        "frequency_filter",
+        "date_filter",
+        "official_origin_field",
+        "revision_snapshot",
+        "derived_series_label"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.NBS:macro",
+      "source_id": "CR.SRC.NBS",
+      "source_name": "����ͳ�ƾֹ�������",
+      "stream_name": "macro",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "https://data.stats.gov.cn/easyquery.htm?cn=C01",
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.STATISTICS",
+      "ingestion_target": "curated",
+      "blocking_gate": null,
+      "required_post_filters": [
+        "indicator_code",
+        "frequency",
+        "period",
+        "unit",
+        "release_date",
+        "revision_version",
+        "methodology_link"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.PBOC:macro",
+      "source_id": "CR.SRC.PBOC",
+      "source_name": "�й���������",
+      "stream_name": "macro",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "https://www.pbc.gov.cn/",
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.STATISTICS",
+      "ingestion_target": "curated",
+      "blocking_gate": null,
+      "required_post_filters": [
+        "indicator_identity",
+        "period",
+        "unit",
+        "release_date",
+        "revision_version"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.GILDATA.FINQUERY:market_daily",
+      "source_id": "CR.SRC.GILDATA.FINQUERY",
+      "source_name": "Gildata���ڽṹ������",
+      "stream_name": "market_daily",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "mcp__gildata_aidata__FinQuery",
+      "adapter_id": "CR.CONNECTOR.GILDATA.FINANCIAL_RESEARCH",
+      "ingestion_target": "raw_license_gate",
+      "blocking_gate": "license_not_confirmed_for_curated_use",
+      "required_post_filters": [
+        "exact_security_filter",
+        "metric_whitelist",
+        "period_whitelist",
+        "statement_scope_required",
+        "over_retrieval_filter",
+        "official_filing_cross_check"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.GILDATA.STOCK_UNIVERSE:master_data",
+      "source_id": "CR.SRC.GILDATA.STOCK_UNIVERSE",
+      "source_name": "Gildata��Ʊɸѡ����ҵ֤ȯ��",
+      "stream_name": "master_data",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "mcp__gildata_aidata__SmartStockSelection",
+      "adapter_id": "CR.CONNECTOR.GILDATA.STOCK_UNIVERSE",
+      "ingestion_target": "raw_license_gate",
+      "blocking_gate": "license_not_confirmed_for_curated_use",
+      "required_post_filters": [
+        "universe_definition",
+        "classification_version",
+        "as_of_date",
+        "requested_field_projection",
+        "no_fund_holding_logic"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.GILDATA.NEWS:news_leads",
+      "source_id": "CR.SRC.GILDATA.NEWS",
+      "source_name": "Gildata��Ѷ�����",
+      "stream_name": "news_leads",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "mcp__gildata_aidata__NewsDataQuery",
+      "adapter_id": "CR.CONNECTOR.GILDATA.NEWS",
+      "ingestion_target": "raw_license_gate",
+      "blocking_gate": "license_not_confirmed_for_curated_use",
+      "required_post_filters": [
+        "date_window_filter",
+        "topic_filter",
+        "source_identity",
+        "deduplicate_event",
+        "official_policy_cross_check",
+        "signal_only_default"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.CUSTOMS:official_industry_releases",
+      "source_id": "CR.SRC.CUSTOMS",
+      "source_name": "����ͳ�����ݲ�ѯ",
+      "stream_name": "official_industry_releases",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "https://online.customs.gov.cn/",
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.TRADE_STATISTICS",
+      "ingestion_target": "curated",
+      "blocking_gate": null,
+      "required_post_filters": [
+        "hs_version",
+        "trade_direction",
+        "partner",
+        "quantity_unit",
+        "currency",
+        "period",
+        "release_date"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.MCT:official_industry_releases",
+      "source_id": "CR.SRC.MCT",
+      "source_name": "�Ļ������β�",
+      "stream_name": "official_industry_releases",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "https://www.mct.gov.cn/",
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.STATISTICS",
+      "ingestion_target": "curated",
+      "blocking_gate": null,
+      "required_post_filters": [
+        "statistical_scope",
+        "period",
+        "unit",
+        "sample_or_method",
+        "publication_date"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.MIIT:official_industry_releases",
+      "source_id": "CR.SRC.MIIT",
+      "source_name": "��ҵ����Ϣ����",
+      "stream_name": "official_industry_releases",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "https://www.miit.gov.cn/",
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.HTTP_DOCUMENT",
+      "ingestion_target": "curated",
+      "blocking_gate": null,
+      "required_post_filters": [
+        "department_identity",
+        "publication_time",
+        "document_version",
+        "content_hash",
+        "table_locator"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.MOFCOM:official_industry_releases",
+      "source_id": "CR.SRC.MOFCOM",
+      "source_name": "����������������",
+      "stream_name": "official_industry_releases",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "https://data.mofcom.gov.cn/",
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.STATISTICS",
+      "ingestion_target": "curated",
+      "blocking_gate": null,
+      "required_post_filters": [
+        "original_data_source",
+        "period",
+        "unit",
+        "release_date",
+        "duplicate_with_nbs_or_customs_label"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.GOVCN:official_policy_documents",
+      "source_id": "CR.SRC.GOVCN",
+      "source_name": "�й������������ļ���",
+      "stream_name": "official_policy_documents",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "https://www.gov.cn/zhengce/",
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.POLICY",
+      "ingestion_target": "curated",
+      "blocking_gate": null,
+      "required_post_filters": [
+        "issuing_authority",
+        "document_number",
+        "publication_time",
+        "effective_time",
+        "version_status",
+        "content_hash"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.NDRC:official_policy_documents",
+      "source_id": "CR.SRC.NDRC",
+      "source_name": "���ҷ�չ�͸ĸ�ίԱ��",
+      "stream_name": "official_policy_documents",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "https://www.ndrc.gov.cn/",
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.POLICY",
+      "ingestion_target": "curated",
+      "blocking_gate": null,
+      "required_post_filters": [
+        "issuing_authority",
+        "document_number",
+        "publication_time",
+        "effective_time",
+        "content_hash"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.SAMR:official_policy_documents",
+      "source_id": "CR.SRC.SAMR",
+      "source_name": "�����г��ල�����ܾ�",
+      "stream_name": "official_policy_documents",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "https://www.samr.gov.cn/",
+      "adapter_id": "CR.CONNECTOR.OFFICIAL.POLICY",
+      "ingestion_target": "curated",
+      "blocking_gate": null,
+      "required_post_filters": [
+        "issuing_authority",
+        "publication_time",
+        "affected_product_or_entity",
+        "effective_time",
+        "content_hash"
+      ]
+    },
+    {
+      "task_id": "refresh:CR.SRC.GILDATA.RESEARCH:research_metadata",
+      "source_id": "CR.SRC.GILDATA.RESEARCH",
+      "source_name": "Gildataȯ���б���",
+      "stream_name": "research_metadata",
+      "due": true,
+      "cursor": null,
+      "watermark_available_at": null,
+      "endpoint_or_tool": "mcp__gildata_aidata__FinancialResearchReport",
+      "adapter_id": "CR.CONNECTOR.GILDATA.RESEARCH",
+      "ingestion_target": "raw_license_gate",
+      "blocking_gate": "license_not_confirmed_for_curated_use",
+      "required_post_filters": [
+        "sector_exact_filter",
+        "date_filter",
+        "report_identity",
+        "copyright_excerpt_limit",
+        "view_label",
+        "no_primary_fact_without_cross_check"
+      ]
+    }
+  ]
+}

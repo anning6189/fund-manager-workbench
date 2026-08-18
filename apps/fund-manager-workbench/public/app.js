@@ -1,0 +1,1230 @@
+"use strict";
+
+const token = document.querySelector('meta[name="workbench-token"]').content;
+const root = document.getElementById("app");
+const toastNode = document.getElementById("toast");
+
+const state = {
+  view: ["today", "ask", "library", "models", "usage", "reports", "data"].includes(location.hash.replace("#", "")) ? location.hash.replace("#", "") : "today",
+  bootstrap: null,
+  alerts: [],
+  jobs: [],
+  reports: [],
+  dataStatus: null,
+  activeReport: null,
+  reportTab: "report",
+};
+
+const nav = [
+  ["today", "晨报"],
+  ["ask", "AI研究员"],
+  ["library", "研报库"],
+  ["usage", "Token用量"],
+  ["data", "数据来源"],
+];
+
+const pageTitles = Object.fromEntries(nav);
+const categoryLabels = { industry: "行业研究", monitoring: "持续监控", company: "公司研究", event: "事件研究", model: "模型分析" };
+const severityLabels = { critical: "紧急", important: "重要", watch: "关注", info: "提示" };
+const statusLabels = {
+  queued: "排队中", validating: "正在校验", running: "研究执行中",
+  completed: "已完成", internal_research_ready: "内部研究可用", quality_checks_pending: "系统检查中",
+  blocked: "受阻", failed: "失败", cancelled: "已取消", open: "待处理",
+  acknowledged: "已确认", resolved: "已解决", fresh: "新鲜", stale: "过期", not_started: "未启动",
+};
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>'"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[c]));
+}
+
+function formatDate(value, includeTime = true) {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return escapeHtml(value);
+  return new Intl.DateTimeFormat("zh-CN", {
+    timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit",
+    ...(includeTime ? { hour: "2-digit", minute: "2-digit", hour12: false } : {}),
+  }).format(date).replaceAll("/", "-");
+}
+
+function toast(message, error = false) {
+  toastNode.textContent = message;
+  toastNode.className = `toast show${error ? " error" : ""}`;
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => { toastNode.className = "toast"; }, 3200);
+}
+
+async function api(path, options = {}) {
+  const headers = { Accept: "application/json", ...(options.body ? { "Content-Type": "application/json", "X-Workbench-Token": token } : {}), ...(options.headers || {}) };
+  const response = await fetch(path, { ...options, headers });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload.error?.message || `请求失败（${response.status}）`);
+  return payload;
+}
+
+function status(value, kind) {
+  const label = statusLabels[value] || value || "未知";
+  const tone = kind || (value === "fresh" || value === "completed" || value === "internal_research_ready" ? "good" :
+    value === "critical" || value === "failed" || value === "blocked" ? "bad" :
+    value === "important" || value === "stale" ? "watch" : "info");
+  return `<span class="status ${tone}">${escapeHtml(label)}</span>`;
+}
+
+function shell(content) {
+  const b = state.bootstrap;
+  return `
+    <div class="shell">
+      <header class="briefing-header">
+        <button class="briefing-brand" data-nav="today" aria-label="返回今日简讯">
+      <strong>消费行研agent</strong><span>消费行业研究 Agent</span>
+        </button>
+        <nav class="nav-list" aria-label="主导航">
+          ${nav.map(([id, label]) => `<button class="nav-item ${state.view === id ? "active" : ""}" data-nav="${id}">${label}</button>`).join("")}
+        </nav>
+  <div class="briefing-date"><strong>${escapeHtml(b.cutoff.date)}</strong><span>研究截止 · 08:00</span></div>
+      </header>
+      <main class="workspace">
+        <div class="content">${content}</div>
+      </main>
+    </div>`;
+}
+
+function bindShell() {
+  document.querySelectorAll("[data-nav]").forEach(button => button.addEventListener("click", () => navigate(button.dataset.nav)));
+}
+
+function navigate(view) {
+  state.view = pageTitles[view] ? view : "today";
+  location.hash = state.view;
+  renderView();
+}
+
+function hero(eyebrow, title, description, actions = "") {
+  return `<div class="hero"><div><div class="eyebrow">${eyebrow}</div><h1>${title}</h1><p>${description}</p></div>${actions ? `<div class="hero-actions">${actions}</div>` : ""}</div>`;
+}
+
+async function loadCore() {
+  const [bootstrap, alerts, reports, content, brief, focus, heatmap] = await Promise.all([api("/api/bootstrap"), api("/api/alerts?limit=80"), api("/api/reports"), api("/api/briefing-content"), api(`/api/morning-brief${state.briefDate ? `?date=${state.briefDate}` : ""}`), api(`/api/stock-focus${state.briefDate ? `?date=${state.briefDate}` : ""}`), api(`/api/sector-heatmap?period=${state.heatPeriod || "day"}`)]);
+  state.bootstrap = bootstrap;
+  state.alerts = alerts.alerts;
+  state.reports = reports.reports;
+  state.briefContent = content;
+  state.morningBrief = brief;
+  state.stockFocus = focus;
+  state.sectorHeatmap = heatmap;
+}
+
+function briefingGroups(alerts) {
+  const definitions = [
+    { key: "external", match: a => a.rule_code === "CR.MON.EVENT.MATERIAL", area: a => a.sector_name || "消费行业", title: a => a.title, implication: a => a.detail?.summary || "该事件达到重要性阈值，需结合原始来源与后续数据验证其持续影响。" },
+    { key: "macro", streams: ["macro"], area: "国内宏观", title: "宏观数据时点完整性需要关注", implication: "国家统计局、人民银行等宏观数据流尚未覆盖到研究截止时点，当前不宜据此形成方向性宏观判断。", healthyTitle: "宏观数据已同步至昨日截止", healthyImplication: "宏观数据流均已验证覆盖研究截止时点，可用于宏观研究；具体发布与数值见详情。" },
+    { key: "policy", streams: ["official_policy_documents"], area: "消费政策", title: "消费政策文件监控存在更新缺口", implication: "政策催化与约束信息可能尚未完整进入研究底座，涉及政策敏感行业时应等待来源恢复。", healthyTitle: "政策文件监控正常", healthyImplication: "政策来源均在新鲜度要求内；进入研究库的政策事件见详情。" },
+    { key: "industry", streams: ["official_industry_releases"], area: "行业数据", title: "官方消费行业数据发布尚未完整更新", implication: "文旅、商贸、海关与工业数据缺口会影响对消费总量、结构和景气变化的判断。", healthyTitle: "行业数据已同步", healthyImplication: "行业数据来源均在新鲜度要求内；进入研究库的行业数据事件见详情。" },
+    { key: "news", streams: ["news_leads"], area: "资讯舆情", title: "实时资讯线索尚未达到新鲜度要求", implication: "今日突发事件识别可能不完整；系统不会用旧闻或缺失线索包装成当日结论。", healthyTitle: "资讯舆情已更新", healthyImplication: "资讯线索持续到达并已进入研究库，最新条目见详情。" },
+    { key: "announcements", streams: ["announcements"], area: "公司公告", title: "交易所与法定公告流尚未完整更新", implication: "上市公司重大事项、业绩预告与风险提示可能存在遗漏，个股层面结论需谨慎。", healthyTitle: "公告流已同步", healthyImplication: "交易所与法定披露流均在新鲜度要求内。" },
+    { key: "market", streams: ["market_daily"], area: "市场表现", title: "消费板块日行情数据尚未就绪", implication: "当前不能可靠比较板块涨跌、成交与估值变化，页面不展示推断性行情结论。", healthyTitle: "行情数据已就绪", healthyImplication: "日行情数据在新鲜度要求内。" },
+    { key: "financials", streams: ["financials"], area: "财务跟踪", title: "财务数据存在过期或未启动数据流", implication: "跨公司经营质量与估值比较可能受旧数据影响，使用报告时需以其明确截止日为准。", healthyTitle: "财务数据流正常", healthyImplication: "财务数据流均在新鲜度要求内；库内文档与研究成果见详情。" },
+    { key: "enterprise", streams: ["enterprise_risk"], area: "企业风险", title: "工商与企业风险数据流尚未就绪", implication: "诉讼、股权与工商变更等风险线索可能不完整，不应视为无风险。", healthyTitle: "企业风险数据流正常", healthyImplication: "工商与风险数据流均在新鲜度要求内。" },
+  ];
+  const used = new Set();
+  const output = [];
+  for (const definition of definitions) {
+    if (definition.key === "external") {
+      alerts.filter(definition.match).forEach(alert => output.push({ ...alert, groupKey: "external", area: definition.area(alert), displayTitle: definition.title(alert), implication: definition.implication(alert), sourceLabel: alert.detail?.source_name || alert.source?.name || "实时监控", sourceAlerts: [alert] }));
+      continue;
+    }
+    const matches = alerts.filter(alert => definition.streams.includes(alert.detail?.stream_name));
+    if (used.has(definition.key)) continue;
+    used.add(definition.key);
+    const gated = matches.length > 0;
+    const sources = [...new Set(matches.map(alert => alert.detail?.name).filter(Boolean))];
+    const licensedSupplementOnly = gated && definition.key === "macro" && matches.every(alert =>
+      alert.source?.license_status === "contract_terms_pending_verification" ||
+      alert.detail?.source_id === "CR.SRC.GILDATA.MACRO_INDUSTRY"
+    );
+    output.push({
+      ...(matches[0] || { rule_code: "", state: "ok", detail: {} }),
+      groupKey: definition.key,
+      healthy: !gated,
+      area: definition.area,
+      displayTitle: gated ? (licensedSupplementOnly ? "宏观官方数据已同步，补充数据源处于授权隔离" : definition.title) : definition.healthyTitle,
+      implication: gated ? (licensedSupplementOnly ? "国家统计局和人民银行数据已覆盖研究截止时点；Gildata 补充数据已采集但尚未获准进入正式研究库，不影响官方宏观数据的使用。" : definition.implication) : definition.healthyImplication,
+      sourceLabel: gated ? (sources.slice(0, 2).join("、") || "数据监控") : "全部数据流正常",
+      groupedCount: matches.length,
+      sourceAlerts: matches,
+    });
+  }
+  return output;
+}
+
+function renderToday() {
+  renderBrief();
+}
+
+const TONE_META = {
+  bullish: { icon: "✅", label: "利好", cls: "t-bull" },
+  bearish: { icon: "❌", label: "利空", cls: "t-bear" },
+  neutral: { icon: "◐", label: "中性", cls: "t-neut" },
+  risk: { icon: "⚠️", label: "风险", cls: "t-risk" },
+};
+
+function renderBrief() {
+  const brief = state.morningBrief;
+  if (!brief) { root.innerHTML = shell(`<div class="queue-item">晨报装配中……</div>`); bindShell(); return; }
+  const b = state.bootstrap;
+  const dailyReport = state.reports.find(r => r.status === "completed" && r.publication_status === "internal_research_ready" && String(r.cutoff_timestamp || "").slice(0, 10) === b.cutoff.date);
+  const toneOf = t => TONE_META[t] || TONE_META.neutral;
+
+  const takeawayHtml = brief.takeaway.map((t, i) => `
+    <li class="tk-item ${toneOf(t.tone).cls} tk-clickable" data-tk-index="${i}" tabindex="0" role="button" aria-label="查看完整内容：${escapeHtml(t.label)}">
+      <span class="tk-icon">${toneOf(t.tone).icon}</span>
+      <div><strong>${escapeHtml(t.label)}</strong><p>${escapeHtml(t.text)}</p>
+      <small>点击查看完整内容与信息来源 →</small></div>
+    </li>`).join("");
+
+  const macroRows = brief.macro_policy.data.filter(d => d.value).map(d => `
+    <tr><td>${escapeHtml(d.name)}</td><td class="num"><strong>${escapeHtml(d.value)}</strong></td><td class="num">${escapeHtml(d.change)}</td><td>${escapeHtml(d.note)}</td></tr>`).join("");
+  const macroDocs = brief.macro_policy.data.filter(d => !d.value).map(d => `
+    <li><strong>${escapeHtml(d.name)}</strong><span class="doc-note">${escapeHtml(d.note)}${d.note.length >= 90 ? "…" : ""}</span><small>${escapeHtml(d.source || "")}</small></li>`).join("");
+  const policyEvents = brief.macro_policy.events.map((e, i) => `
+    <li class="mp-event tk-clickable" data-mp-index="${i}" tabindex="0" role="button" aria-label="查看完整内容：${escapeHtml(e.title.slice(0, 30))}">
+      <div class="mp-event-head">${toneOf(e.tone).icon} <strong><span class="mp-date">${escapeHtml(String(e.available_at || "").slice(5, 10))}</span>${escapeHtml(e.title)}</strong><span class="mp-open">详情 →</span></div>
+      <p class="doc-note">${escapeHtml(e.abstract || e.so_what || e.summary || "")}</p>
+      <small>${escapeHtml(e.locator || "")}</small>
+    </li>`).join("");
+
+  const risksHtml = brief.risks.map(r => `<li class="tk-item t-risk"><span class="tk-icon">⚠️</span><div><p>${escapeHtml(r.text)}</p></div></li>`).join("");
+  const picks = brief.macro_policy.daily_picks;
+  const pickList = [];
+  const pickBlock = (label, items) => (items || []).length ? `
+    <div class="pick-block"><h3 class="pick-label">${label}</h3>
+      ${items.map(it => { const i = pickList.push({ label, ...it }) - 1; return `<div class="ev-card pick-card tk-clickable" data-pick-i="${i}" tabindex="0" role="button" aria-label="查看详情：${escapeHtml(it.title.slice(0, 24))}"><strong>${escapeHtml(it.title)}</strong><p class="doc-note">${escapeHtml(it.text)}</p><small class="pick-open">点击查看详情与来源 →</small></div>`; }).join("")}
+    </div>` : "";
+  const dailyPicksHtml = picks ? `
+    ${pickBlock("宏观政策", picks.macro_policies)}
+    ${pickBlock("重点研报", picks.research_pick ? [picks.research_pick] : [])}
+    ${pickBlock("行业大事件", picks.industry_events)}` : "";
+
+  // 晨报历史档案：日期切换
+  const briefDates = brief.available_dates || [];
+  const curBriefDate = brief.brief_source_date || brief.date;
+  const curIdx = briefDates.indexOf(curBriefDate);
+  const prevBriefDate = curIdx >= 0 && curIdx < briefDates.length - 1 ? briefDates[curIdx + 1] : null;
+  const nextBriefDate = curIdx > 0 ? briefDates[curIdx - 1] : null;
+  const dateNav = briefDates.length ? `
+    <div class="date-nav">
+      <button class="btn small" id="brief-prev" ${prevBriefDate ? "" : "disabled"}>◀ 前一天</button>
+      <select id="brief-date-select">${briefDates.map(d => `<option value="${d}" ${d === curBriefDate ? "selected" : ""}>${d}${d === briefDates[0] ? "（最新）" : ""}</option>`).join("")}</select>
+      <button class="btn small" id="brief-next" ${nextBriefDate ? "" : "disabled"}>后一天 ▶</button>
+      ${brief.is_history ? `<span class="history-badge">历史晨报 · ${escapeHtml(curBriefDate)}</span>` : `<span class="live-badge">最新晨报</span>`}
+    </div>` : "";
+
+  const focus = state.stockFocus || { counts: {}, tiers: {} };
+  const TIER_ORDER = ["重点关注", "增持观察", "中性", "回避"];
+  const activeTier = state.focusTier && TIER_ORDER.includes(state.focusTier) ? state.focusTier : "重点关注";
+  const pillCls = { "重点关注": "p-focus", "增持观察": "p-watch", "中性": "p-neutral", "回避": "p-avoid" };
+  const pills = TIER_ORDER.map(t => `<button class="pill ${pillCls[t]} ${t === activeTier ? "active" : ""}" data-tier="${t}">${t}<span>${focus.counts?.[t] || 0}</span></button>`).join("");
+  // 板块筛选（Excel 风格多选）
+  const allStocks = Object.values(focus.tiers || {}).flat();
+  const sectorNames = [...new Set(allStocks.map(s => s.sector_name || "未分类"))];
+  // 三态：undefined=全部；空 Set=全不选；非空 Set=显式勾选
+  const selectedSectors = state.focusSectors;
+  const isAllSectors = selectedSectors === undefined;
+  const tierRows = (focus.tiers || {})[activeTier] || [];
+  const filteredRows = tierRows.filter(s => isAllSectors || selectedSectors.has(s.sector_name || "未分类"));
+  const sectorPanel = state.sectorPanelOpen ? `
+    <div class="sector-panel" id="sector-panel">
+      <div class="sector-panel-head">
+        <button class="link" id="sector-all">全选</button>
+        <button class="link" id="sector-clear">清空</button>
+      </div>
+      ${sectorNames.map(name => `
+        <label class="sector-option"><input type="checkbox" data-sector="${escapeHtml(name)}" ${isAllSectors || selectedSectors.has(name) ? "checked" : ""}><span>${escapeHtml(name)}</span></label>`).join("")}
+    </div>` : "";
+  const filterLabel = isAllSectors ? "全部板块" : selectedSectors.size === 0 ? "未选板块" : `已选 ${selectedSectors.size} 个板块`;
+  const focusRows = filteredRows.map((s, i) => `
+    <tr>
+      <td class="num rk">${i + 1}</td>
+      <td><strong>${escapeHtml(s.security_name)}</strong><small class="sf-code">${escapeHtml(s.security_id || "")}${s.sector_name ? " · " + escapeHtml(s.sector_name) : ""}</small></td>
+      <td class="num">${s.close_price != null ? s.close_price.toFixed(2) : "—"}</td>
+      <td class="num ${s.change_pct > 0 ? "up" : s.change_pct < 0 ? "down" : ""}">${s.change_pct != null ? (s.change_pct > 0 ? "+" : "") + s.change_pct.toFixed(2) + "%" : "—"}</td>
+      <td class="num">${s.pe_ttm != null && s.pe_ttm > 0 ? s.pe_ttm.toFixed(1) : "—"}</td>
+      <td class="num">${s.volume_ratio != null ? s.volume_ratio.toFixed(2) : "—"}</td>
+      <td class="num"><strong>${s.total_score != null ? s.total_score.toFixed(1) : "—"}</strong></td>
+      <td class="sf-why">${escapeHtml(s.rationale || "")}</td>
+    </tr>`).join("");
+  const focusSection = focus.date ? `
+    <section class="mb-module stock-focus">
+      <div class="sf-head"><h2><span class="mb-num">★</span>今日股票关注 <small class="sf-date">全消费A股研究池 · ${escapeHtml(focus.date)} 评级${focus.carryover ? "（沿用最近交易日）" : ""} · 行情截至 ${escapeHtml(focus.market_date || focus.date)}</small></h2><button class="btn small" id="sf-rules">评分规则</button></div>
+      <div class="tier-pills-row">
+        <div class="tier-pills">${pills}</div>
+        <div class="sf-filter">
+          <button class="btn small" id="sector-filter-btn">板块筛选：${filterLabel} ▾</button>
+          ${sectorPanel}
+        </div>
+        <span class="sf-count">${filteredRows.length}/${tierRows.length} 只</span>
+      </div>
+      <div class="table-scroll">
+      <table class="data-table sf-table">
+        <thead><tr><th>#</th><th>股票</th><th class="num">现价</th><th class="num">涨跌</th><th class="num">PE</th><th class="num">量比</th><th class="num">评分</th><th>评级理由</th></tr></thead>
+        <tbody>${focusRows || `<tr><td colspan="8">该档暂无标的</td></tr>`}</tbody>
+      </table>
+      </div>
+      <p class="sf-note">${escapeHtml(focus.universe_note || "")}</p>
+    </section>` : "";
+
+  // 板块热力图（日/周/月，红涨绿跌，颜色深浅按板块涨跌幅相对强度）
+  const heat = state.sectorHeatmap || { sectors: [] };
+  const heatPeriod = state.heatPeriod || "day";
+  const heatMaxAbs = Math.max(0.01, ...heat.sectors.map(s => Math.abs(s.avg_change)));
+  const heatTiles = heat.sectors.length ? heat.sectors.map(s => {
+    const v = s.avg_change;
+    const cls = v > 0.05 ? "hm-up" : v < -0.05 ? "hm-down" : "hm-flat";
+    const inten = Math.abs(v) / heatMaxAbs;
+    const lvl = inten > 0.66 ? 3 : inten > 0.33 ? 2 : 1;
+    return `
+      <div class="hm-tile ${cls} hm-l${lvl}" data-hm-sector="${escapeHtml(s.sector_name)}" tabindex="0" role="button" aria-label="在今日股票关注中筛选：${escapeHtml(s.sector_name)}">
+        <div class="hm-name"><span>${escapeHtml(s.sector_name)}</span><span class="hm-count">${s.stock_count}只</span></div>
+        <div class="hm-val">${v > 0 ? "+" : ""}${v.toFixed(2)}%</div>
+        <div class="hm-sub">涨 ${s.up_count} / 跌 ${s.down_count}</div>
+        <div class="hm-leader">领涨 ${escapeHtml(s.leader_name)} ${s.leader_change > 0 ? "+" : ""}${s.leader_change.toFixed(1)}%</div>
+      </div>`;
+  }).join("") : `<div class="lib-empty" style="grid-column:1/-1">行情快照积累中——每个交易日同步后自动更新</div>`;
+  const heatSection = `
+    <section class="mb-module heatmap">
+      <div class="sf-head"><h2><span class="mb-num">◆</span>板块热力图 <small class="sf-date">${heat.date ? `${escapeHtml(heat.date)} 收盘` : ""}${heat.anchor_date ? ` · 对比 ${escapeHtml(heat.anchor_date)}` : ""}${heat.sectors.length ? ` · 全池涨 ${heat.total_up} / 跌 ${heat.total_down}` : ""}</small></h2>
+        <div class="hm-toggle">${[["day", "日"], ["week", "周"], ["month", "月"]].map(([p, label]) => `<button class="hm-btn ${p === heatPeriod ? "active" : ""}" data-hm-period="${p}">${label}</button>`).join("")}</div>
+      </div>
+      <div class="hm-grid">${heatTiles}</div>
+      <p class="sf-note">等权平均 · 颜色深浅为相对强度 · 点击板块块可在上方“今日股票关注”中只看该板块</p>
+    </section>`;
+
+  const content = `
+    <article class="morning-brief-v2">
+      <div class="mb-head">
+        <div><h1>消费行研agent</h1><p>买方视角 · 结论先行 · 全部内容可溯源</p></div>
+        <div class="brief-asof">研究截止<br><strong>${escapeHtml(brief.date)} 08:00</strong>${brief.brief_source_date ? `<br><small>文案撰写于 ${escapeHtml(brief.brief_source_date)}</small>` : ""}</div>
+      </div>
+
+      ${dateNav}
+
+      ${focusSection}
+
+      ${heatSection}
+
+      <section class="mb-module">
+        <h2><span class="mb-num">1</span>今日核心观点</h2>
+        <ul class="tk-list">${takeawayHtml}</ul>
+      </section>
+
+      <section class="mb-module">
+        <h2><span class="mb-num">2</span>宏观与消费行业大事件</h2>
+        <table class="data-table macro">${macroRows}</table>
+        <p class="so-what">${escapeHtml(brief.macro_policy.read)}</p>
+        ${dailyPicksHtml || `<ul class="doc-list">${macroDocs}</ul><ul class="doc-list">${policyEvents}</ul>`}
+      </section>
+
+      <section class="mb-module">
+        <h2><span class="mb-num">3</span>风险提示</h2>
+        <ul class="tk-list">${risksHtml}</ul>
+      </section>
+
+      ${dailyReport ? `<section class="brief-report-link"><button id="open-daily-report"><span>阅读全文</span><strong>今日消费行业突发与重点事件行研报告</strong><small>由消费行业研究 Agent 生成 · 截止 ${escapeHtml(b.cutoff.date)}</small></button></section>` : ""}
+      <p class="brief-footnote">${escapeHtml(brief.boundary)}</p>
+    </article>`;
+  root.innerHTML = shell(content);
+  bindShell();
+  if (dailyReport) {
+    document.getElementById("open-daily-report")?.addEventListener("click", () => { state.activeReport = dailyReport.run_id; state.reportTab = "report"; navigate("reports"); });
+  }
+  document.querySelectorAll("[data-tk-index]").forEach(el => {
+    const open = () => openTakeawayDrawer(brief.takeaway[Number(el.dataset.tkIndex)], brief.takeaway_events || {});
+    el.addEventListener("click", open);
+    el.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); open(); } });
+  });
+  document.querySelectorAll("[data-mp-index]").forEach(el => {
+    const open = () => {
+      const e = brief.macro_policy.events[Number(el.dataset.mpIndex)];
+      openTakeawayDrawer(
+        { label: e.title, tone: e.tone, text: e.abstract || e.summary || "", refs: [e.monitor_event_id] },
+        { [e.monitor_event_id]: e },
+      );
+    };
+    el.addEventListener("click", open);
+    el.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); open(); } });
+  });
+  document.querySelectorAll(".pill[data-tier]").forEach(btn => btn.addEventListener("click", () => {
+    state.focusTier = btn.dataset.tier;
+    renderBrief();
+  }));
+  document.getElementById("sector-filter-btn")?.addEventListener("click", ev => {
+    ev.stopPropagation();
+    state.sectorPanelOpen = !state.sectorPanelOpen;
+    renderBrief();
+  });
+  document.getElementById("sector-panel")?.addEventListener("click", ev => ev.stopPropagation());
+  document.querySelectorAll("[data-sector]").forEach(cb => cb.addEventListener("change", () => {
+    const name = cb.dataset.sector;
+    const current = state.focusSectors === undefined ? new Set(sectorNames) : new Set(state.focusSectors);
+    if (cb.checked) current.add(name);
+    else current.delete(name);
+    state.focusSectors = current.size >= sectorNames.length ? undefined : current;
+    renderBrief();
+  }));
+  document.getElementById("sector-all")?.addEventListener("click", () => {
+    state.focusSectors = undefined;
+    renderBrief();
+  });
+  document.getElementById("sector-clear")?.addEventListener("click", () => {
+    state.focusSectors = new Set();
+    renderBrief();
+  });
+  if (state.sectorPanelOpen) {
+    setTimeout(() => document.addEventListener("click", () => {
+      state.sectorPanelOpen = false;
+      renderBrief();
+    }, { once: true }), 0);
+  }
+  document.getElementById("sf-rules")?.addEventListener("click", openRulesDrawer);
+  document.querySelectorAll("[data-hm-period]").forEach(btn => btn.addEventListener("click", async () => {
+    state.heatPeriod = btn.dataset.hmPeriod;
+    state.sectorHeatmap = await api(`/api/sector-heatmap?period=${state.heatPeriod}`);
+    renderBrief();
+  }));
+  document.querySelectorAll("[data-hm-sector]").forEach(el => {
+    const applyFilter = () => {
+      state.focusSectors = new Set([el.dataset.hmSector]);
+      renderBrief();
+      document.querySelector(".stock-focus")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    el.addEventListener("click", applyFilter);
+    el.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); applyFilter(); } });
+  });
+  const goBriefDate = async d => {
+    if (!d) return;
+    state.briefDate = d;
+    state.morningBrief = await api(`/api/morning-brief?date=${d}`);
+    state.stockFocus = await api(`/api/stock-focus?date=${d}`);
+    renderBrief();
+  };
+  document.getElementById("brief-prev")?.addEventListener("click", () => goBriefDate(prevBriefDate));
+  document.getElementById("brief-next")?.addEventListener("click", () => goBriefDate(nextBriefDate));
+  document.getElementById("brief-date-select")?.addEventListener("change", ev => goBriefDate(ev.target.value));
+  document.querySelectorAll("[data-pick-i]").forEach(el => {
+    const open = () => openPickDrawer(pickList[Number(el.dataset.pickI)]);
+    el.addEventListener("click", open);
+    el.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); open(); } });
+  });
+}
+
+function openPickDrawer(pick) {
+  const src = pick.source;
+  const sourceHtml = src ? (src.type === "event"
+    ? `<div class="ev-card">
+         <div class="ev-head"><strong>${escapeHtml(src.title)}</strong><span>重要性 ${src.materiality_score ?? "—"}</span></div>
+         <p class="doc-note">${escapeHtml(src.summary || "")}</p>
+         <small class="ev-src">${escapeHtml(src.locator || "")}</small>
+         <div class="ev-actions">${src.source_url ? `<a class="btn primary small" href="${escapeHtml(src.source_url)}" target="_blank" rel="noopener noreferrer">打开原文 ↗</a>` : `<span class="ev-no-link">该来源无公开网页入口，以库内记录为准</span>`}</div>
+       </div>`
+    : `<div class="ev-card">
+         <div class="ev-head"><strong>${escapeHtml(src.title)}</strong><span>${escapeHtml(src.publisher || "")}</span></div>
+         <div class="ev-actions">
+           <a class="btn primary small" href="/api/documents/${encodeURIComponent(src.document_id)}/content" target="_blank" rel="noopener">查看库内原文 ↗</a>
+           ${src.source_url ? `<a class="btn small" href="${escapeHtml(src.source_url)}" target="_blank" rel="noopener noreferrer">官网链接 ↗</a>` : ""}
+         </div>
+       </div>`
+  ) : `<p class="doc-note">本条由研究底座数据直接得出，无单一来源文档。</p>`;
+  const drawer = document.createElement("div");
+  drawer.className = "detail-backdrop";
+  drawer.innerHTML = `<aside class="brief-drawer" role="dialog" aria-modal="true">
+    <div class="drawer-head"><div><span>${escapeHtml(pick.label)} · 宏观与消费行业大事件</span><h2>${escapeHtml(pick.title)}</h2></div><button class="drawer-close" aria-label="关闭详情">×</button></div>
+    <div class="drawer-body">
+      <section class="drawer-section"><h3>详细表述</h3><p style="line-height:1.85">${escapeHtml(pick.text)}</p></section>
+      <section class="drawer-section"><h3>信息来源</h3>${sourceHtml}</section>
+    </div>
+    <div class="drawer-foot"><button class="btn drawer-dismiss">关闭</button></div>
+  </aside>`;
+  document.body.appendChild(drawer);
+  const close = () => drawer.remove();
+  drawer.querySelector(".drawer-close").addEventListener("click", close);
+  drawer.querySelector(".drawer-dismiss").addEventListener("click", close);
+  drawer.addEventListener("click", ev => { if (ev.target === drawer) close(); });
+  drawer.addEventListener("keydown", ev => { if (ev.key === "Escape") close(); });
+  drawer.querySelector(".drawer-close").focus();
+}
+
+function openRulesDrawer() {
+  const focus = state.stockFocus || {};
+  const drawer = document.createElement("div");
+  drawer.className = "detail-backdrop";
+  drawer.innerHTML = `<aside class="brief-drawer" role="dialog" aria-modal="true">
+    <div class="drawer-head"><div><span>今日股票关注 · 评级方法</span><h2>评分规则</h2></div><button class="drawer-close" aria-label="关闭详情">×</button></div>
+    <div class="drawer-body">
+      <section class="drawer-section"><h3>评级对象</h3><p>全消费 A 股研究池（项目自研消费分类下的 1,321 只 A 股，正常交易状态下约 1,320 只），每日收盘后统一打分，取总分前 120 只进入展示，另附回避名单。</p></section>
+      <section class="drawer-section"><h3>总分构成</h3>
+        <table class="data-table">
+          <tr><td><strong>动量</strong></td><td class="num"><strong>40%</strong></td><td>日涨跌幅（-5%~+5% 映射 0~100）占 50%、量比（0.4~2.5 映射）占 30%、换手率（0~5% 映射）占 20%</td></tr>
+          <tr><td><strong>估值</strong></td><td class="num"><strong>30%</strong></td><td>PE(TTM) 分档：&lt;15 倍=100 分；15~25=80；25~40=60；40~60=40；&gt;60=25；亏损股=25</td></tr>
+          <tr><td><strong>事件催化</strong></td><td class="num"><strong>30%</strong></td><td>基准 50 分；近 3 日事件库中该股票出现正面催化（预增/提价/中标/扩产/回购等）每条 +20，负面事件（预亏/减持/处罚/下滑等）每条 -40</td></tr>
+        </table>
+      </section>
+      <section class="drawer-section"><h3>四档划分</h3>
+        <ul class="doc-list">
+          <li><strong>重点关注</strong>：总分第 1-20 名</li>
+          <li><strong>增持观察</strong>：总分第 21-60 名</li>
+          <li><strong>中性</strong>：总分第 61-120 名</li>
+          <li><strong>回避</strong>：近 3 日有负面事件命中的股票，或总分倒数 15 名</li>
+        </ul>
+      </section>
+      <section class="drawer-section"><h3>数据来源与口径</h3><p>行情与估值：聚源 A 股实时行情（收盘价、涨跌幅、PE-TTM、换手率、量比）；事件：本机研究底座事件库（新闻、公告、研报线索）。评级批次为 ${escapeHtml(focus.date || "当日")}，所用行情实际交易日为 ${escapeHtml(focus.market_date || focus.date || "最近交易日")}。</p></section>
+      <section class="drawer-section"><h3>边界声明</h3><p>本评级为数据驱动的研究候选名单，由规则自动生成、每日更新；不构成投资建议或自动交易指令，不接入也不推断任何基金持仓。最终投资决策由基金经理作出。</p></section>
+    </div>
+    <div class="drawer-foot"><button class="btn drawer-dismiss">关闭</button></div>
+  </aside>`;
+  document.body.appendChild(drawer);
+  const close = () => drawer.remove();
+  drawer.querySelector(".drawer-close").addEventListener("click", close);
+  drawer.querySelector(".drawer-dismiss").addEventListener("click", close);
+  drawer.addEventListener("click", ev => { if (ev.target === drawer) close(); });
+  drawer.addEventListener("keydown", ev => { if (ev.key === "Escape") close(); });
+  drawer.querySelector(".drawer-close").focus();
+}
+
+function openTakeawayDrawer(takeaway, eventsMap) {
+  const toneOf = t => TONE_META[t] || TONE_META.neutral;
+  const refs = (takeaway.refs || []).map(id => eventsMap[id]).filter(Boolean);
+  const drawer = document.createElement("div");
+  drawer.className = "detail-backdrop";
+  drawer.innerHTML = `<aside class="brief-drawer" role="dialog" aria-modal="true">
+    <div class="drawer-head"><div><span class="${toneOf(takeaway.tone).cls}" style="font-weight:700">${toneOf(takeaway.tone).icon} ${toneOf(takeaway.tone).label} · 今日核心观点</span><h2>${escapeHtml(takeaway.label)}</h2></div><button class="drawer-close" aria-label="关闭详情">×</button></div>
+    <div class="drawer-body">
+      <section class="drawer-section"><h3>观点摘要</h3><p style="line-height:1.85">${escapeHtml(takeaway.text)}</p></section>
+      <section class="drawer-section"><h3>完整内容与信息来源（${refs.length} 条）</h3>
+        ${refs.map(e => `<div class="ev-card">
+          <div class="ev-head"><strong>${escapeHtml(e.title)}</strong><span>${toneOf(e.tone).icon} ${toneOf(e.tone).label} · ${e.materiality_score ?? "—"}</span></div>
+          ${(e.data_rows || []).length ? `<table class="data-table">${e.data_rows.map(r => `<tr><td>${escapeHtml(r[0])}</td><td class="num"><strong>${escapeHtml(r[1])}</strong></td><td class="num">${escapeHtml(r[2])}</td><td>${escapeHtml(r[3])}</td></tr>`).join("")}</table>` : ""}
+          ${e.summary ? `<p class="doc-note">${escapeHtml(e.summary)}</p>` : ""}
+          ${e.so_what ? `<p class="so-what">${escapeHtml(e.so_what)}</p>` : ""}
+          <small class="ev-src">${escapeHtml(e.locator || "")}${e.event_time ? " · 事件时间 " + formatDate(e.event_time) : ""}</small>
+          <div class="ev-actions">${e.source_url ? `<a class="btn primary small" href="${escapeHtml(e.source_url)}" target="_blank" rel="noopener noreferrer">查看报告原文 ↗</a>` : `<span class="ev-no-link">该条为授权数据/研报内容，无公开网页原文，以上库内记录为准</span>`}</div>
+        </div>`).join("") || `<p class="doc-note">本条观点为综合判断，相关事件见晨报其他模块。</p>`}
+      </section>
+    </div>
+    <div class="drawer-foot"><button class="btn drawer-dismiss">关闭</button></div>
+  </aside>`;
+  document.body.appendChild(drawer);
+  const close = () => drawer.remove();
+  drawer.querySelector(".drawer-close").addEventListener("click", close);
+  drawer.querySelector(".drawer-dismiss").addEventListener("click", close);
+  drawer.addEventListener("click", ev => { if (ev.target === drawer) close(); });
+  drawer.addEventListener("keydown", ev => { if (ev.key === "Escape") close(); });
+  drawer.querySelector(".drawer-close").focus();
+}
+
+function detailValue(value) {
+  if (value === null || value === undefined || value === "") return "暂无";
+  return escapeHtml(value);
+}
+
+function briefContentSections(item) {
+  const content = state.briefContent || {};
+  const groupKey = item.groupKey;
+  const sections = [];
+  const EVENT_GROUPS = { macro: ["macro_release"], policy: ["policy_release"], industry: ["industry_data_release"], news: ["news_lead"], announcements: ["announcement"], financials: ["earnings_release"], market: ["market_move"], enterprise: ["enterprise_risk"] };
+  const EVENT_LABELS = { macro_release: "宏观发布", policy_release: "政策发布", industry_data_release: "行业数据", news_lead: "资讯线索", announcement: "公司公告", earnings_release: "财报", market_move: "行情异动", enterprise_risk: "企业风险" };
+  const groupEvents = (content.events || []).filter(e => (EVENT_GROUPS[groupKey] || []).includes(e.event_type));
+  if (groupEvents.length) {
+    sections.push(`<section class="drawer-section"><h3>今日事件（已入研究库）</h3><div class="release-list">${groupEvents.map(e => `
+      <div class="release-card">
+        <div class="release-head"><strong>${escapeHtml(e.title)}</strong><span class="event-type-badge">${EVENT_LABELS[e.event_type] || escapeHtml(e.event_type)}</span></div>
+        ${e.summary ? `<p class="release-figure">${escapeHtml(e.summary)}</p>` : ""}
+        <div class="release-meta"><span>事件时间 ${formatDate(e.event_time)}</span><span>重要性 ${e.materiality_score ?? "—"}</span>${e.sector_name ? `<span>${escapeHtml(e.sector_name)}</span>` : ""}${e.locator ? `<span>${escapeHtml(e.locator)}</span>` : ""}${e.source_url ? `<a class="ext" href="${escapeHtml(e.source_url)}" target="_blank" rel="noopener noreferrer" title="对方网站可能拦截部分访问">打开原文 ↗</a>` : ""}</div>
+      </div>`).join("")}</div></section>`);
+  }
+  if (groupKey === "macro" && (content.official_releases || []).length) {
+    sections.push(`<section class="drawer-section"><h3>已入研究底座的官方发布</h3><div class="release-list">${content.official_releases.map(r => `
+      <div class="release-card">
+        <div class="release-head"><strong>${escapeHtml(r.title)}</strong><span>${escapeHtml(r.publisher || "")} · 发布于 ${formatDate(r.published_at)}</span></div>
+        ${r.key_figure ? `<p class="release-figure">${escapeHtml(r.key_figure)}</p>` : ""}
+        <div class="release-meta"><span>数据期 ${escapeHtml(r.as_of_date || "—")}</span><span>证据等级 ${escapeHtml(r.evidence_tier || "—")}</span><span>定位 ${escapeHtml(r.locator || "—")}</span><a href="/api/documents/${encodeURIComponent(r.document_id)}/content" target="_blank" rel="noopener">查看库内原文 ↗</a>${r.source_url ? `<a class="ext" href="${escapeHtml(r.source_url)}" target="_blank" rel="noopener noreferrer" title="对方网站可能拦截部分访问">官网链接 ↗</a>` : ""}</div>
+      </div>`).join("")}</div></section>`);
+  }
+  if (groupKey === "news" && !groupEvents.length) {
+    const leads = content.news_leads || [];
+    if (leads.length) {
+      sections.push(`<section class="drawer-section"><h3>原始线索（授权隔离 · 未核验，不得作为结论依据）</h3><div class="release-list">${leads.map(l => `
+        <div class="release-card lead">
+          <div class="release-head"><strong>${escapeHtml(l.title)}</strong><span class="lead-badge">授权隔离线索</span></div>
+          <p class="release-figure">${escapeHtml(l.summary || "")}</p>
+          <div class="release-meta"><span>事件时间 ${formatDate(l.event_time)}</span><span>重要性评分 ${l.materiality_score ?? "—"}</span><span>未进正式研究库 · 须回到原始发布核验</span></div>
+      </div>`).join("")}</div></section>`);
+    }
+  }
+  if (groupKey === "announcements" || groupKey === "financials") {
+    const docs = content.library_documents || [];
+    const readyReports = (state.reports || []).filter(r => r.status === "completed" && r.publication_status === "internal_research_ready");
+    const blocks = [];
+    if (docs.length) {
+      blocks.push(`<div class="release-list">${docs.map(d => `
+        <div class="release-card">
+          <div class="release-head"><strong>${escapeHtml(d.title)}</strong><span>${escapeHtml(d.publisher || "")} · 披露于 ${formatDate(d.published_at)}</span></div>
+          <div class="release-meta"><span>数据期 ${escapeHtml(d.as_of_date || "—")}</span><span>证据等级 ${escapeHtml(d.evidence_tier || "—")}</span><span>已入正式研究事实层，可被报告直接引用</span></div>
+        </div>`).join("")}</div>`);
+    }
+    if (readyReports.length) {
+      blocks.push(`<div class="release-list">${readyReports.map(r => `
+        <div class="release-card report">
+          <div class="release-head"><strong>${escapeHtml(r.title)}</strong><span>研究成果 · ${formatDate(r.completed_at || r.started_at)}</span></div>
+          <div class="release-meta"><span>系统质量门已通过 · 内部研究可用</span><button class="btn small" data-open-report="${escapeHtml(r.run_id)}">打开报告</button></div>
+        </div>`).join("")}</div>`);
+    }
+    if (blocks.length) {
+      sections.push(`<section class="drawer-section"><h3>库内文档与研究成果</h3>${blocks.join("")}</section>`);
+    }
+  }
+  return sections.join("");
+}
+
+function sourceRow(alert) {
+  const source = alert.source || {};
+  const detail = alert.detail || {};
+  const sourceName = source.name || detail.name || detail.source_id || "未标识来源";
+  const licenseGated = source.license_status === "contract_terms_pending_verification" || source.status === "live_connected_license_gate";
+  const stateText = licenseGated ? "已采集，授权隔离" : detail.freshness_status === "stale" ? "数据已过期" : detail.cursor_status === "not_started" ? "尚未开始同步" : detail.cursor_status === "success" ? "最近同步成功" : "已授权 · 已连接";
+  const entry = source.reachability_status === "network_blocked"
+    ? `<span class="source-unavailable blocked">当前网络不可达：对方防护拦截本机访问</span>${source.alternate_entry ? `<a class="source-link" href="${escapeHtml(source.alternate_entry)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(source.reachability_note || "")}">打开官方关联渠道 ↗</a>` : ""}`
+    : source.source_url
+    ? `<a class="source-link" href="${escapeHtml(source.source_url)}" target="_blank" rel="noopener noreferrer">打开来源主页 ↗</a>`
+    : source.endpoint_type === "mcp" ? `<span class="source-unavailable">本机 MCP 数据源，无公开网页入口</span>` : `<span class="source-unavailable">暂无公开来源地址</span>`;
+  return `<div class="source-detail-row">
+    <div><strong>${escapeHtml(sourceName)}</strong><span>${escapeHtml(source.operator || source.source_family || "数据源")}</span></div>
+    <dl><div><dt>当前状态</dt><dd>${escapeHtml(stateText)}</dd></div><div><dt>最后成功</dt><dd>${detailValue(detail.last_success_at ? formatDate(detail.last_success_at) : null)}</dd></div><div><dt>数据水位</dt><dd>${detailValue(detail.watermark_available_at ? formatDate(detail.watermark_available_at) : null)}</dd></div><div><dt>更新要求</dt><dd>${detailValue(detail.expected_max_lag_hours != null ? `${detail.expected_max_lag_hours} 小时内` : source.update_frequency)}</dd></div></dl>
+    ${entry}
+  </div>`;
+}
+
+function openBriefDetail(item) {
+  const isEvent = item.rule_code === "CR.MON.EVENT.MATERIAL";
+  const alerts = item.sourceAlerts || [];
+  const event = item.event || {};
+  const eventLink = event.source_url ? `<a class="btn primary" href="${escapeHtml(event.source_url)}" target="_blank" rel="noopener noreferrer">打开原文 ↗</a><span class="ext-caveat">若官网拦截访问，内容以库内记录为准</span>` : "";
+  const report = item.sector_name ? state.reports.find(r => r.status === "completed" && r.publication_status === "internal_research_ready" && String(r.title).includes(item.sector_name)) : null;
+  const relatedReport = report ? `<button class="btn" id="detail-related-report">查看相关报告</button>` : "";
+  const drawer = document.createElement("div");
+  drawer.className = "detail-backdrop";
+  drawer.innerHTML = `<aside class="brief-drawer" role="dialog" aria-modal="true" aria-labelledby="brief-detail-title">
+    <div class="drawer-head"><div><span>${isEvent ? "重要事件" : item.healthy ? "已同步" : "数据门禁"} · ${escapeHtml(item.area)}</span><h2 id="brief-detail-title">${escapeHtml(item.displayTitle)}</h2></div><button class="drawer-close" aria-label="关闭详情">×</button></div>
+    <div class="drawer-body">
+      <section class="drawer-section"><h3>为什么重要</h3><p>${escapeHtml(item.implication)}</p></section>
+      ${briefContentSections(item)}
+      ${isEvent ? `<section class="drawer-section"><h3>事件摘要</h3><p>${escapeHtml(event.summary || item.detail?.summary || "当前事件记录没有更多摘要。")}</p><dl class="detail-grid"><div><dt>重要性评分</dt><dd>${detailValue(event.materiality_score)}</dd></div><div><dt>来源定位</dt><dd>${detailValue(event.locator)}</dd></div><div><dt>首次发现</dt><dd>${formatDate(item.first_detected_at)}</dd></div><div><dt>最近更新</dt><dd>${formatDate(item.last_detected_at)}</dd></div></dl></section>` : alerts.length ? `<section class="drawer-section"><h3>具体状态</h3><p>这不是一条新闻，而是影响研究可靠性的数据状态提醒。涉及 ${alerts.length} 个数据源；在生产同步、历史回填或授权门槛处理完成前，Agent 不会把缺失信息包装成行业结论。</p></section>` : `<section class="drawer-section"><h3>具体状态</h3><p>该类别数据流当前均在新鲜度要求内，没有未处理的数据门禁；上方为已进入研究库的内容。</p></section>`}
+      ${alerts.length ? `<section class="drawer-section"><h3>${isEvent ? "来源" : "涉及的数据源"}</h3><div class="source-detail-list">${alerts.map(sourceRow).join("")}</div></section>` : ""}
+      ${item.rule_code ? `<section class="drawer-section"><h3>记录信息</h3><dl class="detail-grid"><div><dt>监控规则</dt><dd>${escapeHtml(item.rule_code)}</dd></div><div><dt>状态</dt><dd>${escapeHtml(item.state_label || item.state)}</dd></div><div><dt>首次发现</dt><dd>${formatDate(item.first_detected_at)}</dd></div><div><dt>最近更新</dt><dd>${formatDate(item.last_detected_at)}</dd></div></dl></section>` : ""}
+    </div>
+    <div class="drawer-foot">${eventLink}${relatedReport}<button class="btn drawer-dismiss">关闭</button></div>
+  </aside>`;
+  document.body.appendChild(drawer);
+  const close = () => drawer.remove();
+  drawer.querySelector(".drawer-close").addEventListener("click", close);
+  drawer.querySelector(".drawer-dismiss").addEventListener("click", close);
+  drawer.addEventListener("click", event => { if (event.target === drawer) close(); });
+  drawer.addEventListener("keydown", event => { if (event.key === "Escape") close(); });
+  drawer.querySelector("#detail-related-report")?.addEventListener("click", () => { state.activeReport = report.run_id; close(); navigate("reports"); });
+  drawer.querySelectorAll("[data-open-report]").forEach(btn => btn.addEventListener("click", () => { state.activeReport = btn.dataset.openReport; close(); navigate("reports"); }));
+  drawer.querySelector(".drawer-close").focus();
+}
+
+function renderSectors() {
+  const content = `
+    ${hero("Consumer sector map", "一张地图，覆盖完整消费行业", "11个研究领域使用同一套研究骨架，同时保留各自的周期驱动、产业链和专属指标。")}
+    <div class="notice warning"><strong>覆盖口径提示</strong>“研究包已就绪”表示研究结构与任务模板可用，不代表行情、财务和宏观等全部数据已经完成回填。</div>
+    <div class="sector-grid">
+      ${state.sectors.map(s => `<article class="sector-card"><div class="sector-code">${escapeHtml(s.sector_code)}</div><h3>${escapeHtml(s.sector_name)}</h3><div class="sector-thesis">${escapeHtml(s.research_thesis)}</div><div class="sector-tags">${(s.cycle_drivers || []).slice(0, 4).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("")}</div><div class="sector-stats"><div class="sector-stat"><strong>${s.a_share_count || 0}</strong><span>A股公司</span></div><div class="sector-stat"><strong>${s.metric_count || 0}</strong><span>指标定义</span></div><div class="sector-stat"><strong>${s.open_alerts || 0}</strong><span>待处理项</span></div></div></article>`).join("")}
+    </div>`;
+  root.innerHTML = shell(content);
+  bindShell();
+}
+
+async function loadTasks() {
+  const p = new URLSearchParams();
+  if (state.taskFilters.q) p.set("q", state.taskFilters.q);
+  if (state.taskFilters.sector) p.set("sector", state.taskFilters.sector);
+  if (state.taskFilters.category) p.set("category", state.taskFilters.category);
+  if (state.taskFilters.favorites) p.set("favorites", "1");
+  const result = await api(`/api/tasks?${p}`);
+  state.tasks = result.results;
+}
+
+async function renderTasks() {
+  root.innerHTML = shell(`<div class="loading">正在读取研究任务库…</div>`); bindShell();
+  try { await loadTasks(); } catch (error) { return renderError(error); }
+  const f = state.taskFilters;
+  const content = `
+    ${hero("Research task library", "把研究问题，交给标准工作流", "从110个研究产品中选择任务。每次提交都明确研究问题、截止日期、市场和具名提交人。")}
+    <div class="filters">
+      <input class="input search" id="task-q" placeholder="搜索任务名称或研究问题" value="${escapeHtml(f.q)}" />
+      <select class="select" id="task-sector"><option value="">全部领域</option>${state.sectors.map(s => `<option value="${escapeHtml(s.sector_code)}" ${f.sector === s.sector_code ? "selected" : ""}>${escapeHtml(s.sector_name)}</option>`).join("")}</select>
+      <select class="select" id="task-category"><option value="">全部类型</option>${Object.entries(categoryLabels).map(([k,v]) => `<option value="${k}" ${f.category === k ? "selected" : ""}>${v}</option>`).join("")}</select>
+      <label><input type="checkbox" id="task-favorites" ${f.favorites ? "checked" : ""}/> 只看收藏</label>
+      <span class="filter-spacer"></span><span class="section-meta">${state.tasks.length} 个结果</span>
+    </div>
+    ${state.tasks.length ? `<div class="task-grid">${state.tasks.map(t => `<article class="task-card"><div class="task-top"><div><div class="task-category">${escapeHtml(t.category_label || categoryLabels[t.category])}</div><h3>${escapeHtml(t.title)}</h3></div><button class="favorite ${t.is_favorite ? "active" : ""}" aria-label="${t.is_favorite ? "取消收藏" : "收藏"}" data-favorite="${escapeHtml(t.product_id)}" data-value="${t.is_favorite ? "0" : "1"}">☆</button></div><div class="task-meta">预计 ${t.expected_minutes} 分钟 · ${t.data_readiness === "ready_with_data_gaps" ? "存在数据缺口" : "数据就绪"}</div><div class="sector-tags">${(t.tags || []).slice(0, 4).map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</div><div class="task-foot">${status(t.data_readiness === "ready_with_data_gaps" ? "数据缺口" : "fresh", t.data_readiness === "ready_with_data_gaps" ? "watch" : "good")}<button class="btn primary small" data-submit-task="${escapeHtml(t.product_id)}">发起任务</button></div></article>`).join("")}</div>` : `<div class="empty"><strong>没有匹配的研究任务</strong>调整搜索词或筛选条件后重试。</div>`}`;
+  root.innerHTML = shell(content); bindShell();
+  const refresh = () => {
+    state.taskFilters = { q: document.getElementById("task-q").value.trim(), sector: document.getElementById("task-sector").value, category: document.getElementById("task-category").value, favorites: document.getElementById("task-favorites").checked };
+    renderTasks();
+  };
+  document.getElementById("task-q")?.addEventListener("keydown", e => { if (e.key === "Enter") refresh(); });
+  ["task-sector", "task-category", "task-favorites"].forEach(id => document.getElementById(id)?.addEventListener("change", refresh));
+  document.querySelectorAll("[data-favorite]").forEach(btn => btn.addEventListener("click", () => setFavorite(btn.dataset.favorite, btn.dataset.value === "1")));
+  document.querySelectorAll("[data-submit-task]").forEach(btn => btn.addEventListener("click", () => openTaskModal(btn.dataset.submitTask)));
+}
+
+async function setFavorite(productId, favorite) {
+  try {
+    await api("/api/favorites", { method: "POST", body: JSON.stringify({ product_id: productId, favorite }) });
+    toast(favorite ? "已收藏研究任务" : "已取消收藏");
+    renderTasks();
+  } catch (error) { toast(error.message, true); }
+}
+
+async function openTaskModal(productId) {
+  try {
+    const { product } = await api(`/api/tasks/${encodeURIComponent(productId)}`);
+    const needsEntities = product.entity_requirement && product.entity_requirement !== "none";
+    const modal = document.createElement("div");
+    modal.className = "modal-backdrop";
+    modal.innerHTML = `<div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-head"><div><h2 id="modal-title">${escapeHtml(product.title)}</h2><div class="modal-subtitle">预计 ${product.expected_minutes} 分钟 · ${escapeHtml(categoryLabels[product.category] || product.category)}</div></div><button class="close-btn" aria-label="关闭">×</button></div>
+      <form id="task-form"><div class="modal-body"><div class="form-grid">
+        <div class="field full"><label for="research-question">研究问题</label><textarea class="textarea" id="research-question" required minlength="5">${escapeHtml(product.research_question_template)}</textarea><div class="field-hint">系统将围绕这个问题组织证据、分析和报告。</div></div>
+  <div class="field"><label for="cutoff-date">研究截止日期</label><input class="input" id="cutoff-date" type="date" max="${escapeHtml(state.bootstrap.cutoff.date)}" value="${escapeHtml(state.bootstrap.cutoff.date)}" required/><div class="field-hint">自动设为当日08:00:00（上海时间）</div></div>
+        <div class="field"><label for="priority">优先级</label><select class="select" id="priority"><option value="normal">普通</option><option value="high">高</option><option value="urgent">紧急</option><option value="low">低</option></select></div>
+        <div class="field full"><label>市场范围</label><div class="checkboxes"><label><input type="checkbox" id="market-a" checked/> A股</label><label><input type="checkbox" id="market-hk"/> 港股</label></div></div>
+        ${needsEntities ? `<div class="field full"><label for="entity-search">研究对象</label><input class="input" id="entity-search" placeholder="输入公司名称或证券代码" autocomplete="off"/><div class="selected-entities" id="selected-entities"></div><div class="entity-results" id="entity-results" hidden></div><div class="field-hint">${product.entity_requirement === "two_or_more" ? "请选择至少两个研究对象" : "请选择至少一个研究对象"}</div></div>` : ""}
+      </div><div class="notice warning" style="margin:18px 0 0"><strong>数据就绪度：${product.data_readiness === "ready_with_data_gaps" ? "存在缺口" : "正常"}</strong>提交后先执行时点、证据、授权和数据完整性检查；条件不足时任务会明确受阻原因。</div></div>
+      <div class="modal-foot"><button type="button" class="btn cancel">取消</button><button type="submit" class="btn primary">提交并开始研究</button></div></form></div>`;
+    document.body.appendChild(modal);
+    const close = () => modal.remove();
+    modal.querySelector(".close-btn").addEventListener("click", close);
+    modal.querySelector(".cancel").addEventListener("click", close);
+    modal.addEventListener("click", e => { if (e.target === modal) close(); });
+    const selected = [];
+    if (needsEntities) bindEntityPicker(modal, selected);
+    modal.querySelector("#task-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const submit = modal.querySelector('button[type="submit"]'); submit.disabled = true; submit.textContent = "正在提交…";
+      try {
+        const markets = [modal.querySelector("#market-a").checked ? "A_SHARE" : null, modal.querySelector("#market-hk").checked ? "HK_SHARE" : null].filter(Boolean);
+        if (!markets.length) throw new Error("至少选择一个市场");
+        const minimum = product.entity_requirement === "two_or_more" ? 2 : product.entity_requirement === "one_or_more" ? 1 : 0;
+        if (selected.length < minimum) throw new Error(`请选择至少${minimum}个研究对象`);
+        await api("/api/jobs", { method: "POST", body: JSON.stringify({ product_id: productId, research_question: modal.querySelector("#research-question").value.trim(), cutoff_date: modal.querySelector("#cutoff-date").value, priority: modal.querySelector("#priority").value, markets, entities: selected, execute_now: true }) });
+        close(); toast("研究任务已提交，正在执行前置校验"); navigate("jobs");
+      } catch (error) { toast(error.message, true); submit.disabled = false; submit.textContent = "提交并开始研究"; }
+    });
+  } catch (error) { toast(error.message, true); }
+}
+
+function bindEntityPicker(modal, selected) {
+  const input = modal.querySelector("#entity-search");
+  const results = modal.querySelector("#entity-results");
+  const selectedNode = modal.querySelector("#selected-entities");
+  let timer;
+  const paint = () => {
+    selectedNode.innerHTML = selected.map((e, i) => `<span class="entity-chip">${escapeHtml(e.display_name)}<button type="button" data-remove-entity="${i}">×</button></span>`).join("");
+    selectedNode.querySelectorAll("[data-remove-entity]").forEach(btn => btn.addEventListener("click", () => { selected.splice(Number(btn.dataset.removeEntity), 1); paint(); }));
+  };
+  input.addEventListener("input", () => {
+    clearTimeout(timer); const q = input.value.trim(); if (!q) { results.hidden = true; return; }
+    timer = setTimeout(async () => {
+      try {
+        const data = await api(`/api/entities?q=${encodeURIComponent(q)}`);
+        results.innerHTML = data.entities.map(e => `<div class="entity-option"><div><strong>${escapeHtml(e.canonical_name)}</strong><div class="table-secondary">${escapeHtml(e.identifiers || e.entity_type)}</div></div><button type="button" class="btn small" data-add-entity="${escapeHtml(e.entity_id)}" data-name="${escapeHtml(e.canonical_name)}">选择</button></div>`).join("") || `<div class="entity-option">没有找到匹配对象</div>`;
+        results.hidden = false;
+        results.querySelectorAll("[data-add-entity]").forEach(btn => btn.addEventListener("click", () => {
+          if (!selected.some(e => e.entity_id === btn.dataset.addEntity)) selected.push({ entity_id: btn.dataset.addEntity, display_name: btn.dataset.name });
+          paint(); results.hidden = true; input.value = "";
+        }));
+      } catch (error) { toast(error.message, true); }
+    }, 250);
+  });
+}
+
+async function renderJobs() {
+  root.innerHTML = shell(`<div class="loading">正在读取任务状态…</div>`); bindShell();
+  try { state.jobs = (await api("/api/jobs")).jobs; } catch (error) { return renderError(error); }
+  const content = `
+    ${hero("Research operations", "每个任务，都知道进行到哪里", "任务状态、截止时间、数据就绪度和失败原因均持久保存在本机数据库。", `<button class="btn primary" data-nav="tasks">发起新任务</button><button class="btn" id="refresh-jobs">刷新</button>`)}
+    ${state.jobs.length ? `<div class="table-wrap"><table><thead><tr><th>研究任务</th><th>提交人</th><th>研究截止</th><th>优先级</th><th>状态</th><th>更新时间</th><th>结果</th></tr></thead><tbody>${state.jobs.map(j => `<tr><td><div class="table-primary">${escapeHtml(j.title)}</div><div class="table-secondary mono">${escapeHtml(j.job_id)}</div>${j.error ? `<div class="table-secondary" style="color:var(--red)">${escapeHtml(Array.isArray(j.error) ? j.error.map(e => e.message).join("；") : j.error.message || JSON.stringify(j.error))}</div>` : ""}</td><td>${escapeHtml(j.submitted_by)}</td><td>${formatDate(j.cutoff_timestamp)}</td><td>${escapeHtml(j.priority)}</td><td>${status(j.status)}</td><td>${formatDate(j.updated_at)}</td><td>${j.workflow_run_id ? `<button class="btn small" data-open-report="${escapeHtml(j.workflow_run_id)}">查看报告</button>` : "—"}</td></tr>`).join("")}</tbody></table></div>` : `<div class="empty"><strong>还没有研究任务</strong>从任务库选择一个研究产品并提交。</div>`}`;
+  root.innerHTML = shell(content); bindShell();
+  document.getElementById("refresh-jobs")?.addEventListener("click", renderJobs);
+  document.querySelectorAll("[data-open-report]").forEach(btn => btn.addEventListener("click", () => { state.activeReport = btn.dataset.openReport; navigate("reports"); }));
+  if (state.jobs.some(j => ["queued", "validating", "running"].includes(j.status))) setTimeout(() => { if (state.view === "jobs") renderJobs(); }, 5000);
+}
+
+function renderAnswerText(text) {
+  return escapeHtml(text || "")
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/\n/g, "<br>");
+}
+
+function renderAsk() {
+  if (!state.chat) {
+    try { state.chat = JSON.parse(localStorage.getItem("ask-chat-v1") || "[]"); } catch (e) { state.chat = []; }
+  }
+  const chat = state.chat;
+  const saveChat = () => { try { localStorage.setItem("ask-chat-v1", JSON.stringify(chat.slice(-30))); } catch (e) { /* ignore */ } };
+  const messages = chat.map(m => m.role === "user"
+    ? `<div class="chat-row user"><div class="chat-bubble user">${escapeHtml(m.content)}</div></div>`
+    : `<div class="chat-row"><div class="chat-bubble agent ${m.error ? "err" : ""}">${renderAnswerText(m.content)}${m.elapsed ? `<small>生成耗时 ${(m.elapsed / 1000).toFixed(1)} 秒 · 基于本机研究底座</small>` : ""}</div></div>`
+  ).join("");
+  const pending = state.askPending
+    ? `<div class="chat-row"><div class="chat-bubble agent pending">正在生成回答 <span id="ask-timer">0.0</span> 秒……</div></div>`
+    : "";
+  const content = `
+    <section class="mb-module ask-page">
+      <div class="sf-head"><h2><span class="mb-num">◈</span>AI研究员 <small class="sf-date">基于本机研究底座 · 快速生成</small></h2></div>
+      <div class="chat-box" id="chat-box">
+        ${messages || `<div class="chat-empty"><p>直接向研究员提问，例如：</p>
+          <button class="ask-hint" data-q="今天白酒板块怎么看？">今天白酒板块怎么看？</button>
+          <button class="ask-hint" data-q="今日重点关注股票的核心逻辑是什么？">今日重点关注股票的核心逻辑是什么？</button>
+          <button class="ask-hint" data-q="当前最大的风险点是什么？">当前最大的风险点是什么？</button></div>`}
+        ${pending}
+      </div>
+      <div class="chat-input-row">
+        <textarea id="ask-input" rows="2" maxlength="500" placeholder="输入您的研究问题（500 字内，Ctrl+Enter 发送）…"></textarea>
+        <button class="btn primary" id="ask-send" ${state.askPending ? "disabled" : ""}>发送</button>
+      </div>
+    </section>`;
+  root.innerHTML = shell(content);
+  bindShell();
+  const input = document.getElementById("ask-input");
+  const send = document.getElementById("ask-send");
+  const box = document.getElementById("chat-box");
+  if (box) box.scrollTop = box.scrollHeight;
+  document.querySelectorAll(".ask-hint").forEach(btn => btn.addEventListener("click", () => {
+    input.value = btn.dataset.q;
+    input.focus();
+  }));
+  const submit = async () => {
+    const q = input.value.trim();
+    if (!q || state.askPending) return;
+    chat.push({ role: "user", content: q });
+    saveChat();
+    state.askPending = true;
+    renderAsk();
+    const t0 = Date.now();
+    const timerEl = document.getElementById("ask-timer");
+    state.askTimer = setInterval(() => {
+      if (timerEl) timerEl.textContent = ((Date.now() - t0) / 1000).toFixed(1);
+    }, 100);
+    const finish = (text, meta) => {
+      clearInterval(state.askTimer);
+      state.askPending = false;
+      chat.push({ role: "assistant", content: text, elapsed: meta?.elapsed_ms ?? (Date.now() - t0) });
+      saveChat();
+      renderAsk();
+    };
+    try {
+      const resp = await fetch("/api/ask/stream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Workbench-Token": token },
+        body: JSON.stringify({ question: q, history: chat.slice(-7, -1) }),
+      });
+      if (!resp.ok || !resp.body) {
+        finish(`生成失败：HTTP ${resp.status}`, null);
+        return;
+      }
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      const pendingBubble = document.querySelector(".chat-bubble.agent.pending");
+      let text = "", buffer = "", meta = null, started = false, thinkText = "";
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const frames = buffer.split("\n\n");
+        buffer = frames.pop() || "";
+        for (const frame of frames) {
+          const line = frame.replace(/^data:\s*/gm, "").trim();
+          if (!line || line === "[DONE]") continue;
+          try {
+            const obj = JSON.parse(line);
+            if (obj.done) { meta = obj; continue; }
+            if (obj.error) { meta = { error: obj.error }; continue; }
+            if (obj.kind === "think") {
+              if (pendingBubble) {
+                if (!started) { pendingBubble.classList.remove("pending"); started = true; }
+                thinkText = (thinkText + obj.text).slice(-300);
+                pendingBubble.innerHTML = `<span class="think-dim">正在思考…${escapeHtml(thinkText.slice(-160))}</span><span class="caret">▍</span>`;
+              }
+            } else if (obj.text) {
+              text += obj.text;
+              if (!started && pendingBubble) {
+                pendingBubble.classList.remove("pending");
+                started = true;
+              }
+              if (pendingBubble) pendingBubble.innerHTML = renderAnswerText(text) + '<span class="caret">▍</span>';
+            }
+          } catch (e) { /* 忽略半帧 */ }
+        }
+      }
+      if (meta && meta.error) {
+        finish(`生成失败：${meta.error}`, null);
+      } else {
+        finish(text || "（空回答）", meta);
+      }
+    } catch (e) {
+      finish(`调用失败：${e.message}`, null);
+    }
+  };
+  send?.addEventListener("click", submit);
+  input?.addEventListener("keydown", ev => {
+    if (ev.key === "Enter" && (ev.ctrlKey || ev.metaKey)) { ev.preventDefault(); submit(); }
+  });
+  if (!chat.length) input?.focus();
+}
+
+const LIB_TYPE_CLS = { "研报": "lt-report", "新闻": "lt-news", "政策": "lt-policy", "行业事件": "lt-event" };
+
+async function renderLibrary() {
+  root.innerHTML = shell(`<div class="loading">正在读取研报库…</div>`);
+  bindShell();
+  const dateQ = state.libraryDate ? `?date=${state.libraryDate}` : "";
+  state.library = await api(`/api/research-library${dateQ}`);
+  paintLibrary();
+}
+
+function paintLibrary() {
+  const lib = state.library;
+  if (!lib) return;
+  const items = lib.items || [];
+
+  // 日期导航（30 天滚动档案）
+  const dates = lib.available_dates || [];
+  const cur = lib.date;
+  const curIdx = dates.indexOf(cur);
+  const prevDate = curIdx >= 0 && curIdx < dates.length - 1 ? dates[curIdx + 1] : null;
+  const nextDate = curIdx > 0 ? dates[curIdx - 1] : null;
+  const dateNav = dates.length ? `
+    <div class="date-nav">
+      <button class="btn small" id="lib-prev" ${prevDate ? "" : "disabled"}>◀ 前一天</button>
+      <select id="lib-date-select">${dates.map(d => `<option value="${d}" ${d === cur ? "selected" : ""}>${d}${d === dates[0] ? "（最新）" : ""}</option>`).join("")}</select>
+      <button class="btn small" id="lib-next" ${nextDate ? "" : "disabled"}>后一天 ▶</button>
+      ${lib.is_history ? `<span class="history-badge">历史研报库 · ${escapeHtml(cur || "")}</span>` : `<span class="live-badge">今日研报库</span>`}
+      <span class="lib-arch-note">档案保留最近 30 天，更早内容每日滚动清理</span>
+    </div>` : "";
+
+  // 板块筛选（三态：undefined=全部；空 Set=全不选；非空 Set=勾选）
+  const sectorNames = [...new Set(items.map(i => i.sector_name || i.sector || "未分类").filter(Boolean))];
+  const sel = state.libSectors;
+  const isAll = sel === undefined;
+  const match = i => isAll || sel.has(i.sector_name || i.sector || "未分类");
+  const sectorPanel = state.libSectorPanelOpen ? `
+    <div class="sector-panel" id="lib-sector-panel">
+      <div class="sector-panel-head">
+        <button class="link" id="lib-sector-all">全选</button>
+        <button class="link" id="lib-sector-clear">清空</button>
+      </div>
+      ${sectorNames.map(name => `
+        <label class="sector-option"><input type="checkbox" data-lib-sector="${escapeHtml(name)}" ${isAll || sel.has(name) ? "checked" : ""}><span>${escapeHtml(name)}</span></label>`).join("")}
+    </div>` : "";
+  const filterLabel = isAll ? "全部板块" : sel.size === 0 ? "未选板块" : `已选 ${sel.size} 个板块`;
+
+  const libList = [];
+  const card = item => {
+    const i = libList.push(item) - 1;
+    const typeCls = LIB_TYPE_CLS[item.item_type] || "lt-news";
+    const preview = (item.points || [])[0] || "";
+    return `
+      <div class="ev-card lib-card tk-clickable" data-lib-i="${i}" tabindex="0" role="button" aria-label="查看摘要：${escapeHtml(String(item.title || "").slice(0, 24))}">
+        <div class="lib-card-head"><span class="lib-type ${typeCls}">${escapeHtml(item.item_type || "新闻")}</span><span class="lib-sector">${escapeHtml(item.sector_name || item.sector || "未分类")}</span></div>
+        <strong>${escapeHtml(item.title || "")}</strong>
+        ${preview ? `<p class="doc-note">${escapeHtml(preview)}</p>` : ""}
+        <small class="pick-open">点击查看分点摘要与来源 →</small>
+      </div>`;
+  };
+  const urgent = items.filter(i => i.category === "重要且紧急" && match(i));
+  const normal = items.filter(i => i.category !== "重要且紧急" && match(i));
+  const col = (label, cls, list, note) => `
+    <section class="lib-col">
+      <h3 class="lib-col-head ${cls}">${label}<span class="lib-col-count">${list.length}</span></h3>
+      <p class="lib-col-note">${note}</p>
+      ${list.map(card).join("") || `<div class="lib-empty">今日此类暂无条目</div>`}
+    </section>`;
+
+  const content = `
+    <article class="morning-brief-v2">
+      <div class="mb-head">
+        <div><h1>研报库</h1><p>今日应关注的研报 · 新闻 · 政策，按重要程度分类，全部可溯源</p></div>
+        <div class="brief-asof">研究截止<br><strong>${escapeHtml(cur || "")} 08:00</strong></div>
+      </div>
+      ${dateNav}
+      <div class="tier-pills-row">
+        <div class="sf-filter">
+          <button class="btn small" id="lib-sector-filter-btn">板块筛选：${filterLabel} ▾</button>
+          ${sectorPanel}
+        </div>
+        <span class="sf-count">${urgent.length + normal.length}/${items.length} 条</span>
+      </div>
+      ${items.length ? `
+      <div class="lib-cols">
+        ${col("重要且紧急", "lib-urgent", urgent, "当日必须看：行情异动、当日政策、重大公告、评级调整")}
+        ${col("重要不紧急", "lib-normal", normal, "值得读但可安排：深度研报、趋势分析、一般行业动态")}
+      </div>` : `
+      <div class="queue-item">${lib.is_history ? "该日研报库内容未生成（研报库自 2026-08-17 起每日生成）。" : "研报库装配中——当日内容在每日同步后生成，可用上方日期导航查看历史。"}</div>`}
+      <p class="brief-footnote">研报库每日更新；条目摘要由消费行研agent基于研究底座撰写，来源可跳转原文。内容为研究参考，不构成投资建议。</p>
+    </article>`;
+  root.innerHTML = shell(content);
+  bindShell();
+
+  const goLibDate = async d => {
+    if (!d) return;
+    state.libraryDate = d;
+    state.library = await api(`/api/research-library?date=${d}`);
+    paintLibrary();
+  };
+  document.getElementById("lib-prev")?.addEventListener("click", () => goLibDate(prevDate));
+  document.getElementById("lib-next")?.addEventListener("click", () => goLibDate(nextDate));
+  document.getElementById("lib-date-select")?.addEventListener("change", ev => goLibDate(ev.target.value));
+
+  document.getElementById("lib-sector-filter-btn")?.addEventListener("click", ev => {
+    ev.stopPropagation();
+    state.libSectorPanelOpen = !state.libSectorPanelOpen;
+    paintLibrary();
+  });
+  document.getElementById("lib-sector-panel")?.addEventListener("click", ev => ev.stopPropagation());
+  document.querySelectorAll("[data-lib-sector]").forEach(cb => cb.addEventListener("change", () => {
+    const name = cb.dataset.libSector;
+    const current = state.libSectors === undefined ? new Set(sectorNames) : new Set(state.libSectors);
+    if (cb.checked) current.add(name);
+    else current.delete(name);
+    state.libSectors = current.size >= sectorNames.length ? undefined : current;
+    paintLibrary();
+  }));
+  document.getElementById("lib-sector-all")?.addEventListener("click", () => { state.libSectors = undefined; paintLibrary(); });
+  document.getElementById("lib-sector-clear")?.addEventListener("click", () => { state.libSectors = new Set(); paintLibrary(); });
+  if (state.libSectorPanelOpen) {
+    setTimeout(() => document.addEventListener("click", () => {
+      state.libSectorPanelOpen = false;
+      paintLibrary();
+    }, { once: true }), 0);
+  }
+
+  document.querySelectorAll("[data-lib-i]").forEach(el => {
+    const open = () => openLibraryDrawer(libList[Number(el.dataset.libI)]);
+    el.addEventListener("click", open);
+    el.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); open(); } });
+  });
+}
+
+function openLibraryDrawer(item) {
+  const src = item.source;
+  const sourceHtml = src ? (src.type === "event"
+    ? `<div class="ev-card">
+         <div class="ev-head"><strong>${escapeHtml(src.title)}</strong><span>重要性 ${src.materiality_score ?? "—"}</span></div>
+         <p class="doc-note">${escapeHtml(src.summary || "")}</p>
+         <small class="ev-src">${escapeHtml(src.locator || "")}</small>
+         <div class="ev-actions">${src.source_url ? `<a class="btn primary small" href="${escapeHtml(src.source_url)}" target="_blank" rel="noopener noreferrer">打开原文 ↗</a>` : `<span class="ev-no-link">该来源无公开网页入口，以库内记录为准</span>`}</div>
+       </div>`
+    : `<div class="ev-card">
+         <div class="ev-head"><strong>${escapeHtml(src.title)}</strong><span>${escapeHtml(src.publisher || "")}</span></div>
+         <div class="ev-actions">
+           <a class="btn primary small" href="/api/documents/${encodeURIComponent(src.document_id)}/content" target="_blank" rel="noopener">查看库内原文 ↗</a>
+           ${src.source_url ? `<a class="btn small" href="${escapeHtml(src.source_url)}" target="_blank" rel="noopener noreferrer">官网链接 ↗</a>` : ""}
+         </div>
+       </div>`
+  ) : `<p class="doc-note">本条由研究底座数据直接得出，无单一来源文档。</p>`;
+  const pointsHtml = (item.points || []).map(p => `<li>${escapeHtml(p)}</li>`).join("");
+  const typeCls = LIB_TYPE_CLS[item.item_type] || "lt-news";
+  const drawer = document.createElement("div");
+  drawer.className = "detail-backdrop";
+  drawer.innerHTML = `<aside class="brief-drawer" role="dialog" aria-modal="true">
+    <div class="drawer-head"><div><span>${escapeHtml(item.category || "")} · <span class="lib-type ${typeCls}">${escapeHtml(item.item_type || "新闻")}</span> · ${escapeHtml(item.sector_name || item.sector || "未分类")}</span><h2>${escapeHtml(item.title || "")}</h2></div><button class="drawer-close" aria-label="关闭详情">×</button></div>
+    <div class="drawer-body">
+      <section class="drawer-section"><h3>分点摘要</h3><ul class="lib-points">${pointsHtml}</ul></section>
+      <section class="drawer-section"><h3>信息来源</h3>${sourceHtml}</section>
+    </div>
+    <div class="drawer-foot"><button class="btn drawer-dismiss">关闭</button></div>
+  </aside>`;
+  document.body.appendChild(drawer);
+  const close = () => drawer.remove();
+  drawer.querySelector(".drawer-close").addEventListener("click", close);
+  drawer.querySelector(".drawer-dismiss").addEventListener("click", close);
+  drawer.addEventListener("click", ev => { if (ev.target === drawer) close(); });
+  drawer.addEventListener("keydown", ev => { if (ev.key === "Escape") close(); });
+  drawer.querySelector(".drawer-close").focus();
+}
+
+async function renderUsage() {
+  root.innerHTML = shell(`<div class="loading">正在读取 Token 用量…</div>`);
+  bindShell();
+  const u = await api("/api/token-usage");
+  const fmt = n => Number(n || 0).toLocaleString("en-US");
+  if (!u.available) {
+    root.innerHTML = shell(`<div class="card" style="padding:24px">用量数据不可用：${escapeHtml(u.reason || "未知原因")}</div>`);
+    bindShell();
+    return;
+  }
+  const pct = u.budget_pct;
+  const pctCls = pct >= 90 ? "down" : pct >= 70 ? "warn" : "up";
+  const rows = u.recent.map(r => `
+    <tr>
+      <td>${escapeHtml(r.time)}</td>
+      <td>${escapeHtml(r.model)}</td>
+      <td class="num">${fmt(r.input_tokens)}</td>
+      <td class="num">${fmt(r.output_tokens)}</td>
+      <td class="num">${fmt(r.cache_read_tokens)}</td>
+      <td class="num">$${r.cost_usd}</td>
+      <td class="num">${(r.latency_ms / 1000).toFixed(1)}s</td>
+      <td class="num ${r.status_code === 200 ? "st-ok" : "st-err"}">${r.status_code}</td>
+    </tr>`).join("");
+  const content = `
+    <section class="mb-module">
+      <div class="sf-head"><h2><span class="mb-num">◔</span>Token 用量 <small class="sf-date">${escapeHtml(u.source)}</small></h2></div>
+      <div class="usage-cards">
+        <div class="usage-card"><strong>${fmt(u.month.tokens)}</strong><span>本月已用 token</span></div>
+        <div class="usage-card"><strong>${fmt(u.budget_tokens)}</strong><span>月度上限</span></div>
+        <div class="usage-card"><strong class="${pctCls}">${pct}%</strong><span>预算消耗</span></div>
+        <div class="usage-card sub"><strong>${fmt(u.today.tokens)}</strong><span>今日 token（${u.today.requests} 次调用）</span></div>
+      </div>
+      <p class="usage-sub-line">本月 ${fmt(u.month.requests)} 次调用 · 输出 ${fmt(u.month.output_tokens)} · 缓存读 ${fmt(u.month.cache_read)} · 估算费用 $${fmt(u.month.cost_usd)}（今日 $${u.today.cost_usd}）</p>
+      <h3 class="usage-recent-head">最近调用</h3>
+      <table class="data-table sf-table">
+        <thead><tr><th>时间</th><th>模型</th><th class="num">输入</th><th class="num">输出</th><th class="num">缓存读</th><th class="num">费用</th><th class="num">耗时</th><th class="num">状态</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </section>`;
+  root.innerHTML = shell(content);
+  bindShell();
+}
+
+async function renderReports() {
+  root.innerHTML = shell(`<div class="loading">正在读取研究报告…</div>`); bindShell();
+  try { state.reports = (await api("/api/reports")).reports; } catch (error) { return renderError(error); }
+  if (!state.activeReport && state.reports.length) state.activeReport = state.reports[0].run_id;
+  let detail = null;
+  if (state.activeReport) {
+    try { detail = await api(`/api/reports/${encodeURIComponent(state.activeReport)}`); } catch (error) { toast(error.message, true); }
+  }
+  const list = `<div class="card report-list"><div class="card-head">报告历史 <span>${state.reports.length}</span></div>${state.reports.map(r => `<button class="report-item ${r.run_id === state.activeReport ? "active" : ""}" data-report-id="${escapeHtml(r.run_id)}"><div class="report-title">${escapeHtml(r.title)}</div><div class="report-meta"><span>${formatDate(r.started_at, false)}</span><span>${escapeHtml(r.status_label)}</span><span>${r.claim_count} 条结论</span></div></button>`).join("") || `<div class="queue-item">暂无报告</div>`}</div>`;
+  const reportDocument = detail ? renderReportDetail(detail) : `<div class="empty"><strong>选择一份报告</strong>在左侧打开报告内容和证据链。</div>`;
+  const content = `${hero("Report workbench", "生成完成，直接展示", "Agent 完成证据、时点、反证和合规检查后，报告立即显示；可逐条查看结论、证据并留下批注。")}<div class="report-layout">${list}<div>${reportDocument}</div></div>`;
+  root.innerHTML = shell(content); bindShell();
+  document.querySelectorAll("[data-report-id]").forEach(btn => btn.addEventListener("click", () => { state.activeReport = btn.dataset.reportId; state.reportTab = "report"; renderReports(); }));
+  document.querySelectorAll("[data-report-tab]").forEach(btn => btn.addEventListener("click", () => { state.reportTab = btn.dataset.reportTab; renderReports(); }));
+  document.getElementById("annotation-form")?.addEventListener("submit", submitAnnotation);
+}
+
+function renderReportDetail(detail) {
+  const r = detail.run;
+  const tabs = `<div class="tabs"><button class="tab ${state.reportTab === "report" ? "active" : ""}" data-report-tab="report">报告正文</button><button class="tab ${state.reportTab === "claims" ? "active" : ""}" data-report-tab="claims">结论与证据 ${detail.claims.length}</button><button class="tab ${state.reportTab === "annotations" ? "active" : ""}" data-report-tab="annotations">批注 ${detail.annotations.length}</button></div>`;
+  let body = "";
+  if (state.reportTab === "claims") body = renderClaims(detail.claims);
+  else if (state.reportTab === "annotations") body = renderAnnotations(detail);
+  else body = detail.report_markdown ? markdown(detail.report_markdown) : `<div class="notice warning"><strong>报告正文文件不可用</strong>结论和证据记录仍可在“结论与证据”中审阅。</div>`;
+  return `<article class="report-document"><div class="eyebrow">${escapeHtml(r.template_id)} · ${escapeHtml(r.run_id)}</div><h1>${escapeHtml(detail.title)}</h1><div class="report-metadata">${status(r.status)}<span class="status info">截止 ${formatDate(r.cutoff_timestamp)}</span><span class="status ${r.publication_status === "internal_research_ready" ? "good" : "watch"}">${escapeHtml(r.publication_status)}</span></div>${tabs}${body}</article>`;
+}
+
+function markdown(source) {
+  const lines = String(source).replace(/\r/g, "").split("\n");
+  let html = "", inList = false;
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) { if (inList) { html += "</ul>"; inList = false; } continue; }
+    if (line.startsWith("### ")) html += `<h3>${inlineMarkdown(line.slice(4))}</h3>`;
+    else if (line.startsWith("## ")) html += `<h2>${inlineMarkdown(line.slice(3))}</h2>`;
+    else if (line.startsWith("# ")) html += `<h2>${inlineMarkdown(line.slice(2))}</h2>`;
+    else if (/^[-*] /.test(line)) { if (!inList) { html += "<ul>"; inList = true; } html += `<li>${inlineMarkdown(line.slice(2))}</li>`; }
+    else html += `<p>${inlineMarkdown(line)}</p>`;
+  }
+  if (inList) html += "</ul>";
+  return html;
+}
+
+function inlineMarkdown(value) {
+  return escapeHtml(value).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`(.+?)`/g, "<code>$1</code>");
+}
+
+function renderClaims(claims) {
+  if (!claims.length) return `<div class="empty"><strong>没有结构化结论</strong>此报告未生成结论图谱。</div>`;
+  return claims.map(c => `<section class="claim"><div class="claim-head"><span class="tag">${escapeHtml(c.content_label)}</span><span class="tag">${escapeHtml(c.importance)}</span><span class="confidence">置信度 ${Math.round(c.confidence * 100)}%</span></div><div class="claim-text">${escapeHtml(c.text)}</div>${c.formula ? `<div class="formula">${escapeHtml(c.formula)}</div>` : ""}<div class="evidence-list">${c.evidence.map(e => `<div class="evidence-item ${e.relation_type === "counter" ? "counter" : ""}"><div class="evidence-source">${e.relation_type === "counter" ? "反证" : "支持证据"} · ${escapeHtml(e.document_title)}</div><div class="evidence-locator">${escapeHtml(e.publisher)} · ${escapeHtml(e.locator)} · 可得时间 ${formatDate(e.available_at)}</div></div>`).join("") || `<div class="notice warning"><strong>证据未绑定</strong>该结论当前不能作为正式发布依据。</div>`}</div><div style="margin-top:8px"><button class="btn ghost small" data-annotate-claim="${escapeHtml(c.claim_id)}">批注此结论</button></div></section>`).join("");
+}
+
+function renderAnnotations(detail) {
+  return `<form id="annotation-form"><div class="field"><label for="annotation-note">新增报告批注</label><textarea class="textarea" id="annotation-note" required minlength="2" placeholder="记录需要补证、修改或讨论的问题"></textarea></div><div style="margin:9px 0 20px"><button class="btn primary small">保存具名批注</button></div></form>${detail.annotations.map(a => `<div class="annotation"><div class="table-primary">${escapeHtml(a.author)} · ${status(a.status, a.status === "resolved" ? "good" : "watch")}</div><div>${escapeHtml(a.note)}</div><div class="table-secondary">${formatDate(a.created_at)} ${a.claim_id ? `· 结论 ${escapeHtml(a.claim_id)}` : "· 报告整体"}</div></div>`).join("") || `<div class="empty"><strong>暂无批注</strong>用具名身份记录需要补充或修改的问题。</div>`}`;
+}
+
+async function submitAnnotation(event) {
+  event.preventDefault();
+  try {
+    await api(`/api/reports/${encodeURIComponent(state.activeReport)}/annotations`, { method: "POST", body: JSON.stringify({ note: document.getElementById("annotation-note").value.trim(), section_name: "report" }) });
+    toast("批注已保存"); renderReports();
+  } catch (error) { toast(error.message, true); }
+}
+
+async function renderData() {
+  root.innerHTML = shell(`<div class="loading">正在汇总数据状态…</div>`); bindShell();
+  try { state.dataStatus = await api("/api/data-status"); } catch (error) { return renderError(error); }
+  const d = state.dataStatus;
+  const freshCounts = d.freshness.reduce((a, x) => (a[x.status] = (a[x.status] || 0) + 1, a), {});
+  const pendingLicenses = d.licenses.filter(x => !x.decision || x.decision === "pending");
+  const gaps = d.coverage.filter(x => x.populated_stream_count < x.required_stream_count);
+  const content = `
+    ${hero("Data truth center", "让每条结论，带着数据现实出现", "查看新鲜度、覆盖缺口、商业授权和生产快照。系统明确区分“没有变化”与“没有数据”。")}
+    <div class="notice warning"><strong>研究真实性边界</strong>${escapeHtml(d.truth_boundary)}</div>
+    <div class="data-summary"><div class="summary-tile"><strong>${freshCounts.fresh || 0}</strong><span>新鲜数据流</span></div><div class="summary-tile"><strong>${freshCounts.stale || 0}</strong><span>过期数据流</span></div><div class="summary-tile"><strong>${pendingLicenses.length}</strong><span>待确认授权源</span></div><div class="summary-tile"><strong>${gaps.length}</strong><span>存在数据缺口的覆盖单元</span></div></div>
+    <section class="section"><div class="section-head"><h2 class="section-title">数据新鲜度</h2><span class="section-meta">按来源与数据流</span></div>${d.freshness.length ? `<div class="table-wrap"><table><thead><tr><th>来源</th><th>数据流</th><th>状态</th><th>最近可得时间</th><th>检查时间</th><th>滞后</th></tr></thead><tbody>${d.freshness.map(f => `<tr><td><div class="table-primary">${escapeHtml(f.source_name || f.source_id)}</div><div class="table-secondary mono">${escapeHtml(f.source_id)}</div></td><td>${escapeHtml(f.stream_name)}</td><td>${status(f.status)}</td><td>${formatDate(f.latest_available_at)}</td><td>${formatDate(f.checked_at)}</td><td>${f.lag_hours == null ? "—" : `${Math.round(f.lag_hours)} 小时`}</td></tr>`).join("")}</tbody></table></div>` : `<div class="empty"><strong>尚无已运行的新鲜度记录</strong>这不表示数据正常，而是检查尚未形成记录。</div>`}</section>
+    <section class="section"><div class="section-head"><h2 class="section-title">数据授权与访问状态</h2><span class="section-meta">商业授权未确认时禁止正式入库与发布</span></div><div class="table-wrap"><table><thead><tr><th>数据来源</th><th>来源类型</th><th>许可状态</th><th>正式决策</th><th>再分发</th><th>说明</th></tr></thead><tbody>${d.licenses.map(l => `<tr><td><div class="table-primary">${escapeHtml(l.name)}</div><div class="table-secondary mono">${escapeHtml(l.source_id)}</div></td><td>${escapeHtml(l.source_family)}</td><td>${status(l.license_status, l.license_status.includes("pending") ? "watch" : "info")}</td><td>${status(l.decision || "pending", l.decision === "approved" || l.decision === "public_official" ? "good" : "watch")}</td><td>${l.redistribution_allowed ? "允许" : "不允许"}</td><td><div class="license-note">${escapeHtml(l.notes || l.cache_policy || "尚无正式授权说明")}</div></td></tr>`).join("")}</tbody></table></div></section>
+    <section class="section"><div class="section-head"><h2 class="section-title">行业与市场覆盖</h2><span class="section-meta">11个领域 × A/H市场</span></div><div class="table-wrap"><table><thead><tr><th>领域</th><th>市场</th><th>证券数</th><th>指标定义</th><th>已填充数据流</th><th>证券池</th><th>研究包</th></tr></thead><tbody>${d.coverage.map(c => `<tr><td>${escapeHtml(c.sector_name)}</td><td>${escapeHtml(c.market)}</td><td>${c.security_count}</td><td>${c.metric_definition_count}</td><td>${c.populated_stream_count}/${c.required_stream_count}</td><td>${status(c.universe_status, c.universe_status === "populated" ? "good" : "watch")}</td><td>${status(c.research_pack_status, c.research_pack_status === "ready" ? "good" : "watch")}</td></tr>`).join("")}</tbody></table></div></section>
+    <div class="notice danger"><strong>固定边界</strong>本系统不接入基金持仓、不推断仓位、不自动交易、不自动对外发布。</div>`;
+  root.innerHTML = shell(content); bindShell();
+}
+
+async function acknowledgeAlert(alertId) {
+  try { await api(`/api/alerts/${encodeURIComponent(alertId)}/acknowledge`, { method: "POST", body: "{}" }); toast("已标记为查看"); await loadCore(); renderToday(); }
+  catch (error) { toast(error.message, true); }
+}
+
+function renderError(error) {
+  root.innerHTML = state.bootstrap ? shell(`<div class="error-panel"><div class="eyebrow">Service error</div><h2>页面暂时无法读取研究数据</h2><p>${escapeHtml(error.message)}</p><button class="btn primary" onclick="location.reload()">重新连接</button></div>`) : `<div class="error-panel"><div class="brand-mark">CR</div><h2>无法连接本机研究服务</h2><p>${escapeHtml(error.message)}</p><p>请确认“消费行业研究工作台”正在运行，然后刷新页面。</p><button class="btn primary" onclick="location.reload()">重新连接</button></div>`;
+  if (state.bootstrap) bindShell();
+}
+
+async function renderView() {
+  if (!state.bootstrap) return;
+  if (state.view === "today") renderToday();
+  else if (state.view === "jobs") await renderJobs();
+  else if (state.view === "reports") await renderReports();
+  else if (state.view === "ask") renderAsk();
+  else if (state.view === "library") await renderLibrary();
+  else if (state.view === "usage") await renderUsage();
+  else if (state.view === "data") await renderData();
+}
+
+window.addEventListener("hashchange", () => {
+  const view = location.hash.replace("#", "");
+  if (!pageTitles[view]) {
+    state.view = "today";
+    history.replaceState(null, "", "#today");
+    renderView();
+  } else if (view !== state.view) { state.view = view; renderView(); }
+});
+
+document.addEventListener("click", event => {
+  const navButton = event.target.closest("[data-nav]");
+  if (navButton) navigate(navButton.dataset.nav);
+  const claimButton = event.target.closest("[data-annotate-claim]");
+  if (claimButton) { state.reportTab = "annotations"; renderReports().then(() => { const note = document.getElementById("annotation-note"); if (note) { note.value = `关于结论 ${claimButton.dataset.annotateClaim}：`; note.focus(); } }); }
+});
+
+(async function start() {
+  try {
+    const requestedView = location.hash.replace("#", "");
+    if (requestedView && !pageTitles[requestedView]) history.replaceState(null, "", "#today");
+    await loadCore();
+    await renderView();
+  }
+  catch (error) { renderError(error); }
+})();

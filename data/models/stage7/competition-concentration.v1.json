@@ -1,0 +1,40 @@
+{
+  "package_id": "CR.MODEL.PKG.STAGE7.COMPETITION.001",
+  "model_id": "CR.MODEL.COMPETITION_CONCENTRATION",
+  "model_type": "competition_concentration",
+  "as_of_timestamp": "2024-05-01T00:00:00+08:00",
+  "environment": "demonstration",
+  "scope": {
+    "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2023",
+    "geography": "中国",
+    "industry": "消费行业",
+    "channel": "全渠道",
+    "period": "2023",
+    "note": "演示集中度算法；公司销售额为假设，不对应真实公司。"
+  },
+  "fact_inputs": [],
+  "scenarios": [
+    {
+      "scenario_id": "base",
+      "assumptions": [
+        {"input_id": "market_sales", "value": 100000000000, "unit": "CNY", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2023", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示用统一市场分母。", "confidence": 0.3},
+        {"input_id": "company_1_sales", "value": 25000000000, "unit": "CNY", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2023", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示用第一名销售额。", "confidence": 0.3},
+        {"input_id": "company_2_sales", "value": 18000000000, "unit": "CNY", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2023", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示用第二名销售额。", "confidence": 0.3},
+        {"input_id": "company_3_sales", "value": 12000000000, "unit": "CNY", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2023", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示用第三名销售额。", "confidence": 0.3},
+        {"input_id": "company_4_sales", "value": 8000000000, "unit": "CNY", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2023", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示用第四名销售额。", "confidence": 0.3},
+        {"input_id": "company_5_sales", "value": 7000000000, "unit": "CNY", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2023", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示用第五名销售额。", "confidence": 0.3}
+      ]
+    }
+  ],
+  "calculations": [
+    {"output_id": "market_share_1", "output_role": "market_share_leader", "formula": "company_1_sales / market_sales", "unit": "ratio", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "market_share_2", "output_role": "market_share_second", "formula": "company_2_sales / market_sales", "unit": "ratio", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "market_share_3", "output_role": "market_share_third", "formula": "company_3_sales / market_sales", "unit": "ratio", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "market_share_4", "output_role": "market_share_fourth", "formula": "company_4_sales / market_sales", "unit": "ratio", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "market_share_5", "output_role": "market_share_fifth", "formula": "company_5_sales / market_sales", "unit": "ratio", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "cr3", "output_role": "cr3", "formula": "market_share_1 + market_share_2 + market_share_3", "unit": "ratio", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "cr5", "output_role": "cr5", "formula": "cr3 + market_share_4 + market_share_5", "unit": "ratio", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "long_tail_share", "output_role": "long_tail_share", "formula": "1 - cr5", "unit": "ratio", "content_label": "AGENT_CALCULATION"}
+  ],
+  "sensitivities": []
+}

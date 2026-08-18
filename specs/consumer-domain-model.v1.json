@@ -1,0 +1,922 @@
+{
+    "spec_version":  "1.1.0",
+    "status":  "production_spec_complete_data_population_incremental",
+    "root_code":  "CR",
+    "scope":  "full_consumer_research_without_fund_holdings",
+    "reference_schemes":  [
+                              {
+                                  "code":  "GBT4754_2017",
+                                  "name":  "国民经济行业分类",
+                                  "mapping_type":  "economic_activity"
+                              },
+                              {
+                                  "code":  "JRT0020_2024",
+                                  "name":  "上市公司行业统计分类与代码",
+                                  "mapping_type":  "capital_market_statistics"
+                              },
+                              {
+                                  "code":  "COICOP_CN_2013",
+                                  "name":  "居民消费支出分类",
+                                  "mapping_type":  "consumption_purpose"
+                              },
+                              {
+                                  "code":  "SW",
+                                  "name":  "申万行业分类",
+                                  "mapping_type":  "market_research",
+                                  "license_status":  "to_confirm"
+                              },
+                              {
+                                  "code":  "CITICS",
+                                  "name":  "中信行业分类",
+                                  "mapping_type":  "market_research",
+                                  "license_status":  "to_confirm"
+                              }
+                          ],
+    "taxonomy":  [
+                     {
+                         "code":  "CR.S",
+                         "name":  "必选与高频消费",
+                         "children":  [
+                                          {
+                                              "code":  "CR.S.FB",
+                                              "name":  "食品饮料",
+                                              "children":  [
+                                                               {
+                                                                   "code":  "CR.S.FB.BJ",
+                                                                   "name":  "白酒",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.FB.BE",
+                                                                   "name":  "啤酒及其他酒",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.FB.BV",
+                                                                   "name":  "软饮与包装水",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.FB.DA",
+                                                                   "name":  "乳品",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.FB.SN",
+                                                                   "name":  "休闲食品",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.FB.CO",
+                                                                   "name":  "调味品",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.FB.PF",
+                                                                   "name":  "速冻预制与餐饮供应链",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.FB.BA",
+                                                                   "name":  "烘焙",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.FB.ME",
+                                                                   "name":  "肉制品",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.FB.NU",
+                                                                   "name":  "保健营养食品",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               }
+                                                           ]
+                                          },
+                                          {
+                                              "code":  "CR.S.PH",
+                                              "name":  "美容个护与家庭护理",
+                                              "children":  [
+                                                               {
+                                                                   "code":  "CR.S.PH.SK",
+                                                                   "name":  "护肤",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.PH.MU",
+                                                                   "name":  "彩妆",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.PH.FR",
+                                                                   "name":  "香水",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.PH.HC",
+                                                                   "name":  "洗护",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.PH.OC",
+                                                                   "name":  "口腔护理",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.PH.PC",
+                                                                   "name":  "个护用品",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.PH.HH",
+                                                                   "name":  "家清",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.PH.TI",
+                                                                   "name":  "生活用纸",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               }
+                                                           ]
+                                          },
+                                          {
+                                              "code":  "CR.S.PT",
+                                              "name":  "宠物与家庭新消费",
+                                              "children":  [
+                                                               {
+                                                                   "code":  "CR.S.PT.PF",
+                                                                   "name":  "宠物食品",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.PT.PS",
+                                                                   "name":  "宠物用品",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.PT.PV",
+                                                                   "name":  "宠物医疗服务",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.PT.MB",
+                                                                   "name":  "母婴用品",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.PT.TY",
+                                                                   "name":  "玩具潮玩",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.S.PT.OT",
+                                                                   "name":  "其他家庭新消费",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               }
+                                                           ]
+                                          }
+                                      ]
+                     },
+                     {
+                         "code":  "CR.D",
+                         "name":  "可选与耐用消费",
+                         "children":  [
+                                          {
+                                              "code":  "CR.D.AP",
+                                              "name":  "家电与消费电子",
+                                              "children":  [
+                                                               {
+                                                                   "code":  "CR.D.AP.WH",
+                                                                   "name":  "白色家电",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AP.KA",
+                                                                   "name":  "厨房电器",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AP.AV",
+                                                                   "name":  "黑色家电",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AP.SA",
+                                                                   "name":  "小家电",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AP.VC",
+                                                                   "name":  "清洁电器",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AP.SH",
+                                                                   "name":  "智能家居",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AP.CE",
+                                                                   "name":  "消费电子终端",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               }
+                                                           ]
+                                          },
+                                          {
+                                              "code":  "CR.D.AU",
+                                              "name":  "汽车与出行消费",
+                                              "children":  [
+                                                               {
+                                                                   "code":  "CR.D.AU.PV",
+                                                                   "name":  "乘用车",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AU.MC",
+                                                                   "name":  "摩托车",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AU.AD",
+                                                                   "name":  "汽车流通",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AU.AM",
+                                                                   "name":  "汽车售后",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AU.MS",
+                                                                   "name":  "出行消费服务",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               }
+                                                           ]
+                                          },
+                                          {
+                                              "code":  "CR.D.HL",
+                                              "name":  "家居与生活空间",
+                                              "children":  [
+                                                               {
+                                                                   "code":  "CR.D.HL.FF",
+                                                                   "name":  "成品家具",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.HL.CU",
+                                                                   "name":  "定制家居",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.HL.UP",
+                                                                   "name":  "软体家居",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.HL.HR",
+                                                                   "name":  "家装服务",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.HL.BM",
+                                                                   "name":  "家居建材",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.HL.HD",
+                                                                   "name":  "家居流通",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               }
+                                                           ]
+                                          },
+                                          {
+                                              "code":  "CR.D.AF",
+                                              "name":  "纺织服饰与运动户外",
+                                              "children":  [
+                                                               {
+                                                                   "code":  "CR.D.AF.CL",
+                                                                   "name":  "服装",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AF.FW",
+                                                                   "name":  "鞋履",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AF.SO",
+                                                                   "name":  "运动户外",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AF.HT",
+                                                                   "name":  "家纺",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AF.JE",
+                                                                   "name":  "珠宝首饰",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.D.AF.WE",
+                                                                   "name":  "可穿戴消费品",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               }
+                                                           ]
+                                          }
+                                      ]
+                     },
+                     {
+                         "code":  "CR.V",
+                         "name":  "消费渠道与服务",
+                         "children":  [
+                                          {
+                                              "code":  "CR.V.RT",
+                                              "name":  "商贸零售与电商",
+                                              "children":  [
+                                                               {
+                                                                   "code":  "CR.V.RT.SM",
+                                                                   "name":  "商超",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.RT.DS",
+                                                                   "name":  "百货",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.RT.SC",
+                                                                   "name":  "专业连锁",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.RT.DF",
+                                                                   "name":  "免税",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.RT.EC",
+                                                                   "name":  "电商平台",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.RT.IR",
+                                                                   "name":  "即时零售",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.RT.RS",
+                                                                   "name":  "零售服务",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               }
+                                                           ]
+                                          },
+                                          {
+                                              "code":  "CR.V.FS",
+                                              "name":  "餐饮与本地生活",
+                                              "children":  [
+                                                               {
+                                                                   "code":  "CR.V.FS.FR",
+                                                                   "name":  "正餐",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.FS.QS",
+                                                                   "name":  "快餐",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.FS.BC",
+                                                                   "name":  "茶饮咖啡",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.FS.BS",
+                                                                   "name":  "烘焙门店",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.FS.FS",
+                                                                   "name":  "餐饮供应链",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.FS.LP",
+                                                                   "name":  "本地生活平台",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               }
+                                                           ]
+                                          },
+                                          {
+                                              "code":  "CR.V.TL",
+                                              "name":  "酒店旅游与休闲服务",
+                                              "children":  [
+                                                               {
+                                                                   "code":  "CR.V.TL.HO",
+                                                                   "name":  "酒店",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.TL.AT",
+                                                                   "name":  "景区",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.TL.TA",
+                                                                   "name":  "旅行社与OTA",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.TL.TP",
+                                                                   "name":  "主题公园及博彩",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.TL.SF",
+                                                                   "name":  "体育健身",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.TL.LS",
+                                                                   "name":  "休闲服务",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               }
+                                                           ]
+                                          },
+                                          {
+                                              "code":  "CR.V.CE",
+                                              "name":  "文化娱乐与教育消费",
+                                              "children":  [
+                                                               {
+                                                                   "code":  "CR.V.CE.GM",
+                                                                   "name":  "游戏",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.CE.FC",
+                                                                   "name":  "影视院线",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.CE.MR",
+                                                                   "name":  "音乐阅读",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.CE.OE",
+                                                                   "name":  "线上娱乐",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.CE.NE",
+                                                                   "name":  "非学历教育",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               },
+                                                               {
+                                                                   "code":  "CR.V.CE.OC",
+                                                                   "name":  "其他文化消费",
+                                                                   "level":  3,
+                                                                   "status":  "active",
+                                                                   "valid_from":  "2026-08-12",
+                                                                   "valid_to":  null
+                                                               }
+                                                           ]
+                                          }
+                                      ]
+                     }
+                 ],
+    "entity_types":  {
+                         "classification_node":  [
+                                                     "scheme_code",
+                                                     "node_code",
+                                                     "name",
+                                                     "parent_id",
+                                                     "level",
+                                                     "valid_from",
+                                                     "valid_to"
+                                                 ],
+                         "legal_entity":  [
+                                              "canonical_name",
+                                              "jurisdiction",
+                                              "registration_status",
+                                              "incorporated_at"
+                                          ],
+                         "issuer":  [
+                                        "legal_entity_id",
+                                        "disclosure_jurisdictions"
+                                    ],
+                         "security":  [
+                                          "issuer_id",
+                                          "security_type",
+                                          "exchange_mic",
+                                          "ticker",
+                                          "isin",
+                                          "currency",
+                                          "valid_from",
+                                          "valid_to"
+                                      ],
+                         "brand":  [
+                                       "canonical_name",
+                                       "owner_relation_id",
+                                       "origin_geography_id"
+                                   ],
+                         "product_category":  [
+                                                  "canonical_name",
+                                                  "parent_id",
+                                                  "taxonomy_scheme"
+                                              ],
+                         "product_sku":  [
+                                             "brand_id",
+                                             "category_id",
+                                             "name",
+                                             "model_or_sku_code",
+                                             "status"
+                                         ],
+                         "channel":  [
+                                         "name",
+                                         "channel_type",
+                                         "parent_id"
+                                     ],
+                         "geography":  [
+                                           "name",
+                                           "geo_type",
+                                           "parent_id",
+                                           "iso_or_admin_code"
+                                       ],
+                         "customer_segment":  [
+                                                  "name",
+                                                  "definition",
+                                                  "sensitive_attribute_policy"
+                                              ],
+                         "consumption_scene":  [
+                                                   "name",
+                                                   "definition"
+                                               ],
+                         "price_band":  [
+                                            "category_id",
+                                            "geography_id",
+                                            "currency",
+                                            "lower_bound",
+                                            "upper_bound",
+                                            "valid_from",
+                                            "valid_to"
+                                        ],
+                         "value_chain_node":  [
+                                                  "name",
+                                                  "role_type",
+                                                  "parent_id"
+                                              ],
+                         "entity_alias":  [
+                                              "entity_id",
+                                              "alias",
+                                              "language",
+                                              "alias_type",
+                                              "valid_from",
+                                              "valid_to",
+                                              "source_id"
+                                          ],
+                         "external_identifier":  [
+                                                     "entity_id",
+                                                     "id_type",
+                                                     "issuer",
+                                                     "value",
+                                                     "valid_from",
+                                                     "valid_to",
+                                                     "is_primary"
+                                                 ],
+                         "source_record":  [
+                                               "source_id",
+                                               "source_record_id",
+                                               "raw_value",
+                                               "published_at",
+                                               "observed_at",
+                                               "license_tag",
+                                               "content_hash"
+                                           ]
+                     },
+    "relationship_types":  [
+                               "OWNS",
+                               "CONTROLS",
+                               "ISSUES",
+                               "HAS_PRODUCT",
+                               "BELONGS_TO",
+                               "OPERATES_IN",
+                               "PARTICIPATES_IN",
+                               "HAS_EXPOSURE_TO",
+                               "DISTRIBUTES_THROUGH",
+                               "TARGETS_SEGMENT",
+                               "USED_IN_SCENE",
+                               "MAPS_TO",
+                               "SUCCESSOR_OF",
+                               "MERGED_INTO",
+                               "RENAMED_FROM"
+                           ],
+    "relationship_required_fields":  [
+                                         "subject_id",
+                                         "predicate",
+                                         "object_id",
+                                         "valid_from",
+                                         "valid_to",
+                                         "observed_at",
+                                         "source_id",
+                                         "confidence",
+                                         "review_status"
+                                     ],
+    "id_policy":  {
+                      "entity_id_pattern":  "cr:\u003centity_type\u003e:\u003cULID\u003e",
+                      "taxonomy_code_pattern":  "CR.\u003cgroup\u003e.\u003csector\u003e[.\u003csubcategory\u003e]",
+                      "immutable":  true,
+                      "mutable_attributes_not_encoded":  [
+                                                             "name",
+                                                             "industry",
+                                                             "exchange",
+                                                             "ticker"
+                                                         ]
+                  },
+    "matching_policy":  {
+                            "priority":  [
+                                             "legal_identifier",
+                                             "exchange_ticker_validity",
+                                             "legal_name_and_jurisdiction",
+                                             "brand_owner_category_geography",
+                                             "fuzzy_candidate_only"
+                                         ],
+                            "auto_merge_min_confidence":  0.98,
+                            "manual_review_min_confidence":  0.85,
+                            "identifier_conflict_action":  "block_auto_merge"
+                        },
+    "temporal_fields":  [
+                            "valid_from",
+                            "valid_to",
+                            "system_from",
+                            "system_to",
+                            "published_at",
+                            "as_of_date",
+                            "observed_at"
+                        ],
+    "lifecycle_states":  [
+                             "candidate",
+                             "verified",
+                             "active",
+                             "deprecated",
+                             "merged",
+                             "rejected"
+                         ],
+    "prohibited_domains":  [
+                               "fund_holdings",
+                               "portfolio_exposure",
+                               "trade_orders",
+                               "position_inference"
+                           ],
+    "taxonomy_version_policy":  {
+                                    "current_version":  "2026.08",
+                                    "stable_code_rule":  "代码一经发布不可复用；更名不改代码；拆分与合并使用SUCCESSOR_OF或MERGED_INTO关系",
+                                    "required_node_fields":  [
+                                                                 "code",
+                                                                 "name",
+                                                                 "level",
+                                                                 "status",
+                                                                 "valid_from",
+                                                                 "valid_to"
+                                                             ],
+                                    "release_gate":  "全树代码唯一、父子前缀一致、有效期不重叠、停用节点保留历史映射"
+                                },
+    "classification_assignment_schema":  {
+                                             "required_fields":  [
+                                                                     "assignment_id",
+                                                                     "entity_id",
+                                                                     "classification_code",
+                                                                     "assignment_type",
+                                                                     "valid_from",
+                                                                     "valid_to",
+                                                                     "as_of_date",
+                                                                     "source_id",
+                                                                     "confidence",
+                                                                     "review_status"
+                                                                 ],
+                                             "assignment_types":  [
+                                                                      "primary",
+                                                                      "secondary",
+                                                                      "business_exposure"
+                                                                  ],
+                                             "confidence_range":  "0_to_1",
+                                             "production_rule":  "primary每个时点最多一个；secondary与business_exposure可多选；无证据不得自动赋类"
+                                         }
+}

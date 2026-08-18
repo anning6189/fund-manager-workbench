@@ -1,0 +1,272 @@
+{
+    "report_id":  "CR.REPORT.STAGE5.SOURCE_HEALTH.001",
+    "generated_at":  "2026-08-12T16:49:28.7163738+08:00",
+    "registered_sources":  20,
+    "status_counts":  {
+                          "live_connected_license_gate":  7,
+                          "registered_pending_access":  0,
+                          "live_connected":  0,
+                          "disabled":  0,
+                          "endpoint_verified_connector_ready":  13
+                      },
+    "source_families":  [
+                            {
+                                "source_family":  "licensed_enterprise_database",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "licensed_filing_aggregator",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "licensed_financial_database",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "licensed_macro_industry_database",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "licensed_news_aggregator",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "licensed_research_database",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "licensed_security_universe",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "official_commerce_statistics_and_policy",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "official_exchange",
+                                "count":  3,
+                                "live_or_ready":  3
+                            },
+                            {
+                                "source_family":  "official_filing",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "official_financial_statistics_and_policy",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "official_industry_statistics_and_policy",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "official_market_regulation",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "official_policy",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "official_policy_and_price",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "official_service_consumption_statistics",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "official_statistics",
+                                "count":  1,
+                                "live_or_ready":  1
+                            },
+                            {
+                                "source_family":  "official_trade_statistics",
+                                "count":  1,
+                                "live_or_ready":  1
+                            }
+                        ],
+    "license_pending_sources":  [
+                                    {
+                                        "source_id":  "CR.SRC.GILDATA.FINQUERY",
+                                        "name":  "Gildata金融结构化数据",
+                                        "status":  "live_connected_license_gate",
+                                        "license_status":  "contract_terms_pending_verification"
+                                    },
+                                    {
+                                        "source_id":  "CR.SRC.GILDATA.ANNOUNCEMENT",
+                                        "name":  "Gildata公告库",
+                                        "status":  "live_connected_license_gate",
+                                        "license_status":  "contract_terms_pending_verification"
+                                    },
+                                    {
+                                        "source_id":  "CR.SRC.GILDATA.MACRO_INDUSTRY",
+                                        "name":  "Gildata宏观行业时序库",
+                                        "status":  "live_connected_license_gate",
+                                        "license_status":  "contract_terms_pending_verification"
+                                    },
+                                    {
+                                        "source_id":  "CR.SRC.GILDATA.RESEARCH",
+                                        "name":  "Gildata券商研报库",
+                                        "status":  "live_connected_license_gate",
+                                        "license_status":  "contract_and_redistribution_terms_pending_verification"
+                                    },
+                                    {
+                                        "source_id":  "CR.SRC.GILDATA.NEWS",
+                                        "name":  "Gildata资讯舆情库",
+                                        "status":  "live_connected_license_gate",
+                                        "license_status":  "contract_and_redistribution_terms_pending_verification"
+                                    },
+                                    {
+                                        "source_id":  "CR.SRC.GILDATA.ENTERPRISE",
+                                        "name":  "Gildata工商与企业风险库",
+                                        "status":  "live_connected_license_gate",
+                                        "license_status":  "contract_terms_pending_verification"
+                                    },
+                                    {
+                                        "source_id":  "CR.SRC.GILDATA.STOCK_UNIVERSE",
+                                        "name":  "Gildata股票筛选与行业证券池",
+                                        "status":  "live_connected_license_gate",
+                                        "license_status":  "contract_terms_pending_verification"
+                                    }
+                                ],
+    "probe_issues":  [
+                         {
+                             "source_id":  "CR.SRC.GILDATA.FINQUERY",
+                             "status":  "success_with_over_retrieval",
+                             "required_action":  [
+                                                     "exact_security_filter",
+                                                     "metric_whitelist",
+                                                     "period_whitelist",
+                                                     "statement_scope_required",
+                                                     "over_retrieval_filter",
+                                                     "official_filing_cross_check"
+                                                 ]
+                         },
+                         {
+                             "source_id":  "CR.SRC.GILDATA.ANNOUNCEMENT",
+                             "status":  "success_with_material_over_retrieval",
+                             "required_action":  [
+                                                     "title_exact_match",
+                                                     "issuer_exact_match",
+                                                     "language_filter",
+                                                     "cutoff_filter",
+                                                     "official_url_preferred",
+                                                     "locator_required",
+                                                     "over_retrieval_filter"
+                                                 ]
+                         },
+                         {
+                             "source_id":  "CR.SRC.GILDATA.MACRO_INDUSTRY",
+                             "status":  "success_with_extra_period_and_derived_rows",
+                             "required_action":  [
+                                                     "indicator_code_binding",
+                                                     "frequency_filter",
+                                                     "date_filter",
+                                                     "official_origin_field",
+                                                     "revision_snapshot",
+                                                     "derived_series_label"
+                                                 ]
+                         },
+                         {
+                             "source_id":  "CR.SRC.GILDATA.RESEARCH",
+                             "status":  "success_with_low_precision_and_over_retrieval",
+                             "required_action":  [
+                                                     "sector_exact_filter",
+                                                     "date_filter",
+                                                     "report_identity",
+                                                     "copyright_excerpt_limit",
+                                                     "view_label",
+                                                     "no_primary_fact_without_cross_check"
+                                                 ]
+                         },
+                         {
+                             "source_id":  "CR.SRC.GILDATA.NEWS",
+                             "status":  "success_with_extreme_over_retrieval",
+                             "required_action":  [
+                                                     "date_window_filter",
+                                                     "topic_filter",
+                                                     "source_identity",
+                                                     "deduplicate_event",
+                                                     "official_policy_cross_check",
+                                                     "signal_only_default"
+                                                 ]
+                         },
+                         {
+                             "source_id":  "CR.SRC.GILDATA.ENTERPRISE",
+                             "status":  "success_with_extra_fields",
+                             "required_action":  [
+                                                     "legal_name_or_credit_code_exact_match",
+                                                     "observed_at_required",
+                                                     "official_registry_cross_check_for_material_risk",
+                                                     "personal_data_minimization"
+                                                 ]
+                         },
+                         {
+                             "source_id":  "CR.SRC.GILDATA.STOCK_UNIVERSE",
+                             "status":  "success_with_extra_market_fields",
+                             "required_action":  [
+                                                     "universe_definition",
+                                                     "classification_version",
+                                                     "as_of_date",
+                                                     "requested_field_projection",
+                                                     "no_fund_holding_logic"
+                                                 ]
+                         }
+                     ],
+    "registered_pending_access":  [
+                                      {
+                                          "source_id":  "CR.SRC.VENDOR.CHANNEL_RETAIL",
+                                          "name":  "家电/电商/渠道零售商业数据库",
+                                          "reason":  "需要基金公司单独采购并确认API、历史快照和内部使用许可",
+                                          "examples":  [
+                                                           "家电零售监测",
+                                                           "电商GMV与价格",
+                                                           "渠道库存"
+                                                       ]
+                                      },
+                                      {
+                                          "source_id":  "CR.SRC.ASSOCIATION.SECTOR",
+                                          "name":  "消费子行业协会数据",
+                                          "reason":  "各协会接口、下载条款和口径不统一，需要逐项签约或公开数据适配",
+                                          "examples":  [
+                                                           "汽车",
+                                                           "家电",
+                                                           "酒业",
+                                                           "连锁经营",
+                                                           "酒店旅游"
+                                                       ]
+                                      },
+                                      {
+                                          "source_id":  "CR.SRC.ALTERNATIVE.CONSUMER",
+                                          "name":  "消费者面板、门店、位置和支付等另类数据",
+                                          "reason":  "涉及商业授权、隐私和合规评估，未获批准前禁用",
+                                          "examples":  [
+                                                           "消费者面板",
+                                                           "门店客流",
+                                                           "交易流水",
+                                                           "App行为"
+                                                       ]
+                                      }
+                                  ],
+    "production_policy":  {
+                              "official_sources":  "ready_for_runtime_fetch_and_hash",
+                              "gildata":  "live_connected_but_license_and_post_filter_gated",
+                              "commercial_channel_and_alternative_data":  "not_connected_pending_procurement_and_compliance"
+                          }
+}

@@ -1,0 +1,40 @@
+{
+  "connector_metadata": {
+    "connector_name": "gildata_test_adapter",
+    "query_id": "query:future-leak",
+    "retrieved_at": "2026-08-12T12:00:00+08:00",
+    "raw_record_count": 1,
+    "truncated": false
+  },
+  "query": {
+    "cutoff_timestamp": "2024-05-01T00:00:00+08:00",
+    "availability_mode": "end_of_day",
+    "allowed_entity_ids": ["cr:legal_entity:gree"],
+    "allowed_security_ids": ["000651.SZ"],
+    "allowed_metric_ids": ["CR.CO.REVENUE"],
+    "allowed_periods": ["2023-01-01/2023-12-31"],
+    "allowed_statement_scopes": ["income_statement"]
+  },
+  "evidence": [
+    {
+      "evidence_id": "ev:gree:english_future",
+      "source_id": "gildata:future-document",
+      "source_type": "annual_report",
+      "title": "格力电器2023 Annual Report English Version",
+      "publisher": "珠海格力电器股份有限公司",
+      "published_at": "2024-06-08T00:00:00+08:00",
+      "available_at": "2024-06-08T23:59:59+08:00",
+      "as_of_date": "2023-12-31",
+      "retrieved_at": "2026-08-12T12:00:00+08:00",
+      "locator": "document",
+      "content_hash": "sha256:47647d44f38b9790f30c848ac9f143e086a19126983095fc89d88377c693250f",
+      "license_tag": "test_fixture",
+      "access_class": "test",
+      "evidence_tier": "A",
+      "support_type": "direct",
+      "document_version": "2024-06-08-en"
+    }
+  ],
+  "observations": [],
+  "calculations": []
+}

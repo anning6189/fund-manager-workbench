@@ -1,0 +1,47 @@
+{
+  "status": "passed",
+  "cutoff_timestamp": "2024-04-30T16:00:00.000Z",
+  "claims_audited": 9,
+  "checks": [
+    {
+      "claim_id": "wc:4dd9885f2beb9fe9120acf9b",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:1494f9fb071b25df270dae10",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:c91951c75ccc3c5cd76b7c73",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:caf2cefe471c639e3e60101b",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:83ee6d3fd078bb5cf4b053dc",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:7d690810fd883b848a915727",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:d8b7e9b8b3e1af573602dcf8",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:f3e431eb4d58ce3e1711fbda",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:c3cded94c43ab6cd320d3341",
+      "result": "passed"
+    }
+  ],
+  "future_information_count": 0,
+  "fact_direct_evidence": "passed",
+  "calculation_lineage": "passed",
+  "material_counter_analysis": "passed"
+}

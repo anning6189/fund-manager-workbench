@@ -1,0 +1,126 @@
+{
+  "spec_id": "CR.COVERAGE.FULL_CONSUMER.V1",
+  "version": "1.0.0",
+  "status": "research_contract_complete_population_incremental",
+  "scope": "entire_consumer_industry_without_fund_holdings",
+  "coverage_levels": {
+    "taxonomy_contract": "11 research domains and all 73 leaf nodes have active research taxonomy",
+    "metric_contract": "every level-2 research domain has common metrics plus a dedicated metric pack",
+    "universe_contract": "security classification is many-to-many and can cross vendor industry boundaries",
+    "data_population": "populated only when required stream watermarks exist; definitions alone never count as populated"
+  },
+  "required_templates": [
+    "P0_01_INDUSTRY_PANORAMA",
+    "P0_02_PROSPERITY_TRACKING",
+    "P0_03_COMPANY_DEEP_DIVE",
+    "P0_04_COMPANY_COMPARISON",
+    "P0_05_EARNINGS_REVIEW",
+    "P0_06_EVENT_POLICY_IMPACT",
+    "P0_07_COMPETITION_LANDSCAPE",
+    "P0_08_MARKET_SIZE",
+    "P0_09_VALUATION_EXPECTATIONS",
+    "P0_10_RISK_CATALYST_MONITOR"
+  ],
+  "required_streams": [
+    "master_data",
+    "market_daily",
+    "financials",
+    "announcements",
+    "macro",
+    "official_industry_releases",
+    "official_policy_documents",
+    "research_metadata",
+    "news_leads",
+    "enterprise_risk"
+  ],
+  "sector_research_contracts": {
+    "CR.S.FB": {
+      "thesis": "量价、产品结构、渠道库存、品牌势能与原料成本共同决定增长和盈利质量。",
+      "cycle_drivers": ["居民收入", "CPI", "餐饮景气", "节假日", "原料价格", "渠道库存"],
+      "value_chain": ["农业与原料", "生产加工", "品牌运营", "经销与零售", "消费者"],
+      "vendor_rules": [{"l1":"食品饮料"},{"l1":"农林牧渔","l2_in":["农产品加工","养殖业","种植业","渔业","饲料","农业综合Ⅱ"]}],
+      "macro_metric_ids": ["CR.MAC.CPI_YOY", "CR.MAC.SOCIAL_RETAIL_TOTAL_YOY"]
+    },
+    "CR.S.PH": {
+      "thesis": "流量、转化、客单、复购、大单品和营销效率决定品牌增长的可持续性。",
+      "cycle_drivers": ["可支配收入", "平台流量", "新品周期", "监管", "营销成本"],
+      "value_chain": ["原料与包材", "ODM/OEM", "品牌", "平台与线下渠道", "消费者"],
+      "vendor_rules": [{"l1":"美容护理"}],
+      "macro_metric_ids": ["CR.MAC.DISPOSABLE_INCOME_PC", "CR.MAC.ONLINE_RETAIL_YOY"]
+    },
+    "CR.S.PT": {
+      "thesis": "家庭渗透、用户支出、复购、SKU效率和获客成本决定新消费赛道的单位经济。",
+      "cycle_drivers": ["家庭结构", "城镇化", "情绪消费", "渠道渗透", "监管"],
+      "value_chain": ["原料与制造", "品牌", "平台与门店", "医疗服务", "家庭用户"],
+      "vendor_rules": [{"l1":"农林牧渔","l2":"饲料","l3":"宠物食品"},{"l1":"农林牧渔","l2":"动物保健Ⅱ"},{"security_name_regex":"宠物|孩子王|爱婴|泡泡玛特|布鲁可|创源"}],
+      "macro_metric_ids": ["CR.MAC.DISPOSABLE_INCOME_PC", "CR.MAC.CONSUMPTION_EXPENDITURE_PC"]
+    },
+    "CR.D.AP": {
+      "thesis": "保有量和更新周期决定需求底盘，出货、零售、ASP、库存、出口与成本决定盈利弹性。",
+      "cycle_drivers": ["地产竣工", "以旧换新", "原材料", "出口", "产品创新"],
+      "value_chain": ["零部件", "整机制造", "品牌", "渠道", "售后服务"],
+      "vendor_rules": [{"l1":"家用电器"}],
+      "macro_metric_ids": ["CR.MAC.SOCIAL_RETAIL_TOTAL_YOY", "CR.MAC.CPI_YOY"]
+    },
+    "CR.D.AU": {
+      "thesis": "终端销量、车型周期、折扣、订单、库存和售后决定汽车消费景气和公司盈利。",
+      "cycle_drivers": ["牌照与补贴", "利率", "油价", "新能源渗透", "车型周期", "出口"],
+      "value_chain": ["零部件", "整车", "经销与直营", "金融保险", "售后与出行"],
+      "vendor_rules": [{"l1":"汽车"}],
+      "macro_metric_ids": ["CR.MAC.SOCIAL_RETAIL_TOTAL_YOY", "CR.MAC.DISPOSABLE_INCOME_PC"]
+    },
+    "CR.D.HL": {
+      "thesis": "地产与更新需求影响订单，订单转收入、门店效率、交付周期和原料成本决定盈利与现金流。",
+      "cycle_drivers": ["地产销售与竣工", "旧改", "木材金属价格", "门店扩张", "交付"],
+      "value_chain": ["原材料", "制造", "品牌", "经销门店", "家装交付"],
+      "vendor_rules": [{"l1":"轻工制造","l2_in":["家居用品","包装印刷","造纸"]},{"l1":"农林牧渔","l2":"林业Ⅱ"}],
+      "macro_metric_ids": ["CR.MAC.SOCIAL_RETAIL_TOTAL_YOY", "CR.MAC.DISPOSABLE_INCOME_PC"]
+    },
+    "CR.D.AF": {
+      "thesis": "品牌势能、售罄、正价率、折扣、库销比和直营占比决定收入质量与库存风险。",
+      "cycle_drivers": ["居民收入", "天气", "赛事", "潮流周期", "棉价", "渠道库存"],
+      "value_chain": ["纤维与面料", "制造", "品牌", "批发直营与电商", "消费者"],
+      "vendor_rules": [{"l1":"纺织服饰"}],
+      "macro_metric_ids": ["CR.MAC.DISPOSABLE_INCOME_PC", "CR.MAC.ONLINE_RETAIL_YOY"]
+    },
+    "CR.V.RT": {
+      "thesis": "GMV、流量、转化、变现率、会员渗透和坪效决定平台与零售商经营效率。",
+      "cycle_drivers": ["社零", "线上渗透", "促销节奏", "消费信心", "物流成本"],
+      "value_chain": ["供应商", "平台与零售商", "仓配", "支付营销", "消费者"],
+      "vendor_rules": [{"l1":"商贸零售"}],
+      "macro_metric_ids": ["CR.MAC.SOCIAL_RETAIL_TOTAL_YOY", "CR.MAC.ONLINE_RETAIL_YOY"]
+    },
+    "CR.V.FS": {
+      "thesis": "同店、翻台/交易笔数、客单、门店回收期和闭店率决定连锁扩张质量。",
+      "cycle_drivers": ["客流", "餐饮收入", "节假日", "食品成本", "租金人工"],
+      "value_chain": ["食材供应", "中央厨房", "品牌门店", "外卖平台", "消费者"],
+      "vendor_rules": [{"l1":"社会服务","l2":"酒店餐饮"},{"security_name_regex":"餐饮|咖啡|茶饮|酒家|饭店"}],
+      "macro_metric_ids": ["CR.MAC.SOCIAL_RETAIL_TOTAL_YOY", "CR.MAC.CPI_YOY"]
+    },
+    "CR.V.TL": {
+      "thesis": "出游人次、人均支出、入住率、ADR、RevPAR和景区客单共同刻画旅游休闲景气。",
+      "cycle_drivers": ["居民收入", "假期", "交通运力", "签证政策", "天气", "商旅需求"],
+      "value_chain": ["交通", "OTA/旅行社", "酒店", "景区与休闲", "游客"],
+      "vendor_rules": [{"l1":"社会服务","l2_in":["旅游及景区","酒店餐饮"]},{"l1":"商贸零售","l2":"旅游零售Ⅱ"}],
+      "macro_metric_ids": ["CR.MAC.DISPOSABLE_INCOME_PC", "CR.MAC.CONSUMPTION_EXPENDITURE_PC"]
+    },
+    "CR.V.CE": {
+      "thesis": "用户、付费率、ARPPU、内容储备与入场人次决定内容消费的生命周期与经营杠杆。",
+      "cycle_drivers": ["内容供给", "监管版号", "档期", "用户时长", "营销成本"],
+      "value_chain": ["IP与创作", "制作发行", "平台与院线", "营销", "消费者"],
+      "vendor_rules": [{"l1":"传媒","l2_in":["游戏Ⅱ","影视院线","数字媒体","出版","广告营销"]},{"l1":"社会服务","l2_in":["教育","专业服务","体育Ⅱ"]},{"l1":"轻工制造","l2":"文娱用品"}],
+      "macro_metric_ids": ["CR.MAC.DISPOSABLE_INCOME_PC", "CR.MAC.CONSUMPTION_EXPENDITURE_PC"]
+    }
+  },
+  "quality_gates": [
+    "all_11_sector_packs_present",
+    "all_73_leaf_nodes_reachable",
+    "common_and_sector_metrics_present",
+    "all_required_templates_generated",
+    "all_required_streams_routed",
+    "many_to_many_universe_mapping",
+    "unmapped_security_explicit",
+    "metric_population_gap_explicit",
+    "no_fund_holdings_or_position_inference"
+  ]
+}

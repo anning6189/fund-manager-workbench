@@ -1,0 +1,620 @@
+{
+  "module": 3,
+  "name": "实时研究与持续监控",
+  "status": "passed",
+  "passed": 38,
+  "total": 38,
+  "checks": [
+    {
+      "name": "five_default_monitor_rules",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.1.1",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-monitor-7g7zke03\\monitor.db",
+        "rules": 5,
+        "event_types": 10,
+        "default_subscription_id": "CR.MON.SUB.FULL_CONSUMER.DEFAULT",
+        "delivery": "internal_only"
+      }
+    },
+    {
+      "name": "ten_event_types",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.1.1",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-monitor-7g7zke03\\monitor.db",
+        "rules": 5,
+        "event_types": 10,
+        "default_subscription_id": "CR.MON.SUB.FULL_CONSUMER.DEFAULT",
+        "delivery": "internal_only"
+      }
+    },
+    {
+      "name": "internal_delivery_only",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.1.1",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-monitor-7g7zke03\\monitor.db",
+        "rules": 5,
+        "event_types": 10,
+        "default_subscription_id": "CR.MON.SUB.FULL_CONSUMER.DEFAULT",
+        "delivery": "internal_only"
+      }
+    },
+    {
+      "name": "event_and_scheduled_modes_declared",
+      "passed": true,
+      "detail": {
+        "event_driven": [
+          "announcements",
+          "news_leads",
+          "enterprise_risk",
+          "official_policy_documents"
+        ],
+        "scheduled_scan": [
+          "market_daily",
+          "financials",
+          "macro",
+          "official_industry_releases",
+          "research_metadata",
+          "master_data"
+        ],
+        "system_health": [
+          "freshness_state",
+          "production_coverage",
+          "license_gate",
+          "workflow_backlog",
+          "quality_events"
+        ]
+      }
+    },
+    {
+      "name": "alert_state_machine_complete",
+      "passed": true,
+      "detail": {
+        "states": [
+          "open",
+          "acknowledged",
+          "resolved",
+          "suppressed"
+        ],
+        "automatic_resolution": "allowed only when the underlying machine condition is no longer present",
+        "manual_acknowledgement": "requires a named human",
+        "publication": "alerts are internal research signals and never equal a published conclusion"
+      }
+    },
+    {
+      "name": "no_automatic_external_message",
+      "passed": true,
+      "detail": {
+        "internal_outbox_only": true,
+        "channels": [
+          "in_app",
+          "daily_brief"
+        ],
+        "automatic_external_message": false,
+        "automatic_report_publication": false,
+        "automatic_trade_instruction": false
+      }
+    },
+    {
+      "name": "no_automatic_report_publication",
+      "passed": true,
+      "detail": {
+        "internal_outbox_only": true,
+        "channels": [
+          "in_app",
+          "daily_brief"
+        ],
+        "automatic_external_message": false,
+        "automatic_report_publication": false,
+        "automatic_trade_instruction": false
+      }
+    },
+    {
+      "name": "no_automatic_trade_instruction",
+      "passed": true,
+      "detail": {
+        "internal_outbox_only": true,
+        "channels": [
+          "in_app",
+          "daily_brief"
+        ],
+        "automatic_external_message": false,
+        "automatic_report_publication": false,
+        "automatic_trade_instruction": false
+      }
+    },
+    {
+      "name": "fund_boundary_quality_gate",
+      "passed": true,
+      "detail": [
+        "cutoff_has_timezone",
+        "event_and_available_time_not_after_cutoff",
+        "source_registered",
+        "sector_scope_valid",
+        "deduplication_key_stable",
+        "cooldown_enforced",
+        "evidence_locator_for_material_event",
+        "data_gap_explicit",
+        "license_gate_enforced",
+        "no_fund_holdings_or_position_inference",
+        "no_automatic_trade_instruction",
+        "no_automatic_external_publication"
+      ]
+    },
+    {
+      "name": "official_event_accepted",
+      "passed": true,
+      "detail": {
+        "status": "accepted",
+        "monitor_event_id": "me:11bb11991bd25cadd98a4f3b",
+        "content_hash": "sha256:c252c788637cf28cfb893f3d021af5fd8bd4249a19f07aa9a280e13fee8790ce"
+      }
+    },
+    {
+      "name": "event_ingestion_idempotent",
+      "passed": true,
+      "detail": {
+        "status": "accepted",
+        "monitor_event_id": "me:11bb11991bd25cadd98a4f3b",
+        "content_hash": "sha256:c252c788637cf28cfb893f3d021af5fd8bd4249a19f07aa9a280e13fee8790ce"
+      }
+    },
+    {
+      "name": "future_information_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "future_information_blocked",
+          "message": "event_time and available_at must not be later than cutoff_timestamp",
+          "path": "$"
+        }
+      ]
+    },
+    {
+      "name": "material_event_requires_locator",
+      "passed": true,
+      "detail": [
+        {
+          "code": "material_event_not_locatable",
+          "message": "Material events require source_url and locator",
+          "path": "$"
+        }
+      ]
+    },
+    {
+      "name": "fund_holdings_event_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "portfolio_field_forbidden",
+          "message": "Fund holdings and position inference are forbidden",
+          "path": "$.fund_holdings"
+        }
+      ]
+    },
+    {
+      "name": "unknown_source_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "source_not_registered",
+          "message": "Unknown source: CR.SRC.UNKNOWN",
+          "path": "$"
+        }
+      ]
+    },
+    {
+      "name": "portfolio_boundary_required",
+      "passed": true,
+      "detail": [
+        {
+          "code": "portfolio_boundary_not_confirmed",
+          "message": "Event must confirm the fund-data boundary",
+          "path": "$"
+        }
+      ]
+    },
+    {
+      "name": "monitor_run_truthfully_partial",
+      "passed": true,
+      "detail": {
+        "monitor_run_id": "monitor:47f0cf1b788479821f3767a9",
+        "status": "partially_complete",
+        "idempotent_replay": false,
+        "summary": {
+          "rules_evaluated": 5,
+          "signals_evaluated": 52,
+          "alerts_created": 52,
+          "alerts_deduplicated": 0,
+          "triggered_task_suggestions": 23,
+          "freshness_truth": {
+            "streams": 22,
+            "fresh": 0,
+            "stale": 0,
+            "not_started": 22
+          },
+          "alerts_resolved": 0,
+          "coverage_truth": "definitions_only_until_production_watermarks_are_complete",
+          "external_delivery": 0,
+          "automatic_execution": 0
+        },
+        "brief": {
+          "brief_id": "brief:6394df55351c7cb146ce401e",
+          "json_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-monitor-7g7zke03\\output\\2026-08-12\\monitor-47f0cf1b788479821f3767a9\\monitoring-brief.json",
+          "markdown_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-monitor-7g7zke03\\output\\2026-08-12\\monitor-47f0cf1b788479821f3767a9\\monitoring-brief.md",
+          "content_hash": "sha256:be8fd61bffe973a7eaa776e7aabbfb5b2fefc744423478ec357f383e90295cea"
+        },
+        "alert_ids": [
+          "alert:c8ad10a82c962702dbadfe50",
+          "alert:d836652e8df7bc1a6dd6aaed",
+          "alert:d1a5c9c31e304bceaabc5ef9",
+          "alert:1af3217a6512ee763761a876",
+          "alert:bac7173ee24496fc8840aaff",
+          "alert:4a0a2464cbc45c70aee15374",
+          "alert:5d3e3657ac5c170d156dc640",
+          "alert:479de7e23541cf1a6f0419ee",
+          "alert:eac3445f4194f6a5ff22ca15",
+          "alert:3ea6d04d9e0b27c176bc27af",
+          "alert:af68e8ddf0ab5297d010bc4b",
+          "alert:5b011caac6416d69eb0ca83e",
+          "alert:0e918a40b9a4e7e728976bd8",
+          "alert:696564200dd057c71ba55801",
+          "alert:ac212bd9eb246dd4facf0835",
+          "alert:a4d158ad5bf0d68babc4d441",
+          "alert:d7ace93d2fb1704de77c57d8",
+          "alert:e04c368f6a5d514a31eb0089",
+          "alert:a782a3d7f409cf569df14bb4",
+          "alert:ff078bcdadb70e6a01f2abf1",
+          "alert:906201caa8f0c805c37b8d50",
+          "alert:5ff246bdedd5863f4640a34a",
+          "alert:4c2e3d8afa28e5b54941ea5e",
+          "alert:88f993c38ef062f274b8d225",
+          "alert:abfca0d5dea13c036510ad6b",
+          "alert:c4c1528f12c0dd5646b18a4b",
+          "alert:cd6e4d4ade72fc8e5f8f6a8a",
+          "alert:857a8e24edd2e3b0b9af1e2d",
+          "alert:1120a45be142b482b35b5133",
+          "alert:ed3fd82806ed147db2ea4f1c",
+          "alert:078d95df788568b2b02760fc",
+          "alert:3314415c5927de568bed4365",
+          "alert:101c58bb44895388bef49a21",
+          "alert:6a437d9966ee9d1f05bcef5e",
+          "alert:df376ab5ba7cedfa81b7afa3",
+          "alert:59157d89a5afe344f4212ca1",
+          "alert:09a01c0c328af5d0f07417b9",
+          "alert:d8919e3b83c373c2e66073ad",
+          "alert:d7e8aaddfa2ae5d3b4ba1cab",
+          "alert:5eaea02144bd6a19f318ce3b",
+          "alert:85a739ff695d046047441be2",
+          "alert:2533730d77ab2fd361da9934",
+          "alert:090db75b89ae09ded280123d",
+          "alert:6f3ea93e0a1156805d66f5e8",
+          "alert:ea864e96372c5c92aff4aafa",
+          "alert:79acf02c19eb975ca2a67487",
+          "alert:b885edc461e883647e5a931c",
+          "alert:9e5e6474afa3f9f971eb0cdb",
+          "alert:3281a735a66fab8191f663b0",
+          "alert:572b3bb1653ecc2f57c74f3a",
+          "alert:a613cb0bd919cb93cb94eac6",
+          "alert:88e8f5a0631938dff0afd15b"
+        ]
+      }
+    },
+    {
+      "name": "five_rules_evaluated",
+      "passed": true,
+      "detail": {
+        "rules_evaluated": 5,
+        "signals_evaluated": 52,
+        "alerts_created": 52,
+        "alerts_deduplicated": 0,
+        "triggered_task_suggestions": 23,
+        "freshness_truth": {
+          "streams": 22,
+          "fresh": 0,
+          "stale": 0,
+          "not_started": 22
+        },
+        "alerts_resolved": 0,
+        "coverage_truth": "definitions_only_until_production_watermarks_are_complete",
+        "external_delivery": 0,
+        "automatic_execution": 0
+      }
+    },
+    {
+      "name": "fifty_two_signals_evaluated",
+      "passed": true,
+      "detail": {
+        "rules_evaluated": 5,
+        "signals_evaluated": 52,
+        "alerts_created": 52,
+        "alerts_deduplicated": 0,
+        "triggered_task_suggestions": 23,
+        "freshness_truth": {
+          "streams": 22,
+          "fresh": 0,
+          "stale": 0,
+          "not_started": 22
+        },
+        "alerts_resolved": 0,
+        "coverage_truth": "definitions_only_until_production_watermarks_are_complete",
+        "external_delivery": 0,
+        "automatic_execution": 0
+      }
+    },
+    {
+      "name": "fifty_two_alerts_created",
+      "passed": true,
+      "detail": {
+        "rules_evaluated": 5,
+        "signals_evaluated": 52,
+        "alerts_created": 52,
+        "alerts_deduplicated": 0,
+        "triggered_task_suggestions": 23,
+        "freshness_truth": {
+          "streams": 22,
+          "fresh": 0,
+          "stale": 0,
+          "not_started": 22
+        },
+        "alerts_resolved": 0,
+        "coverage_truth": "definitions_only_until_production_watermarks_are_complete",
+        "external_delivery": 0,
+        "automatic_execution": 0
+      }
+    },
+    {
+      "name": "twenty_three_task_suggestions",
+      "passed": true,
+      "detail": {
+        "rules_evaluated": 5,
+        "signals_evaluated": 52,
+        "alerts_created": 52,
+        "alerts_deduplicated": 0,
+        "triggered_task_suggestions": 23,
+        "freshness_truth": {
+          "streams": 22,
+          "fresh": 0,
+          "stale": 0,
+          "not_started": 22
+        },
+        "alerts_resolved": 0,
+        "coverage_truth": "definitions_only_until_production_watermarks_are_complete",
+        "external_delivery": 0,
+        "automatic_execution": 0
+      }
+    },
+    {
+      "name": "all_22_streams_unhealthy_explicit",
+      "passed": true,
+      "detail": {
+        "rules_evaluated": 5,
+        "signals_evaluated": 52,
+        "alerts_created": 52,
+        "alerts_deduplicated": 0,
+        "triggered_task_suggestions": 23,
+        "freshness_truth": {
+          "streams": 22,
+          "fresh": 0,
+          "stale": 0,
+          "not_started": 22
+        },
+        "alerts_resolved": 0,
+        "coverage_truth": "definitions_only_until_production_watermarks_are_complete",
+        "external_delivery": 0,
+        "automatic_execution": 0
+      }
+    },
+    {
+      "name": "no_external_delivery",
+      "passed": true,
+      "detail": {
+        "rules_evaluated": 5,
+        "signals_evaluated": 52,
+        "alerts_created": 52,
+        "alerts_deduplicated": 0,
+        "triggered_task_suggestions": 23,
+        "freshness_truth": {
+          "streams": 22,
+          "fresh": 0,
+          "stale": 0,
+          "not_started": 22
+        },
+        "alerts_resolved": 0,
+        "coverage_truth": "definitions_only_until_production_watermarks_are_complete",
+        "external_delivery": 0,
+        "automatic_execution": 0
+      }
+    },
+    {
+      "name": "no_automatic_execution",
+      "passed": true,
+      "detail": {
+        "rules_evaluated": 5,
+        "signals_evaluated": 52,
+        "alerts_created": 52,
+        "alerts_deduplicated": 0,
+        "triggered_task_suggestions": 23,
+        "freshness_truth": {
+          "streams": 22,
+          "fresh": 0,
+          "stale": 0,
+          "not_started": 22
+        },
+        "alerts_resolved": 0,
+        "coverage_truth": "definitions_only_until_production_watermarks_are_complete",
+        "external_delivery": 0,
+        "automatic_execution": 0
+      }
+    },
+    {
+      "name": "brief_json_written",
+      "passed": true,
+      "detail": {
+        "brief_id": "brief:6394df55351c7cb146ce401e",
+        "json_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-monitor-7g7zke03\\output\\2026-08-12\\monitor-47f0cf1b788479821f3767a9\\monitoring-brief.json",
+        "markdown_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-monitor-7g7zke03\\output\\2026-08-12\\monitor-47f0cf1b788479821f3767a9\\monitoring-brief.md",
+        "content_hash": "sha256:be8fd61bffe973a7eaa776e7aabbfb5b2fefc744423478ec357f383e90295cea"
+      }
+    },
+    {
+      "name": "brief_markdown_written",
+      "passed": true,
+      "detail": {
+        "brief_id": "brief:6394df55351c7cb146ce401e",
+        "json_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-monitor-7g7zke03\\output\\2026-08-12\\monitor-47f0cf1b788479821f3767a9\\monitoring-brief.json",
+        "markdown_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-monitor-7g7zke03\\output\\2026-08-12\\monitor-47f0cf1b788479821f3767a9\\monitoring-brief.md",
+        "content_hash": "sha256:be8fd61bffe973a7eaa776e7aabbfb5b2fefc744423478ec357f383e90295cea"
+      }
+    },
+    {
+      "name": "same_cutoff_run_idempotent",
+      "passed": true,
+      "detail": {
+        "monitor_run_id": "monitor:47f0cf1b788479821f3767a9",
+        "status": "partially_complete",
+        "idempotent_replay": true,
+        "summary": {
+          "alerts_created": 52,
+          "alerts_deduplicated": 0,
+          "alerts_resolved": 0,
+          "automatic_execution": 0,
+          "coverage_truth": "definitions_only_until_production_watermarks_are_complete",
+          "external_delivery": 0,
+          "freshness_truth": {
+            "fresh": 0,
+            "not_started": 22,
+            "stale": 0,
+            "streams": 22
+          },
+          "rules_evaluated": 5,
+          "signals_evaluated": 52,
+          "triggered_task_suggestions": 23
+        },
+        "brief": {
+          "brief_id": "brief:6394df55351c7cb146ce401e",
+          "brief_date": "2026-08-12",
+          "cutoff_timestamp": "2026-08-12T15:59:59.000Z",
+          "monitor_run_id": "monitor:47f0cf1b788479821f3767a9",
+          "status": "internal_draft",
+          "alert_count": 52,
+          "task_suggestion_count": 23,
+          "artifact_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-monitor-7g7zke03\\output\\2026-08-12\\monitor-47f0cf1b788479821f3767a9\\monitoring-brief.md",
+          "content_hash": "sha256:be8fd61bffe973a7eaa776e7aabbfb5b2fefc744423478ec357f383e90295cea",
+          "created_at": "2026-08-13T11:45:57.151Z"
+        }
+      }
+    },
+    {
+      "name": "next_run_deduplicates_alerts",
+      "passed": true,
+      "detail": {
+        "rules_evaluated": 5,
+        "signals_evaluated": 52,
+        "alerts_created": 0,
+        "alerts_deduplicated": 52,
+        "triggered_task_suggestions": 0,
+        "freshness_truth": {
+          "streams": 22,
+          "fresh": 0,
+          "stale": 0,
+          "not_started": 22
+        },
+        "alerts_resolved": 0,
+        "coverage_truth": "definitions_only_until_production_watermarks_are_complete",
+        "external_delivery": 0,
+        "automatic_execution": 0
+      }
+    },
+    {
+      "name": "dedup_does_not_duplicate_tasks",
+      "passed": true,
+      "detail": {
+        "rules_evaluated": 5,
+        "signals_evaluated": 52,
+        "alerts_created": 0,
+        "alerts_deduplicated": 52,
+        "triggered_task_suggestions": 0,
+        "freshness_truth": {
+          "streams": 22,
+          "fresh": 0,
+          "stale": 0,
+          "not_started": 22
+        },
+        "alerts_resolved": 0,
+        "coverage_truth": "definitions_only_until_production_watermarks_are_complete",
+        "external_delivery": 0,
+        "automatic_execution": 0
+      }
+    },
+    {
+      "name": "agent_cannot_acknowledge_alert",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "named_human_can_acknowledge",
+      "passed": true,
+      "detail": {
+        "alert_id": "alert:c8ad10a82c962702dbadfe50",
+        "state": "acknowledged",
+        "acknowledged_by": "测试研究员"
+      }
+    },
+    {
+      "name": "monitor_audit_schema_complete",
+      "passed": true,
+      "detail": [
+        "monitor_alert_events",
+        "monitor_alerts",
+        "monitor_briefs",
+        "monitor_delivery_outbox",
+        "monitor_events",
+        "monitor_rules",
+        "monitor_runs",
+        "monitor_subscriptions",
+        "monitor_task_triggers"
+      ]
+    },
+    {
+      "name": "one_event_after_idempotent_ingest",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "name": "alert_deduplication_keeps_52",
+      "passed": true,
+      "detail": 52
+    },
+    {
+      "name": "task_deduplication_keeps_23",
+      "passed": true,
+      "detail": 23
+    },
+    {
+      "name": "all_task_triggers_nonautomatic",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "all_deliveries_internal",
+      "passed": true,
+      "detail": {
+        "external": 0,
+        "outbox": 104
+      }
+    },
+    {
+      "name": "all_alerts_internal_only",
+      "passed": true,
+      "detail": [
+        "internal_only"
+      ]
+    }
+  ]
+}

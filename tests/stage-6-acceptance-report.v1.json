@@ -1,0 +1,1245 @@
+{
+  "suite_id": "CR.TEST.STAGE6.KNOWLEDGE_BASE.001",
+  "run_at": "2026-08-13T07:09:11.125Z",
+  "passed": true,
+  "decision": "accept_stage6_reference_knowledge_infrastructure_with_incremental_population_boundary",
+  "checks_passed": 25,
+  "checks_total": 25,
+  "checks": [
+    {
+      "name": "registered_sources_loaded",
+      "passed": true,
+      "detail": 20
+    },
+    {
+      "name": "metric_dictionary_loaded",
+      "passed": true,
+      "detail": 99
+    },
+    {
+      "name": "full_consumer_taxonomy_loaded",
+      "passed": true,
+      "detail": 87
+    },
+    {
+      "name": "seed_ingestion_success",
+      "passed": true,
+      "detail": {
+        "status": "success",
+        "package_id": "CR.SEED.STAGE6.CORE.001",
+        "run_id": "ingest:8a16e1465c11ad0ed95e",
+        "inserted_records": 52,
+        "updated_records": 0
+      }
+    },
+    {
+      "name": "idempotent_ingestion",
+      "passed": true,
+      "detail": {
+        "status": "idempotent_noop",
+        "package_id": "CR.SEED.STAGE6.CORE.001",
+        "run_id": "ingest:8a16e1465c11ad0ed95e",
+        "inserted_records": 0,
+        "updated_records": 0
+      }
+    },
+    {
+      "name": "sqlite_integrity",
+      "passed": true,
+      "detail": {
+        "database": "C:\\Users\\chi\\Documents\\ChatGPT\\New project\\tests\\tmp-stage6-acceptance.db",
+        "database_bytes": 401408,
+        "counts": {
+          "source_catalog": 20,
+          "raw_packages": 1,
+          "metric_definitions": 99,
+          "taxonomy_nodes": 87,
+          "entities": 10,
+          "entity_aliases": 4,
+          "external_identifiers": 2,
+          "relationships": 10,
+          "entity_classifications": 2,
+          "documents": 2,
+          "document_entities": 2,
+          "document_chunks": 4,
+          "evidence": 4,
+          "observations": 12,
+          "ingestion_runs": 1,
+          "ingestion_errors": 0,
+          "source_cursors": 22,
+          "freshness_state": 22,
+          "quality_events": 0
+        },
+        "fts_chunks": 4,
+        "curatable_sources": 13,
+        "foreign_key_violations": [],
+        "integrity_check": "ok"
+      }
+    },
+    {
+      "name": "seed_entities_and_relations",
+      "passed": true,
+      "detail": {
+        "source_catalog": 20,
+        "raw_packages": 1,
+        "metric_definitions": 99,
+        "taxonomy_nodes": 87,
+        "entities": 10,
+        "entity_aliases": 4,
+        "external_identifiers": 2,
+        "relationships": 10,
+        "entity_classifications": 2,
+        "documents": 2,
+        "document_entities": 2,
+        "document_chunks": 4,
+        "evidence": 4,
+        "observations": 12,
+        "ingestion_runs": 1,
+        "ingestion_errors": 0,
+        "source_cursors": 22,
+        "freshness_state": 22,
+        "quality_events": 0
+      }
+    },
+    {
+      "name": "document_knowledge_seed",
+      "passed": true,
+      "detail": {
+        "source_catalog": 20,
+        "raw_packages": 1,
+        "metric_definitions": 99,
+        "taxonomy_nodes": 87,
+        "entities": 10,
+        "entity_aliases": 4,
+        "external_identifiers": 2,
+        "relationships": 10,
+        "entity_classifications": 2,
+        "documents": 2,
+        "document_entities": 2,
+        "document_chunks": 4,
+        "evidence": 4,
+        "observations": 12,
+        "ingestion_runs": 1,
+        "ingestion_errors": 0,
+        "source_cursors": 22,
+        "freshness_state": 22,
+        "quality_events": 0
+      }
+    },
+    {
+      "name": "time_series_seed",
+      "passed": true,
+      "detail": 12
+    },
+    {
+      "name": "entity_identifier_resolution",
+      "passed": true,
+      "detail": {
+        "query": "000333.SZ",
+        "cutoff": "2024-04-30T16:00:00.000Z",
+        "matches": [
+          {
+            "entity_id": "cr:security:000333sz",
+            "entity_type": "security",
+            "canonical_name": "美的集团A股",
+            "jurisdiction": "CN",
+            "status": "active",
+            "alias": null,
+            "id_type": "ticker",
+            "issuer": "SZSE",
+            "identifier": "000333.SZ"
+          }
+        ]
+      }
+    },
+    {
+      "name": "point_in_time_excludes_future_information",
+      "passed": true,
+      "detail": {
+        "entity_id": "cr:legal_entity:midea",
+        "metric_id": "CR.CO.REVENUE",
+        "cutoff_timestamp": "2024-03-27T15:59:59.000Z",
+        "period_end": "2023-12-31",
+        "observations": []
+      }
+    },
+    {
+      "name": "point_in_time_normalizes_timezone",
+      "passed": true,
+      "detail": {
+        "entity_id": "cr:legal_entity:midea",
+        "metric_id": "CR.CO.REVENUE",
+        "cutoff_timestamp": "2024-03-28T14:00:00.000Z",
+        "period_end": "2023-12-31",
+        "observations": []
+      }
+    },
+    {
+      "name": "point_in_time_includes_available_information",
+      "passed": true,
+      "detail": {
+        "entity_id": "cr:legal_entity:midea",
+        "metric_id": "CR.CO.REVENUE",
+        "cutoff_timestamp": "2024-04-30T16:00:00.000Z",
+        "period_end": "2023-12-31",
+        "observations": [
+          {
+            "observation_id": "obs:midea:revenue:2023",
+            "metric_id": "CR.CO.REVENUE",
+            "metric_name": "营业收入",
+            "entity_id": "cr:legal_entity:midea",
+            "canonical_name": "美的集团股份有限公司",
+            "source_id": "CR.SRC.CNINFO",
+            "value_numeric": 372037280000.0,
+            "value_text": null,
+            "unit": "CNY",
+            "period_start": "2023-01-01",
+            "period_end": "2023-12-31",
+            "as_of_date": "2023-12-31",
+            "published_at": "2024-03-27T16:00:00.000Z",
+            "available_at": "2024-03-28T15:59:59.000Z",
+            "value_status": "reported",
+            "restatement_status": "original",
+            "version_no": 1,
+            "evidence_id": "ev:midea:ar2023:financials",
+            "document_id": "CR.DOC.22F4915D91ADA74A37EAB8D0",
+            "title": "美的集团股份有限公司2023年年度报告",
+            "publisher": "美的集团股份有限公司",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2024-03-28/1219429374.PDF",
+            "locator": "PDF第10页主要财务指标；第161页合并利润表",
+            "chunk_id": "cr:chunk:midea-ar2023-financials"
+          }
+        ]
+      }
+    },
+    {
+      "name": "full_text_retrieval",
+      "passed": true,
+      "detail": {
+        "query": "经营活动",
+        "cutoff_timestamp": "2024-04-30T16:00:00.000Z",
+        "entity_id": "cr:legal_entity:midea",
+        "results": [
+          {
+            "chunk_id": "cr:chunk:midea-ar2023-cashflow",
+            "document_id": "CR.DOC.22F4915D91ADA74A37EAB8D0",
+            "title": "美的集团股份有限公司2023年年度报告",
+            "publisher": "美的集团股份有限公司",
+            "published_at": "2024-03-27T16:00:00.000Z",
+            "available_at": "2024-03-28T15:59:59.000Z",
+            "section_path": "合并现金流量表",
+            "locator": "PDF第163页合并现金流量表",
+            "text_content": "美的集团2023年经营活动产生的现金流量净额为579.03亿元。",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2024-03-28/1219429374.PDF",
+            "rank": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "evidence_trace",
+      "passed": true,
+      "detail": {
+        "evidence": {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "locator": "PDF第10页主要财务指标；第161页合并利润表",
+          "evidence_tier": "A",
+          "support_type": "direct",
+          "document_id": "CR.DOC.22F4915D91ADA74A37EAB8D0",
+          "title": "美的集团股份有限公司2023年年度报告",
+          "publisher": "美的集团股份有限公司",
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-03-28/1219429374.PDF",
+          "published_at": "2024-03-27T16:00:00.000Z",
+          "chunk_id": "cr:chunk:midea-ar2023-financials",
+          "section_path": "主要财务指标/合并利润表",
+          "text_content": "美的集团2023年营业收入3720.37亿元，2022年为3439.18亿元；2023年归属于上市公司股东的净利润337.20亿元，营业成本2734.81亿元，销售费用348.81亿元。"
+        },
+        "supported_observations": [
+          {
+            "observation_id": "obs:midea:cost:2023",
+            "metric_id": "CR.CO.OPERATING_COST",
+            "entity_id": "cr:legal_entity:midea",
+            "value_numeric": 273481373000.0,
+            "value_text": null,
+            "unit": "CNY",
+            "period_end": "2023-12-31",
+            "available_at": "2024-03-28T15:59:59.000Z"
+          },
+          {
+            "observation_id": "obs:midea:np:2023",
+            "metric_id": "CR.CO.PARENT_NET_PROFIT",
+            "entity_id": "cr:legal_entity:midea",
+            "value_numeric": 33719935000.0,
+            "value_text": null,
+            "unit": "CNY",
+            "period_end": "2023-12-31",
+            "available_at": "2024-03-28T15:59:59.000Z"
+          },
+          {
+            "observation_id": "obs:midea:revenue:2022",
+            "metric_id": "CR.CO.REVENUE",
+            "entity_id": "cr:legal_entity:midea",
+            "value_numeric": 343917531000.0,
+            "value_text": null,
+            "unit": "CNY",
+            "period_end": "2022-12-31",
+            "available_at": "2024-03-28T15:59:59.000Z"
+          },
+          {
+            "observation_id": "obs:midea:revenue:2023",
+            "metric_id": "CR.CO.REVENUE",
+            "entity_id": "cr:legal_entity:midea",
+            "value_numeric": 372037280000.0,
+            "value_text": null,
+            "unit": "CNY",
+            "period_end": "2023-12-31",
+            "available_at": "2024-03-28T15:59:59.000Z"
+          },
+          {
+            "observation_id": "obs:midea:selling:2023",
+            "metric_id": "CR.CO.SELLING_EXPENSE",
+            "entity_id": "cr:legal_entity:midea",
+            "value_numeric": 34880875000.0,
+            "value_text": null,
+            "unit": "CNY",
+            "period_end": "2023-12-31",
+            "available_at": "2024-03-28T15:59:59.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "revision_ingestion_success",
+      "passed": true,
+      "detail": {
+        "status": "success",
+        "package_id": "CR.TEST.STAGE6.REVISION.001",
+        "run_id": "ingest:93ee2bbf8df562c7c1bb",
+        "inserted_records": 5,
+        "updated_records": 0
+      }
+    },
+    {
+      "name": "revision_history_preserved",
+      "passed": true,
+      "detail": 2
+    },
+    {
+      "name": "old_cutoff_keeps_old_version",
+      "passed": true,
+      "detail": {
+        "entity_id": "cr:legal_entity:midea",
+        "metric_id": "CR.CO.REVENUE",
+        "cutoff_timestamp": "2024-04-30T16:00:00.000Z",
+        "period_end": "2023-12-31",
+        "observations": [
+          {
+            "observation_id": "obs:midea:revenue:2023",
+            "metric_id": "CR.CO.REVENUE",
+            "metric_name": "营业收入",
+            "entity_id": "cr:legal_entity:midea",
+            "canonical_name": "美的集团股份有限公司",
+            "source_id": "CR.SRC.CNINFO",
+            "value_numeric": 372037280000.0,
+            "value_text": null,
+            "unit": "CNY",
+            "period_start": "2023-01-01",
+            "period_end": "2023-12-31",
+            "as_of_date": "2023-12-31",
+            "published_at": "2024-03-27T16:00:00.000Z",
+            "available_at": "2024-03-28T15:59:59.000Z",
+            "value_status": "reported",
+            "restatement_status": "original",
+            "version_no": 1,
+            "evidence_id": "ev:midea:ar2023:financials",
+            "document_id": "CR.DOC.22F4915D91ADA74A37EAB8D0",
+            "title": "美的集团股份有限公司2023年年度报告",
+            "publisher": "美的集团股份有限公司",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2024-03-28/1219429374.PDF",
+            "locator": "PDF第10页主要财务指标；第161页合并利润表",
+            "chunk_id": "cr:chunk:midea-ar2023-financials"
+          }
+        ]
+      }
+    },
+    {
+      "name": "new_cutoff_selects_new_version",
+      "passed": true,
+      "detail": {
+        "entity_id": "cr:legal_entity:midea",
+        "metric_id": "CR.CO.REVENUE",
+        "cutoff_timestamp": "2025-03-31T16:00:00.000Z",
+        "period_end": "2023-12-31",
+        "observations": [
+          {
+            "observation_id": "obs:test:midea:revenue:2023:revision",
+            "metric_id": "CR.CO.REVENUE",
+            "metric_name": "营业收入",
+            "entity_id": "cr:legal_entity:midea",
+            "canonical_name": "美的集团股份有限公司",
+            "source_id": "CR.SRC.CNINFO",
+            "value_numeric": 372037280001.0,
+            "value_text": null,
+            "unit": "CNY",
+            "period_start": "2023-01-01",
+            "period_end": "2023-12-31",
+            "as_of_date": "2023-12-31",
+            "published_at": "2025-03-29T16:00:00.000Z",
+            "available_at": "2025-03-30T15:59:59.000Z",
+            "value_status": "restated",
+            "restatement_status": "test_revision",
+            "version_no": 2,
+            "evidence_id": "ev:test:midea:revision",
+            "document_id": "CR.DOC.TEST.MIDEA2023REVISION",
+            "title": "阶段六测试用更正记录（非真实披露）",
+            "publisher": "Stage6 Test Fixture",
+            "source_url": null,
+            "locator": "test fixture row 1",
+            "chunk_id": "cr:chunk:test-midea-revision"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forbidden_fund_holdings_quarantined",
+      "passed": true,
+      "detail": {
+        "status": "quarantined",
+        "package_id": "CR.TEST.STAGE6.INVALID.FUND_HOLDINGS.001",
+        "issues": [
+          {
+            "code": "fund_holdings_forbidden",
+            "path": "$.fund_holdings",
+            "message": "阶段六禁止基金持仓、组合暴露或仓位推断字段"
+          }
+        ],
+        "issue_report": "C:\\Users\\chi\\Documents\\ChatGPT\\New project\\data\\quarantine\\CR.TEST.STAGE6.INVALID.FUND_HOLDINGS.001.issues.json"
+      }
+    },
+    {
+      "name": "license_gated_raw_storage",
+      "passed": true,
+      "detail": {
+        "status": "raw_stored",
+        "package_id": "CR.TEST.STAGE6.GILDATA.RAW.001",
+        "run_id": "ingest:1a0a809a5c576431c08d",
+        "gate_status": "license_gate",
+        "inserted_records": 1,
+        "updated_records": 0
+      }
+    },
+    {
+      "name": "license_gated_curated_blocked",
+      "passed": true,
+      "detail": {
+        "status": "quarantined",
+        "package_id": "CR.TEST.STAGE6.GILDATA.RAW.001",
+        "issues": [
+          {
+            "code": "license_not_curatable",
+            "path": "$.source_id",
+            "message": "来源仍处许可闸门后，禁止进入curated层；可使用raw目标保存原始包"
+          }
+        ],
+        "issue_report": "C:\\Users\\chi\\Documents\\ChatGPT\\New project\\data\\quarantine\\CR.TEST.STAGE6.GILDATA.RAW.001.issues.json"
+      }
+    },
+    {
+      "name": "package_id_hash_conflict_quarantined",
+      "passed": true,
+      "detail": {
+        "status": "quarantined",
+        "package_id": "CR.SEED.STAGE6.CORE.001",
+        "issues": [
+          {
+            "code": "package_id_content_conflict",
+            "path": "$.package_id",
+            "message": "同一package_id对应了不同内容哈希"
+          }
+        ],
+        "issue_report": "C:\\Users\\chi\\Documents\\ChatGPT\\New project\\data\\quarantine\\CR.SEED.STAGE6.CORE.001.issues.json"
+      }
+    },
+    {
+      "name": "incremental_refresh_plan",
+      "passed": true,
+      "detail": {
+        "generated_at": "2026-08-13T07:09:11.104Z",
+        "task_count": 22,
+        "due_count": 22,
+        "curated_due_count": 14,
+        "license_gated_due_count": 8,
+        "tasks": [
+          {
+            "task_id": "refresh:CR.SRC.BSE:announcements",
+            "source_id": "CR.SRC.BSE",
+            "source_name": "北京证券交易所",
+            "stream_name": "announcements",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "https://www.bse.cn/disclosure/announcement.html",
+            "adapter_id": "CR.CONNECTOR.OFFICIAL.HTTP_DOCUMENT",
+            "ingestion_target": "curated",
+            "blocking_gate": null,
+            "required_post_filters": [
+              "https",
+              "publisher_identity",
+              "publication_time",
+              "content_hash",
+              "locator"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.CNINFO:announcements",
+            "source_id": "CR.SRC.CNINFO",
+            "source_name": "巨潮资讯网法定信息披露",
+            "stream_name": "announcements",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "https://www.cninfo.com.cn/",
+            "adapter_id": "CR.CONNECTOR.OFFICIAL.HTTP_DOCUMENT",
+            "ingestion_target": "curated",
+            "blocking_gate": null,
+            "required_post_filters": [
+              "https",
+              "announcement_record_or_pdf",
+              "sha256",
+              "issuer_and_security_match",
+              "published_at",
+              "page_or_table_locator"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.GILDATA.ANNOUNCEMENT:announcements",
+            "source_id": "CR.SRC.GILDATA.ANNOUNCEMENT",
+            "source_name": "Gildata公告库",
+            "stream_name": "announcements",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "mcp__gildata_aidata__AnnouncementData",
+            "adapter_id": "CR.CONNECTOR.GILDATA.ANNOUNCEMENT",
+            "ingestion_target": "raw_license_gate",
+            "blocking_gate": "license_not_confirmed_for_curated_use",
+            "required_post_filters": [
+              "title_exact_match",
+              "issuer_exact_match",
+              "language_filter",
+              "cutoff_filter",
+              "official_url_preferred",
+              "locator_required",
+              "over_retrieval_filter"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.SSE:announcements",
+            "source_id": "CR.SRC.SSE",
+            "source_name": "上海证券交易所",
+            "stream_name": "announcements",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "https://www.sse.com.cn/disclosure/listedinfo/announcement/",
+            "adapter_id": "CR.CONNECTOR.OFFICIAL.HTTP_DOCUMENT",
+            "ingestion_target": "curated",
+            "blocking_gate": null,
+            "required_post_filters": [
+              "https",
+              "publisher_identity",
+              "publication_time",
+              "content_hash",
+              "locator"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.SZSE:announcements",
+            "source_id": "CR.SRC.SZSE",
+            "source_name": "深圳证券交易所",
+            "stream_name": "announcements",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "https://www.szse.cn/disclosure/listed/notice/index.html",
+            "adapter_id": "CR.CONNECTOR.OFFICIAL.HTTP_DOCUMENT",
+            "ingestion_target": "curated",
+            "blocking_gate": null,
+            "required_post_filters": [
+              "https",
+              "publisher_identity",
+              "publication_time",
+              "content_hash",
+              "locator"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.GILDATA.ENTERPRISE:enterprise_risk",
+            "source_id": "CR.SRC.GILDATA.ENTERPRISE",
+            "source_name": "Gildata工商与企业风险库",
+            "stream_name": "enterprise_risk",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "mcp__gildata_aidata__IcEnterpriseDataQuery",
+            "adapter_id": "CR.CONNECTOR.GILDATA.ENTERPRISE",
+            "ingestion_target": "raw_license_gate",
+            "blocking_gate": "license_not_confirmed_for_curated_use",
+            "required_post_filters": [
+              "legal_name_or_credit_code_exact_match",
+              "observed_at_required",
+              "official_registry_cross_check_for_material_risk",
+              "personal_data_minimization"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.CNINFO:financials",
+            "source_id": "CR.SRC.CNINFO",
+            "source_name": "巨潮资讯网法定信息披露",
+            "stream_name": "financials",
+            "due": true,
+            "cursor": "cninfo:1219928418",
+            "watermark_available_at": "2024-04-30T15:59:59.000Z",
+            "endpoint_or_tool": "https://www.cninfo.com.cn/",
+            "adapter_id": "CR.CONNECTOR.OFFICIAL.HTTP_DOCUMENT",
+            "ingestion_target": "curated",
+            "blocking_gate": null,
+            "required_post_filters": [
+              "https",
+              "announcement_record_or_pdf",
+              "sha256",
+              "issuer_and_security_match",
+              "published_at",
+              "page_or_table_locator"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.GILDATA.FINQUERY:financials",
+            "source_id": "CR.SRC.GILDATA.FINQUERY",
+            "source_name": "Gildata金融结构化数据",
+            "stream_name": "financials",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "mcp__gildata_aidata__FinQuery",
+            "adapter_id": "CR.CONNECTOR.GILDATA.FINANCIAL_RESEARCH",
+            "ingestion_target": "raw_license_gate",
+            "blocking_gate": "license_not_confirmed_for_curated_use",
+            "required_post_filters": [
+              "exact_security_filter",
+              "metric_whitelist",
+              "period_whitelist",
+              "statement_scope_required",
+              "over_retrieval_filter",
+              "official_filing_cross_check"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.GILDATA.MACRO_INDUSTRY:macro",
+            "source_id": "CR.SRC.GILDATA.MACRO_INDUSTRY",
+            "source_name": "Gildata宏观行业时序库",
+            "stream_name": "macro",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "mcp__gildata_aidata__MacroIndustryData",
+            "adapter_id": "CR.CONNECTOR.GILDATA.MACRO_INDUSTRY",
+            "ingestion_target": "raw_license_gate",
+            "blocking_gate": "license_not_confirmed_for_curated_use",
+            "required_post_filters": [
+              "indicator_code_binding",
+              "frequency_filter",
+              "date_filter",
+              "official_origin_field",
+              "revision_snapshot",
+              "derived_series_label"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.NBS:macro",
+            "source_id": "CR.SRC.NBS",
+            "source_name": "国家统计局国家数据",
+            "stream_name": "macro",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "https://data.stats.gov.cn/easyquery.htm?cn=C01",
+            "adapter_id": "CR.CONNECTOR.OFFICIAL.STATISTICS",
+            "ingestion_target": "curated",
+            "blocking_gate": null,
+            "required_post_filters": [
+              "indicator_code",
+              "frequency",
+              "period",
+              "unit",
+              "release_date",
+              "revision_version",
+              "methodology_link"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.PBOC:macro",
+            "source_id": "CR.SRC.PBOC",
+            "source_name": "中国人民银行",
+            "stream_name": "macro",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "https://www.pbc.gov.cn/",
+            "adapter_id": "CR.CONNECTOR.OFFICIAL.STATISTICS",
+            "ingestion_target": "curated",
+            "blocking_gate": null,
+            "required_post_filters": [
+              "indicator_identity",
+              "period",
+              "unit",
+              "release_date",
+              "revision_version"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.GILDATA.FINQUERY:market_daily",
+            "source_id": "CR.SRC.GILDATA.FINQUERY",
+            "source_name": "Gildata金融结构化数据",
+            "stream_name": "market_daily",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "mcp__gildata_aidata__FinQuery",
+            "adapter_id": "CR.CONNECTOR.GILDATA.FINANCIAL_RESEARCH",
+            "ingestion_target": "raw_license_gate",
+            "blocking_gate": "license_not_confirmed_for_curated_use",
+            "required_post_filters": [
+              "exact_security_filter",
+              "metric_whitelist",
+              "period_whitelist",
+              "statement_scope_required",
+              "over_retrieval_filter",
+              "official_filing_cross_check"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.GILDATA.STOCK_UNIVERSE:master_data",
+            "source_id": "CR.SRC.GILDATA.STOCK_UNIVERSE",
+            "source_name": "Gildata股票筛选与行业证券池",
+            "stream_name": "master_data",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "mcp__gildata_aidata__SmartStockSelection",
+            "adapter_id": "CR.CONNECTOR.GILDATA.STOCK_UNIVERSE",
+            "ingestion_target": "raw_license_gate",
+            "blocking_gate": "license_not_confirmed_for_curated_use",
+            "required_post_filters": [
+              "universe_definition",
+              "classification_version",
+              "as_of_date",
+              "requested_field_projection",
+              "no_fund_holding_logic"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.GILDATA.NEWS:news_leads",
+            "source_id": "CR.SRC.GILDATA.NEWS",
+            "source_name": "Gildata资讯舆情库",
+            "stream_name": "news_leads",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "mcp__gildata_aidata__NewsDataQuery",
+            "adapter_id": "CR.CONNECTOR.GILDATA.NEWS",
+            "ingestion_target": "raw_license_gate",
+            "blocking_gate": "license_not_confirmed_for_curated_use",
+            "required_post_filters": [
+              "date_window_filter",
+              "topic_filter",
+              "source_identity",
+              "deduplicate_event",
+              "official_policy_cross_check",
+              "signal_only_default"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.CUSTOMS:official_industry_releases",
+            "source_id": "CR.SRC.CUSTOMS",
+            "source_name": "海关统计数据查询",
+            "stream_name": "official_industry_releases",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "https://online.customs.gov.cn/",
+            "adapter_id": "CR.CONNECTOR.OFFICIAL.TRADE_STATISTICS",
+            "ingestion_target": "curated",
+            "blocking_gate": null,
+            "required_post_filters": [
+              "hs_version",
+              "trade_direction",
+              "partner",
+              "quantity_unit",
+              "currency",
+              "period",
+              "release_date"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.MCT:official_industry_releases",
+            "source_id": "CR.SRC.MCT",
+            "source_name": "文化和旅游部",
+            "stream_name": "official_industry_releases",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "https://www.mct.gov.cn/",
+            "adapter_id": "CR.CONNECTOR.OFFICIAL.STATISTICS",
+            "ingestion_target": "curated",
+            "blocking_gate": null,
+            "required_post_filters": [
+              "statistical_scope",
+              "period",
+              "unit",
+              "sample_or_method",
+              "publication_date"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.MIIT:official_industry_releases",
+            "source_id": "CR.SRC.MIIT",
+            "source_name": "工业和信息化部",
+            "stream_name": "official_industry_releases",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "https://www.miit.gov.cn/",
+            "adapter_id": "CR.CONNECTOR.OFFICIAL.HTTP_DOCUMENT",
+            "ingestion_target": "curated",
+            "blocking_gate": null,
+            "required_post_filters": [
+              "department_identity",
+              "publication_time",
+              "document_version",
+              "content_hash",
+              "table_locator"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.MOFCOM:official_industry_releases",
+            "source_id": "CR.SRC.MOFCOM",
+            "source_name": "商务部商务数据中心",
+            "stream_name": "official_industry_releases",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "https://data.mofcom.gov.cn/",
+            "adapter_id": "CR.CONNECTOR.OFFICIAL.STATISTICS",
+            "ingestion_target": "curated",
+            "blocking_gate": null,
+            "required_post_filters": [
+              "original_data_source",
+              "period",
+              "unit",
+              "release_date",
+              "duplicate_with_nbs_or_customs_label"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.GOVCN:official_policy_documents",
+            "source_id": "CR.SRC.GOVCN",
+            "source_name": "中国政府网政策文件库",
+            "stream_name": "official_policy_documents",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "https://www.gov.cn/zhengce/",
+            "adapter_id": "CR.CONNECTOR.OFFICIAL.POLICY",
+            "ingestion_target": "curated",
+            "blocking_gate": null,
+            "required_post_filters": [
+              "issuing_authority",
+              "document_number",
+              "publication_time",
+              "effective_time",
+              "version_status",
+              "content_hash"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.NDRC:official_policy_documents",
+            "source_id": "CR.SRC.NDRC",
+            "source_name": "国家发展和改革委员会",
+            "stream_name": "official_policy_documents",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "https://www.ndrc.gov.cn/",
+            "adapter_id": "CR.CONNECTOR.OFFICIAL.POLICY",
+            "ingestion_target": "curated",
+            "blocking_gate": null,
+            "required_post_filters": [
+              "issuing_authority",
+              "document_number",
+              "publication_time",
+              "effective_time",
+              "content_hash"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.SAMR:official_policy_documents",
+            "source_id": "CR.SRC.SAMR",
+            "source_name": "国家市场监督管理总局",
+            "stream_name": "official_policy_documents",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "https://www.samr.gov.cn/",
+            "adapter_id": "CR.CONNECTOR.OFFICIAL.POLICY",
+            "ingestion_target": "curated",
+            "blocking_gate": null,
+            "required_post_filters": [
+              "issuing_authority",
+              "publication_time",
+              "affected_product_or_entity",
+              "effective_time",
+              "content_hash"
+            ]
+          },
+          {
+            "task_id": "refresh:CR.SRC.GILDATA.RESEARCH:research_metadata",
+            "source_id": "CR.SRC.GILDATA.RESEARCH",
+            "source_name": "Gildata券商研报库",
+            "stream_name": "research_metadata",
+            "due": true,
+            "cursor": null,
+            "watermark_available_at": null,
+            "endpoint_or_tool": "mcp__gildata_aidata__FinancialResearchReport",
+            "adapter_id": "CR.CONNECTOR.GILDATA.RESEARCH",
+            "ingestion_target": "raw_license_gate",
+            "blocking_gate": "license_not_confirmed_for_curated_use",
+            "required_post_filters": [
+              "sector_exact_filter",
+              "date_filter",
+              "report_identity",
+              "copyright_excerpt_limit",
+              "view_label",
+              "no_primary_fact_without_cross_check"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "freshness_monitoring",
+      "passed": true,
+      "detail": {
+        "checked_at": "2026-08-13T07:09:11.106Z",
+        "summary": {
+          "streams": 22,
+          "fresh": 0,
+          "stale": 1,
+          "not_started": 21
+        },
+        "streams": [
+          {
+            "source_id": "CR.SRC.BSE",
+            "name": "北京证券交易所",
+            "stream_name": "announcements",
+            "expected_max_lag_hours": 6.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.CNINFO",
+            "name": "巨潮资讯网法定信息披露",
+            "stream_name": "announcements",
+            "expected_max_lag_hours": 6.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.GILDATA.ANNOUNCEMENT",
+            "name": "Gildata公告库",
+            "stream_name": "announcements",
+            "expected_max_lag_hours": 6.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.SSE",
+            "name": "上海证券交易所",
+            "stream_name": "announcements",
+            "expected_max_lag_hours": 6.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.SZSE",
+            "name": "深圳证券交易所",
+            "stream_name": "announcements",
+            "expected_max_lag_hours": 6.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.GILDATA.ENTERPRISE",
+            "name": "Gildata工商与企业风险库",
+            "stream_name": "enterprise_risk",
+            "expected_max_lag_hours": 24.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.CNINFO",
+            "name": "巨潮资讯网法定信息披露",
+            "stream_name": "financials",
+            "expected_max_lag_hours": 24.0,
+            "watermark_available_at": "2024-04-30T15:59:59.000Z",
+            "last_success_at": "2026-08-13T07:09:10.953Z",
+            "next_due_at": null,
+            "cursor_status": "success",
+            "lag_hours": 20031.153,
+            "freshness_status": "stale"
+          },
+          {
+            "source_id": "CR.SRC.GILDATA.FINQUERY",
+            "name": "Gildata金融结构化数据",
+            "stream_name": "financials",
+            "expected_max_lag_hours": 24.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.GILDATA.MACRO_INDUSTRY",
+            "name": "Gildata宏观行业时序库",
+            "stream_name": "macro",
+            "expected_max_lag_hours": 24.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.NBS",
+            "name": "国家统计局国家数据",
+            "stream_name": "macro",
+            "expected_max_lag_hours": 24.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.PBOC",
+            "name": "中国人民银行",
+            "stream_name": "macro",
+            "expected_max_lag_hours": 24.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.GILDATA.FINQUERY",
+            "name": "Gildata金融结构化数据",
+            "stream_name": "market_daily",
+            "expected_max_lag_hours": 12.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.GILDATA.STOCK_UNIVERSE",
+            "name": "Gildata股票筛选与行业证券池",
+            "stream_name": "master_data",
+            "expected_max_lag_hours": 168.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.GILDATA.NEWS",
+            "name": "Gildata资讯舆情库",
+            "stream_name": "news_leads",
+            "expected_max_lag_hours": 2.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.CUSTOMS",
+            "name": "海关统计数据查询",
+            "stream_name": "official_industry_releases",
+            "expected_max_lag_hours": 24.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.MCT",
+            "name": "文化和旅游部",
+            "stream_name": "official_industry_releases",
+            "expected_max_lag_hours": 24.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.MIIT",
+            "name": "工业和信息化部",
+            "stream_name": "official_industry_releases",
+            "expected_max_lag_hours": 24.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.MOFCOM",
+            "name": "商务部商务数据中心",
+            "stream_name": "official_industry_releases",
+            "expected_max_lag_hours": 24.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.GOVCN",
+            "name": "中国政府网政策文件库",
+            "stream_name": "official_policy_documents",
+            "expected_max_lag_hours": 24.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.NDRC",
+            "name": "国家发展和改革委员会",
+            "stream_name": "official_policy_documents",
+            "expected_max_lag_hours": 24.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.SAMR",
+            "name": "国家市场监督管理总局",
+            "stream_name": "official_policy_documents",
+            "expected_max_lag_hours": 24.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          },
+          {
+            "source_id": "CR.SRC.GILDATA.RESEARCH",
+            "name": "Gildata券商研报库",
+            "stream_name": "research_metadata",
+            "expected_max_lag_hours": 24.0,
+            "watermark_available_at": null,
+            "last_success_at": null,
+            "next_due_at": null,
+            "cursor_status": "not_started",
+            "lag_hours": null,
+            "freshness_status": "not_started"
+          }
+        ]
+      }
+    }
+  ],
+  "store_status": {
+    "database": "C:\\Users\\chi\\Documents\\ChatGPT\\New project\\tests\\tmp-stage6-acceptance.db",
+    "database_bytes": 417792,
+    "counts": {
+      "source_catalog": 20,
+      "raw_packages": 3,
+      "metric_definitions": 99,
+      "taxonomy_nodes": 87,
+      "entities": 10,
+      "entity_aliases": 4,
+      "external_identifiers": 2,
+      "relationships": 10,
+      "entity_classifications": 2,
+      "documents": 3,
+      "document_entities": 3,
+      "document_chunks": 5,
+      "evidence": 5,
+      "observations": 13,
+      "ingestion_runs": 4,
+      "ingestion_errors": 1,
+      "source_cursors": 22,
+      "freshness_state": 22,
+      "quality_events": 0
+    },
+    "fts_chunks": 5,
+    "curatable_sources": 13,
+    "foreign_key_violations": [],
+    "integrity_check": "ok"
+  },
+  "declared_boundaries": [
+    "全市场公司、品牌、产品和SKU需要按来源许可持续回填和人工审核",
+    "商业渠道、消费者面板与另类数据未采购",
+    "Gildata记录在合同确认前不得进入curated层",
+    "本地FTS5已运行，外部向量索引需另行审批"
+  ],
+  "failures": []
+}

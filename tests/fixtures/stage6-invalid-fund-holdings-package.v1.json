@@ -1,0 +1,7 @@
+{
+  "package_id": "CR.TEST.STAGE6.INVALID.FUND_HOLDINGS.001",
+  "source_id": "CR.SRC.CNINFO",
+  "retrieved_at": "2026-08-13T00:00:00+08:00",
+  "license_tag": "public_filing_research_use",
+  "fund_holdings": [{"fund": "forbidden", "security": "000333.SZ", "weight": 0.1}]
+}

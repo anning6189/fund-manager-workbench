@@ -1,0 +1,63 @@
+{
+  "package_id": "CR.MODEL.PKG.STAGE7.MARKET_SIZE.001",
+  "model_id": "CR.MODEL.MARKET_SIZE_DUAL",
+  "model_type": "market_size_dual",
+  "as_of_timestamp": "2024-05-01T00:00:00+08:00",
+  "environment": "demonstration",
+  "scope": {
+    "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024",
+    "geography": "中国",
+    "industry": "消费行业",
+    "channel": "全渠道",
+    "period": "2024E",
+    "note": "演示整个消费行业市场空间双路径算法；数值均为方法演示假设，不是投资结论。"
+  },
+  "fact_inputs": [],
+  "scenarios": [
+    {
+      "scenario_id": "bear",
+      "assumptions": [
+        {"input_id": "target_population", "value": 200000000, "unit": "person", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：下行情景可触达人群。", "confidence": 0.3},
+        {"input_id": "penetration_rate", "value": 0.12, "unit": "ratio", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：下行情景渗透率。", "confidence": 0.3},
+        {"input_id": "purchase_frequency", "value": 4, "unit": "times/person/year", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：下行情景购买频次。", "confidence": 0.3},
+        {"input_id": "spend_per_purchase", "value": 300, "unit": "CNY/time", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：下行情景客单价。", "confidence": 0.3},
+        {"input_id": "addressable_outlets", "value": 120000, "unit": "outlet", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：下行情景有效网点。", "confidence": 0.3},
+        {"input_id": "annual_units_per_outlet", "value": 700, "unit": "unit/outlet/year", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：下行情景单店销量。", "confidence": 0.3},
+        {"input_id": "average_selling_price", "value": 320, "unit": "CNY/unit", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：下行情景均价。", "confidence": 0.3}
+      ]
+    },
+    {
+      "scenario_id": "base",
+      "assumptions": [
+        {"input_id": "target_population", "value": 220000000, "unit": "person", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：基准情景可触达人群。", "confidence": 0.4},
+        {"input_id": "penetration_rate", "value": 0.15, "unit": "ratio", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：基准情景渗透率。", "confidence": 0.4},
+        {"input_id": "purchase_frequency", "value": 5, "unit": "times/person/year", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：基准情景购买频次。", "confidence": 0.4},
+        {"input_id": "spend_per_purchase", "value": 320, "unit": "CNY/time", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：基准情景客单价。", "confidence": 0.4},
+        {"input_id": "addressable_outlets", "value": 150000, "unit": "outlet", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：基准情景有效网点。", "confidence": 0.4},
+        {"input_id": "annual_units_per_outlet", "value": 1000, "unit": "unit/outlet/year", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：基准情景单店销量。", "confidence": 0.4},
+        {"input_id": "average_selling_price", "value": 340, "unit": "CNY/unit", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：基准情景均价。", "confidence": 0.4}
+      ]
+    },
+    {
+      "scenario_id": "bull",
+      "assumptions": [
+        {"input_id": "target_population", "value": 240000000, "unit": "person", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：上行情景可触达人群。", "confidence": 0.3},
+        {"input_id": "penetration_rate", "value": 0.18, "unit": "ratio", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：上行情景渗透率。", "confidence": 0.3},
+        {"input_id": "purchase_frequency", "value": 6, "unit": "times/person/year", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：上行情景购买频次。", "confidence": 0.3},
+        {"input_id": "spend_per_purchase", "value": 350, "unit": "CNY/time", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：上行情景客单价。", "confidence": 0.3},
+        {"input_id": "addressable_outlets", "value": 180000, "unit": "outlet", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：上行情景有效网点。", "confidence": 0.3},
+        {"input_id": "annual_units_per_outlet", "value": 1400, "unit": "unit/outlet/year", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：上行情景单店销量。", "confidence": 0.3},
+        {"input_id": "average_selling_price", "value": 370, "unit": "CNY/unit", "scope_key": "CN:TOTAL_CONSUMER:ALL_CHANNELS:2024", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "方法演示：上行情景均价。", "confidence": 0.3}
+      ]
+    }
+  ],
+  "calculations": [
+    {"output_id": "market_size_top_down", "output_role": "market_size_top_down", "formula": "target_population * penetration_rate * purchase_frequency * spend_per_purchase", "unit": "CNY", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "market_size_bottom_up", "output_role": "market_size_bottom_up", "formula": "addressable_outlets * annual_units_per_outlet * average_selling_price", "unit": "CNY", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "market_size_midpoint", "output_role": "market_size_midpoint", "formula": "(market_size_top_down + market_size_bottom_up) / 2", "unit": "CNY", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "cross_check_gap", "output_role": "cross_check_gap", "formula": "abs(market_size_top_down - market_size_bottom_up) / market_size_midpoint", "unit": "ratio", "content_label": "AGENT_CALCULATION"}
+  ],
+  "sensitivities": [
+    {"sensitivity_id": "penetration_x_spend", "scenario_id": "base", "x_input_id": "penetration_rate", "x_values": [0.12, 0.15, 0.18], "y_input_id": "spend_per_purchase", "y_values": [280, 320, 360], "output_id": "market_size_top_down"}
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "query": {"date_alignment_mode":"date_range","date_start":"2026-07-16","date_end":"2026-08-12"},
+  "market_observations": [],
+  "normalized_observations": [
+    {
+      "observation_id":"official:miniso:revenue:2025","canonical_key":"miniso|revenue|2025","evidence_tier":"A",
+      "raw_value":21443827,"raw_unit":"RMB_thousand","normalization_factor":1000,"normalized_value":21443827000,"normalized_unit":"CNY"
+    },
+    {
+      "observation_id":"bad:miniso:revenue:2025","canonical_key":"miniso|revenue|2025","evidence_tier":"B",
+      "raw_value":2144.3827,"raw_unit":"RMB_100_million","normalization_factor":100000000,"normalized_value":214438270000,"normalized_unit":"CNY"
+    }
+  ],
+  "risk_events": [], "documents": [], "claims": [], "market_calculations": []
+}

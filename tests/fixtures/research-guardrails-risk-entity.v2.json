@@ -1,0 +1,11 @@
+{
+  "query": {"date_alignment_mode":"date_range","date_start":"2026-07-16","date_end":"2026-08-12"},
+  "market_observations": [], "normalized_observations": [],
+  "risk_events": [
+    {
+      "event_id":"bad:risk:name-only","canonical_entity_id":"cr:unknown:similar-name","legal_identifier":"unknown",
+      "group_relationship":"unverified","event_role":"unknown","materiality_status":"unknown","resolution_method":"name_match_only"
+    }
+  ],
+  "documents": [], "claims": [], "market_calculations": []
+}

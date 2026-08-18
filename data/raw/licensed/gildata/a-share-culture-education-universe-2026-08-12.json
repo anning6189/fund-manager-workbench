@@ -1,0 +1,1420 @@
+{
+  "snapshot_id": "CR.COVERAGE.GILDATA.A_SHARE.CULTURE_EDU.20260812",
+  "source_id": "CR.SRC.GILDATA.STOCK_UNIVERSE",
+  "stream_name": "master_data",
+  "market": "A_SHARE",
+  "provider_as_of_date": "2026-08-12",
+  "retrieved_at": "2026-08-13T06:28:19.255Z",
+  "license_status": "contract_and_redistribution_terms_pending_verification",
+  "ingestion_target": "raw_license_gate",
+  "publication_allowed": false,
+  "requested_fields": [
+    "security_code",
+    "security_id",
+    "market_mic",
+    "security_name",
+    "trading_status",
+    "vendor_industry_l1",
+    "vendor_industry_l2",
+    "vendor_industry_l3"
+  ],
+  "source_reported_count": 138,
+  "projected_count": 138,
+  "over_retrieval_fields_discarded": [
+    "板块代码",
+    "收盘价(元)<[日期]:20260812><[复权方式]:前复权>",
+    "涨跌幅(%)<[日期]:20260812><[复权方式]:前复权>",
+    "涨跌(元)<[日期]:20260812><[复权方式]:前复权>",
+    "最高价(元)<[日期]:20260812><[复权方式]:前复权>",
+    "最低价(元)<[日期]:20260812><[复权方式]:前复权>",
+    "换手率(%)<[日期]:20260812>",
+    "成交量(股)<[日期]:20260812>",
+    "成交额(元)<[日期]:20260812>",
+    "最新股息率(%)<[日期]:20260812>",
+    "总市值(亿元)<[日期]:20260812>",
+    "流通市值(元)<[日期]:20260812>"
+  ],
+  "no_fund_holdings_or_positions": true,
+  "securities": [
+    {
+      "security_code": "300795",
+      "security_id": "300795.SZ",
+      "market_mic": "XSHE",
+      "security_name": "米奥会展",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "专业服务",
+      "vendor_industry_l3": "会展服务"
+    },
+    {
+      "security_code": "000802",
+      "security_id": "000802.SZ",
+      "market_mic": "XSHE",
+      "security_name": "北京文化",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    },
+    {
+      "security_code": "003032",
+      "security_id": "003032.SZ",
+      "market_mic": "XSHE",
+      "security_name": "传智教育",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "培训教育"
+    },
+    {
+      "security_code": "603466",
+      "security_id": "603466.SH",
+      "market_mic": "XSHG",
+      "security_name": "风语筑",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "数字媒体",
+      "vendor_industry_l3": "其他数字媒体"
+    },
+    {
+      "security_code": "300063",
+      "security_id": "300063.SZ",
+      "market_mic": "XSHE",
+      "security_name": "天龙集团",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "300192",
+      "security_id": "300192.SZ",
+      "market_mic": "XSHE",
+      "security_name": "科德教育",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "培训教育"
+    },
+    {
+      "security_code": "002739",
+      "security_id": "002739.SZ",
+      "market_mic": "XSHE",
+      "security_name": "儒意电影",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "院线"
+    },
+    {
+      "security_code": "002400",
+      "security_id": "002400.SZ",
+      "market_mic": "XSHE",
+      "security_name": "省广集团",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "603598",
+      "security_id": "603598.SH",
+      "market_mic": "XSHG",
+      "security_name": "引力传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "300242",
+      "security_id": "300242.SZ",
+      "market_mic": "XSHE",
+      "security_name": "佳云科技",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "300071",
+      "security_id": "300071.SZ",
+      "market_mic": "XSHE",
+      "security_name": "福石控股",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "300359",
+      "security_id": "300359.SZ",
+      "market_mic": "XSHE",
+      "security_name": "全通教育",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "培训教育"
+    },
+    {
+      "security_code": "603721",
+      "security_id": "603721.SH",
+      "market_mic": "XSHG",
+      "security_name": "中广天择",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    },
+    {
+      "security_code": "002905",
+      "security_id": "002905.SZ",
+      "market_mic": "XSHE",
+      "security_name": "金逸影视",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "院线"
+    },
+    {
+      "security_code": "600730",
+      "security_id": "600730.SH",
+      "market_mic": "XSHG",
+      "security_name": "*ST高科",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "培训教育"
+    },
+    {
+      "security_code": "300467",
+      "security_id": "300467.SZ",
+      "market_mic": "XSHE",
+      "security_name": "迅游科技",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "600892",
+      "security_id": "600892.SH",
+      "market_mic": "XSHG",
+      "security_name": "大晟文化",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "002174",
+      "security_id": "002174.SZ",
+      "market_mic": "XSHE",
+      "security_name": "游族网络",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "300031",
+      "security_id": "300031.SZ",
+      "market_mic": "XSHE",
+      "security_name": "宝通科技",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "600977",
+      "security_id": "600977.SH",
+      "market_mic": "XSHG",
+      "security_name": "中国电影",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    },
+    {
+      "security_code": "300860",
+      "security_id": "300860.SZ",
+      "market_mic": "XSHE",
+      "security_name": "锋尚文化",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "专业服务",
+      "vendor_industry_l3": "会展服务"
+    },
+    {
+      "security_code": "300781",
+      "security_id": "300781.SZ",
+      "market_mic": "XSHE",
+      "security_name": "因赛集团",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "300805",
+      "security_id": "300805.SZ",
+      "market_mic": "XSHE",
+      "security_name": "电声股份",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "002659",
+      "security_id": "002659.SZ",
+      "market_mic": "XSHE",
+      "security_name": "凯文教育",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "学历教育"
+    },
+    {
+      "security_code": "600661",
+      "security_id": "600661.SH",
+      "market_mic": "XSHG",
+      "security_name": "昂立教育",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "培训教育"
+    },
+    {
+      "security_code": "002354",
+      "security_id": "002354.SZ",
+      "market_mic": "XSHE",
+      "security_name": "天娱数科",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "603602",
+      "security_id": "603602.SH",
+      "market_mic": "XSHG",
+      "security_name": "纵横通信",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "600825",
+      "security_id": "600825.SH",
+      "market_mic": "XSHG",
+      "security_name": "新华传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "301299",
+      "security_id": "301299.SZ",
+      "market_mic": "XSHE",
+      "security_name": "卓创资讯",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "数字媒体",
+      "vendor_industry_l3": "门户网站"
+    },
+    {
+      "security_code": "300528",
+      "security_id": "300528.SZ",
+      "market_mic": "XSHE",
+      "security_name": "幸福蓝海",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "院线"
+    },
+    {
+      "security_code": "002624",
+      "security_id": "002624.SZ",
+      "market_mic": "XSHE",
+      "security_name": "完美世界",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "603103",
+      "security_id": "603103.SH",
+      "market_mic": "XSHG",
+      "security_name": "横店影视",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "院线"
+    },
+    {
+      "security_code": "301313",
+      "security_id": "301313.SZ",
+      "market_mic": "XSHE",
+      "security_name": "凡拓数创",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "数字媒体",
+      "vendor_industry_l3": "其他数字媒体"
+    },
+    {
+      "security_code": "300688",
+      "security_id": "300688.SZ",
+      "market_mic": "XSHE",
+      "security_name": "创业黑马",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "培训教育"
+    },
+    {
+      "security_code": "600880",
+      "security_id": "600880.SH",
+      "market_mic": "XSHG",
+      "security_name": "博瑞传播",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "教育运营及其他"
+    },
+    {
+      "security_code": "600640",
+      "security_id": "600640.SH",
+      "market_mic": "XSHG",
+      "security_name": "国脉文化",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "数字媒体",
+      "vendor_industry_l3": "其他数字媒体"
+    },
+    {
+      "security_code": "300492",
+      "security_id": "300492.SZ",
+      "market_mic": "XSHE",
+      "security_name": "华图山鼎",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "培训教育"
+    },
+    {
+      "security_code": "000607",
+      "security_id": "000607.SZ",
+      "market_mic": "XSHE",
+      "security_name": "华媒控股",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "广告媒体"
+    },
+    {
+      "security_code": "300058",
+      "security_id": "300058.SZ",
+      "market_mic": "XSHE",
+      "security_name": "蓝色光标",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "002607",
+      "security_id": "002607.SZ",
+      "market_mic": "XSHE",
+      "security_name": "中公教育",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "培训教育"
+    },
+    {
+      "security_code": "002264",
+      "security_id": "002264.SZ",
+      "market_mic": "XSHE",
+      "security_name": "新华都",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "002291",
+      "security_id": "002291.SZ",
+      "market_mic": "XSHE",
+      "security_name": "遥望科技",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "300612",
+      "security_id": "300612.SZ",
+      "market_mic": "XSHE",
+      "security_name": "宣亚国际",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "002181",
+      "security_id": "002181.SZ",
+      "market_mic": "XSHE",
+      "security_name": "粤传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "300148",
+      "security_id": "300148.SZ",
+      "market_mic": "XSHE",
+      "security_name": "天舟文化",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "教育出版"
+    },
+    {
+      "security_code": "002343",
+      "security_id": "002343.SZ",
+      "market_mic": "XSHE",
+      "security_name": "慈文传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    },
+    {
+      "security_code": "600158",
+      "security_id": "600158.SH",
+      "market_mic": "XSHG",
+      "security_name": "中体产业",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "体育Ⅱ",
+      "vendor_industry_l3": "体育Ⅲ"
+    },
+    {
+      "security_code": "605168",
+      "security_id": "605168.SH",
+      "market_mic": "XSHG",
+      "security_name": "三人行",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "600229",
+      "security_id": "600229.SH",
+      "market_mic": "XSHG",
+      "security_name": "城市传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "002878",
+      "security_id": "002878.SZ",
+      "market_mic": "XSHE",
+      "security_name": "元隆雅图",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "600358",
+      "security_id": "600358.SH",
+      "market_mic": "XSHG",
+      "security_name": "国旅联合",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "002712",
+      "security_id": "002712.SZ",
+      "market_mic": "XSHE",
+      "security_name": "思美传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "603729",
+      "security_id": "603729.SH",
+      "market_mic": "XSHG",
+      "security_name": "ST龙韵",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "600556",
+      "security_id": "600556.SH",
+      "market_mic": "XSHG",
+      "security_name": "天下秀",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "300061",
+      "security_id": "300061.SZ",
+      "market_mic": "XSHE",
+      "security_name": "旗天科技",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "300010",
+      "security_id": "300010.SZ",
+      "market_mic": "XSHE",
+      "security_name": "ST豆神",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "教育运营及其他"
+    },
+    {
+      "security_code": "002995",
+      "security_id": "002995.SZ",
+      "market_mic": "XSHE",
+      "security_name": "天地在线",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "002919",
+      "security_id": "002919.SZ",
+      "market_mic": "XSHE",
+      "security_name": "名臣健康",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "001330",
+      "security_id": "001330.SZ",
+      "market_mic": "XSHE",
+      "security_name": "博纳影业",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    },
+    {
+      "security_code": "300291",
+      "security_id": "300291.SZ",
+      "market_mic": "XSHE",
+      "security_name": "百纳千成",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    },
+    {
+      "security_code": "300133",
+      "security_id": "300133.SZ",
+      "market_mic": "XSHE",
+      "security_name": "华策影视",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    },
+    {
+      "security_code": "605577",
+      "security_id": "605577.SH",
+      "market_mic": "XSHG",
+      "security_name": "龙版传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "教育出版"
+    },
+    {
+      "security_code": "600986",
+      "security_id": "600986.SH",
+      "market_mic": "XSHG",
+      "security_name": "浙文互联",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "603888",
+      "security_id": "603888.SH",
+      "market_mic": "XSHG",
+      "security_name": "新华网",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "数字媒体",
+      "vendor_industry_l3": "门户网站"
+    },
+    {
+      "security_code": "000681",
+      "security_id": "000681.SZ",
+      "market_mic": "XSHE",
+      "security_name": "视觉中国",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "数字媒体",
+      "vendor_industry_l3": "图片媒体"
+    },
+    {
+      "security_code": "300987",
+      "security_id": "300987.SZ",
+      "market_mic": "XSHE",
+      "security_name": "川网传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "数字媒体",
+      "vendor_industry_l3": "门户网站"
+    },
+    {
+      "security_code": "002858",
+      "security_id": "002858.SZ",
+      "market_mic": "XSHE",
+      "security_name": "力盛体育",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "体育Ⅱ",
+      "vendor_industry_l3": "体育Ⅲ"
+    },
+    {
+      "security_code": "600228",
+      "security_id": "600228.SH",
+      "market_mic": "XSHG",
+      "security_name": "返利科技",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "数字媒体",
+      "vendor_industry_l3": "门户网站"
+    },
+    {
+      "security_code": "603999",
+      "security_id": "603999.SH",
+      "market_mic": "XSHG",
+      "security_name": "读者传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "300338",
+      "security_id": "300338.SZ",
+      "market_mic": "XSHE",
+      "security_name": "*ST开元",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "培训教育"
+    },
+    {
+      "security_code": "600826",
+      "security_id": "600826.SH",
+      "market_mic": "XSHG",
+      "security_name": "兰生股份",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "专业服务",
+      "vendor_industry_l3": "会展服务"
+    },
+    {
+      "security_code": "601999",
+      "security_id": "601999.SH",
+      "market_mic": "XSHG",
+      "security_name": "出版传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "603230",
+      "security_id": "603230.SH",
+      "market_mic": "XSHG",
+      "security_name": "内蒙新华",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "000892",
+      "security_id": "000892.SZ",
+      "market_mic": "XSHE",
+      "security_name": "欢瑞世纪",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    },
+    {
+      "security_code": "300494",
+      "security_id": "300494.SZ",
+      "market_mic": "XSHE",
+      "security_name": "盛天网络",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "301025",
+      "security_id": "301025.SZ",
+      "market_mic": "XSHE",
+      "security_name": "读客文化",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "300052",
+      "security_id": "300052.SZ",
+      "market_mic": "XSHE",
+      "security_name": "中青宝",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "603533",
+      "security_id": "603533.SH",
+      "market_mic": "XSHG",
+      "security_name": "掌阅科技",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "数字媒体",
+      "vendor_industry_l3": "文字媒体"
+    },
+    {
+      "security_code": "300788",
+      "security_id": "300788.SZ",
+      "market_mic": "XSHE",
+      "security_name": "中信出版",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "002093",
+      "security_id": "002093.SZ",
+      "market_mic": "XSHE",
+      "security_name": "国脉科技",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "学历教育"
+    },
+    {
+      "security_code": "300299",
+      "security_id": "300299.SZ",
+      "market_mic": "XSHE",
+      "security_name": "富春股份",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "601921",
+      "security_id": "601921.SH",
+      "market_mic": "XSHG",
+      "security_name": "浙版传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "教育出版"
+    },
+    {
+      "security_code": "000676",
+      "security_id": "000676.SZ",
+      "market_mic": "XSHE",
+      "security_name": "智度股份",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "603258",
+      "security_id": "603258.SH",
+      "market_mic": "XSHG",
+      "security_name": "电魂网络",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "300364",
+      "security_id": "300364.SZ",
+      "market_mic": "XSHE",
+      "security_name": "中文在线",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "300043",
+      "security_id": "300043.SZ",
+      "market_mic": "XSHE",
+      "security_name": "星辉娱乐",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "600551",
+      "security_id": "600551.SH",
+      "market_mic": "XSHG",
+      "security_name": "时代出版",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "002602",
+      "security_id": "002602.SZ",
+      "market_mic": "XSHE",
+      "security_name": "世纪华通",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "600373",
+      "security_id": "600373.SH",
+      "market_mic": "XSHG",
+      "security_name": "中文传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "301231",
+      "security_id": "301231.SZ",
+      "market_mic": "XSHE",
+      "security_name": "荣信文化",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "600088",
+      "security_id": "600088.SH",
+      "market_mic": "XSHG",
+      "security_name": "中视传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    },
+    {
+      "security_code": "300251",
+      "security_id": "300251.SZ",
+      "market_mic": "XSHE",
+      "security_name": "光线传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    },
+    {
+      "security_code": "300295",
+      "security_id": "300295.SZ",
+      "market_mic": "XSHE",
+      "security_name": "*ST三六五",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "数字媒体",
+      "vendor_industry_l3": "门户网站"
+    },
+    {
+      "security_code": "002292",
+      "security_id": "002292.SZ",
+      "market_mic": "XSHE",
+      "security_name": "奥飞娱乐",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    },
+    {
+      "security_code": "300002",
+      "security_id": "300002.SZ",
+      "market_mic": "XSHE",
+      "security_name": "神州泰岳",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "000793",
+      "security_id": "000793.SZ",
+      "market_mic": "XSHE",
+      "security_name": "ST华闻",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "601928",
+      "security_id": "601928.SH",
+      "market_mic": "XSHG",
+      "security_name": "凤凰传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "教育出版"
+    },
+    {
+      "security_code": "300785",
+      "security_id": "300785.SZ",
+      "market_mic": "XSHE",
+      "security_name": "值得买",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "数字媒体",
+      "vendor_industry_l3": "门户网站"
+    },
+    {
+      "security_code": "002555",
+      "security_id": "002555.SZ",
+      "market_mic": "XSHE",
+      "security_name": "三七互娱",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "603377",
+      "security_id": "603377.SH",
+      "market_mic": "XSHG",
+      "security_name": "ST东时",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "培训教育"
+    },
+    {
+      "security_code": "300533",
+      "security_id": "300533.SZ",
+      "market_mic": "XSHE",
+      "security_name": "冰川网络",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "002558",
+      "security_id": "002558.SZ",
+      "market_mic": "XSHE",
+      "security_name": "巨人网络",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "601949",
+      "security_id": "601949.SH",
+      "market_mic": "XSHG",
+      "security_name": "中国出版",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "300182",
+      "security_id": "300182.SZ",
+      "market_mic": "XSHE",
+      "security_name": "捷成股份",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    },
+    {
+      "security_code": "601811",
+      "security_id": "601811.SH",
+      "market_mic": "XSHG",
+      "security_name": "新华文轩",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "教育出版"
+    },
+    {
+      "security_code": "300050",
+      "security_id": "300050.SZ",
+      "market_mic": "XSHE",
+      "security_name": "世纪鼎利",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "培训教育"
+    },
+    {
+      "security_code": "600757",
+      "security_id": "600757.SH",
+      "market_mic": "XSHG",
+      "security_name": "长江传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "教育出版"
+    },
+    {
+      "security_code": "603825",
+      "security_id": "603825.SH",
+      "market_mic": "XSHG",
+      "security_name": "ST华扬",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "601900",
+      "security_id": "601900.SH",
+      "market_mic": "XSHG",
+      "security_name": "南方传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "教育出版"
+    },
+    {
+      "security_code": "002095",
+      "security_id": "002095.SZ",
+      "market_mic": "XSHE",
+      "security_name": "生意宝",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "数字媒体",
+      "vendor_industry_l3": "门户网站"
+    },
+    {
+      "security_code": "603000",
+      "security_id": "603000.SH",
+      "market_mic": "XSHG",
+      "security_name": "人民网",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "数字媒体",
+      "vendor_industry_l3": "门户网站"
+    },
+    {
+      "security_code": "300418",
+      "security_id": "300418.SZ",
+      "market_mic": "XSHE",
+      "security_name": "昆仑万维",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "603096",
+      "security_id": "603096.SH",
+      "market_mic": "XSHG",
+      "security_name": "新经典",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "300413",
+      "security_id": "300413.SZ",
+      "market_mic": "XSHE",
+      "security_name": "芒果超媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "数字媒体",
+      "vendor_industry_l3": "视频媒体"
+    },
+    {
+      "security_code": "002425",
+      "security_id": "002425.SZ",
+      "market_mic": "XSHE",
+      "security_name": "凯撒文化",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "300113",
+      "security_id": "300113.SZ",
+      "market_mic": "XSHE",
+      "security_name": "顺网科技",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "600633",
+      "security_id": "600633.SH",
+      "market_mic": "XSHG",
+      "security_name": "浙数文化",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "601801",
+      "security_id": "601801.SH",
+      "market_mic": "XSHG",
+      "security_name": "皖新传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "300315",
+      "security_id": "300315.SZ",
+      "market_mic": "XSHE",
+      "security_name": "掌趣科技",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "300459",
+      "security_id": "300459.SZ",
+      "market_mic": "XSHE",
+      "security_name": "汤姆猫",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "601098",
+      "security_id": "601098.SH",
+      "market_mic": "XSHG",
+      "security_name": "中南传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "教育出版"
+    },
+    {
+      "security_code": "002605",
+      "security_id": "002605.SZ",
+      "market_mic": "XSHE",
+      "security_name": "姚记科技",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "002027",
+      "security_id": "002027.SZ",
+      "market_mic": "XSHE",
+      "security_name": "分众传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "广告媒体"
+    },
+    {
+      "security_code": "301171",
+      "security_id": "301171.SZ",
+      "market_mic": "XSHE",
+      "security_name": "易点天下",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "营销代理"
+    },
+    {
+      "security_code": "601019",
+      "security_id": "601019.SH",
+      "market_mic": "XSHG",
+      "security_name": "山东出版",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "教育出版"
+    },
+    {
+      "security_code": "000526",
+      "security_id": "000526.SZ",
+      "market_mic": "XSHE",
+      "security_name": "学大教育",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "培训教育"
+    },
+    {
+      "security_code": "601858",
+      "security_id": "601858.SH",
+      "market_mic": "XSHG",
+      "security_name": "中国科传",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "300027",
+      "security_id": "300027.SZ",
+      "market_mic": "XSHE",
+      "security_name": "ST华谊",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    },
+    {
+      "security_code": "000719",
+      "security_id": "000719.SZ",
+      "market_mic": "XSHE",
+      "security_name": "中原传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "601595",
+      "security_id": "601595.SH",
+      "market_mic": "XSHG",
+      "security_name": "上海电影",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    },
+    {
+      "security_code": "603444",
+      "security_id": "603444.SH",
+      "market_mic": "XSHG",
+      "security_name": "吉比特",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "002517",
+      "security_id": "002517.SZ",
+      "market_mic": "XSHE",
+      "security_name": "恺英网络",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "301102",
+      "security_id": "301102.SZ",
+      "market_mic": "XSHE",
+      "security_name": "兆讯传媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "广告营销",
+      "vendor_industry_l3": "广告媒体"
+    },
+    {
+      "security_code": "301052",
+      "security_id": "301052.SZ",
+      "market_mic": "XSHE",
+      "security_name": "果麦文化",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "大众出版"
+    },
+    {
+      "security_code": "300654",
+      "security_id": "300654.SZ",
+      "market_mic": "XSHE",
+      "security_name": "世纪天鸿",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "出版",
+      "vendor_industry_l3": "教育出版"
+    },
+    {
+      "security_code": "605098",
+      "security_id": "605098.SH",
+      "market_mic": "XSHG",
+      "security_name": "行动教育",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "社会服务",
+      "vendor_industry_l2": "教育",
+      "vendor_industry_l3": "培训教育"
+    },
+    {
+      "security_code": "600715",
+      "security_id": "600715.SH",
+      "market_mic": "XSHG",
+      "security_name": "文投控股",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "游戏Ⅱ",
+      "vendor_industry_l3": "游戏Ⅲ"
+    },
+    {
+      "security_code": "300426",
+      "security_id": "300426.SZ",
+      "market_mic": "XSHE",
+      "security_name": "华智数媒",
+      "trading_status": "正常交易",
+      "vendor_industry_l1": "传媒",
+      "vendor_industry_l2": "影视院线",
+      "vendor_industry_l3": "影视动漫制作"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "snapshots": [
+    {
+      "snapshot_id": "CR.BACKFILL.GILDATA.A_SHARE_CONSUMER.20260812",
+      "source_id": "CR.SRC.GILDATA.STOCK_UNIVERSE",
+      "stream_name": "master_data",
+      "market": "A_SHARE",
+      "provider_as_of_date": "2026-08-12",
+      "retrieved_at": "2026-08-13T06:16:10.490Z",
+      "source_reported_count": 1159,
+      "projected_count": 1159,
+      "content_hash": "sha256:e1ef22bd596fd6b259552a6364e6a06a5936634bd898567ceab2309f66f3457c",
+      "storage_path": "C:\\Users\\chi\\Documents\\ChatGPT\\New project\\data\\raw\\licensed\\gildata\\a-share-consumer-universe-2026-08-12.json",
+      "license_status": "contract_and_redistribution_terms_pending_verification",
+      "ingestion_target": "raw_license_gate",
+      "publication_allowed": 0,
+      "schema_status": "passed",
+      "quality_status": "passed",
+      "field_projection_json": "[\"security_code\",\"security_id\",\"market_mic\",\"security_name\",\"trading_status\",\"board\",\"vendor_industry_l1\",\"vendor_industry_l2\",\"vendor_industry_l3\"]",
+      "discarded_fields_json": "[\"收盘价(元)<[日期]:20260812><[复权方式]:前复权>\",\"涨跌幅(%)<[日期]:20260812><[复权方式]:前复权>\",\"涨跌(元)<[日期]:20260812><[复权方式]:前复权>\",\"最高价(元)<[日期]:20260812><[复权方式]:前复权>\",\"最低价(元)<[日期]:20260812><[复权方式]:前复权>\",\"换手率(%)<[日期]:20260812>\",\"成交量(股)<[日期]:20260812>\",\"成交额(元)<[日期]:20260812>\",\"最新股息率(%)<[日期]:20260812>\",\"总市值(亿元)<[日期]:20260812>\",\"流通市值(元)<[日期]:20260812>\"]",
+      "registered_at": "2026-08-13T06:24:03.814Z"
+    },
+    {
+      "snapshot_id": "CR.COVERAGE.GILDATA.A_SHARE.FULL_CONSUMER.20260812",
+      "source_id": "CR.SRC.GILDATA.STOCK_UNIVERSE",
+      "stream_name": "master_data",
+      "market": "A_SHARE",
+      "provider_as_of_date": "2026-08-12",
+      "retrieved_at": "2026-08-13T06:28:19.255Z",
+      "source_reported_count": 1297,
+      "projected_count": 1275,
+      "content_hash": "sha256:2844f427066fe94db62b05e8fa14c397c5ef086e161de2925e55af266c6ca394",
+      "storage_path": "C:\\Users\\chi\\Documents\\ChatGPT\\New project\\data\\coverage\\module2-full-consumer\\universe-f5e0cc56bd863988544adbf8\\full-consumer-production-snapshot.json",
+      "license_status": "contract_and_redistribution_terms_pending_verification",
+      "ingestion_target": "raw_license_gate",
+      "publication_allowed": 0,
+      "schema_status": "passed",
+      "quality_status": "passed",
+      "field_projection_json": "[\"board\",\"market_mic\",\"security_code\",\"security_id\",\"security_name\",\"trading_status\",\"vendor_industry_l1\",\"vendor_industry_l2\",\"vendor_industry_l3\"]",
+      "discarded_fields_json": "[\"总市值(亿元)<[日期]:20260812>\",\"成交量(股)<[日期]:20260812>\",\"成交额(元)<[日期]:20260812>\",\"换手率(%)<[日期]:20260812>\",\"收盘价(元)<[日期]:20260812><[复权方式]:前复权>\",\"最低价(元)<[日期]:20260812><[复权方式]:前复权>\",\"最新股息率(%)<[日期]:20260812>\",\"最高价(元)<[日期]:20260812><[复权方式]:前复权>\",\"板块代码\",\"流通市值(元)<[日期]:20260812>\",\"涨跌(元)<[日期]:20260812><[复权方式]:前复权>\",\"涨跌幅(%)<[日期]:20260812><[复权方式]:前复权>\"]",
+      "registered_at": "2026-08-13T06:40:17.292Z"
+    }
+  ]
+}

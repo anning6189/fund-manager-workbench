@@ -1,0 +1,68 @@
+{
+  "test_id": "CR.SMOKE.S3S4.001",
+  "version": "1.0.0",
+  "as_of_date": "2024-04-30",
+  "purpose": [
+    "entity_resolution",
+    "taxonomy_routing",
+    "metric_computation",
+    "point_in_time_control",
+    "evidence_traceability",
+    "bounded_conclusion"
+  ],
+  "question": "截至2024年4月30日，比较美的集团（000333.SZ）与格力电器（000651.SZ）的2023年收入增长、毛利率、销售费用率和经营现金流质量；完成实体与行业映射，给出谁的经营表现更强的有限结论，并列出不能据此下结论的部分。",
+  "entities": [
+    {
+      "company_name": "美的集团股份有限公司",
+      "security_id": "000333.SZ",
+      "sector_id": "CR.D.AP"
+    },
+    {
+      "company_name": "珠海格力电器股份有限公司",
+      "security_id": "000651.SZ",
+      "sector_id": "CR.D.AP"
+    }
+  ],
+  "expected_results": [
+    {
+      "security_id": "000333.SZ",
+      "revenue_2023_cny_100m": 3720.37,
+      "revenue_growth_pct": 8.18,
+      "gross_margin_pct": 26.49,
+      "selling_expense_ratio_pct": 9.38,
+      "cfo_to_parent_net_profit_x": 1.72
+    },
+    {
+      "security_id": "000651.SZ",
+      "revenue_2023_cny_100m": 2039.79,
+      "revenue_growth_pct": 7.93,
+      "gross_margin_pct": 30.57,
+      "selling_expense_ratio_pct": 8.40,
+      "cfo_to_parent_net_profit_x": 1.94
+    }
+  ],
+  "acceptance_rules": {
+    "published_at_lte_cutoff": true,
+    "official_primary_evidence_required": true,
+    "metric_formula_reproducible": true,
+    "fact_calculation_inference_separated": true,
+    "single_winner_without_decision_rule_forbidden": true
+  },
+  "audit_result": {
+    "score": 65,
+    "max_score": 100,
+    "status": "design_usable_production_gate_failed",
+    "p0_findings": [
+      "cutoff_not_enforced_in_connector_result_layer",
+      "professional_metrics_not_fully_machine_specified"
+    ],
+    "p1_findings": [
+      "subcategory_stable_codes_missing",
+      "p0_template_field_schemas_missing",
+      "connector_over_retrieval_and_truncation",
+      "evidence_locator_and_provenance_fields_not_populated",
+      "cutoff_timestamp_semantics_missing",
+      "financial_statement_scope_metadata_incomplete"
+    ]
+  }
+}

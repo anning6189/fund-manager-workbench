@@ -1,0 +1,632 @@
+{
+  "module": "5. 基金经理使用界面",
+  "version": "1.0.0",
+  "status": "passed",
+  "passed": 62,
+  "total": 62,
+  "checks": [
+    {
+      "check_id": "M5-001-health-endpoint",
+      "status": "passed",
+      "detail": {
+        "status": "ok",
+        "service": "consumer-research-workbench",
+        "version": "1.3.0"
+      }
+    },
+    {
+      "check_id": "M5-002-security-headers",
+      "status": "passed",
+      "detail": {
+        "Server": "ConsumerResearchWorkbench/1.0 Python/3.12.13",
+        "Date": "Thu, 13 Aug 2026 11:45:58 GMT",
+        "Content-Type": "application/json; charset=utf-8",
+        "Content-Length": "73",
+        "Cache-Control": "no-store",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "Referrer-Policy": "no-referrer",
+        "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+      }
+    },
+    {
+      "check_id": "M5-003-web-interface",
+      "status": "passed",
+      "detail": 200
+    },
+    {
+      "check_id": "M5-004-token-injected",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "check_id": "M5-005-no-store",
+      "status": "passed",
+      "detail": "no-store"
+    },
+    {
+      "check_id": "M5-006-named-user",
+      "status": "passed",
+      "detail": {
+        "name": "模块五验收基金经理",
+        "role": "public_fund_manager",
+        "role_label": "公募基金经理"
+      }
+    },
+    {
+      "check_id": "M5-007-fund-manager-role",
+      "status": "passed",
+      "detail": {
+        "name": "模块五验收基金经理",
+        "role": "public_fund_manager",
+        "role_label": "公募基金经理"
+      }
+    },
+    {
+      "check_id": "M5-008-default-yesterday-cutoff",
+      "status": "passed",
+      "detail": {
+        "date": "2026-08-12",
+        "timezone": "Asia/Shanghai",
+        "rule": "正式研究最晚截止至昨天23:59:59"
+      }
+    },
+    {
+      "check_id": "M5-009-eleven-sectors-summary",
+      "status": "passed",
+      "detail": {
+        "sectors": 11,
+        "products": 110,
+        "open_alerts": 50,
+        "important_alerts": 27,
+        "task_suggestions": 22,
+        "internal_ready_reports": 2,
+        "own_jobs": 0
+      }
+    },
+    {
+      "check_id": "M5-010-110-task-products-summary",
+      "status": "passed",
+      "detail": {
+        "sectors": 11,
+        "products": 110,
+        "open_alerts": 50,
+        "important_alerts": 27,
+        "task_suggestions": 22,
+        "internal_ready_reports": 2,
+        "own_jobs": 0
+      }
+    },
+    {
+      "check_id": "M5-011-truth-boundary",
+      "status": "passed",
+      "detail": "研究包已就绪不等于数据已回填；缺失、过期和授权门禁均会显式展示。"
+    },
+    {
+      "check_id": "M5-012-no-holdings-boundary",
+      "status": "passed",
+      "detail": [
+        "不接入或推断基金持仓",
+        "不生成自动交易指令",
+        "不自动对外发布"
+      ]
+    },
+    {
+      "check_id": "M5-013-no-auto-trading-boundary",
+      "status": "passed",
+      "detail": [
+        "不接入或推断基金持仓",
+        "不生成自动交易指令",
+        "不自动对外发布"
+      ]
+    },
+    {
+      "check_id": "M5-014-no-auto-publication-boundary",
+      "status": "passed",
+      "detail": [
+        "不接入或推断基金持仓",
+        "不生成自动交易指令",
+        "不自动对外发布"
+      ]
+    },
+    {
+      "check_id": "M5-015-eleven-sector-map",
+      "status": "passed",
+      "detail": 11
+    },
+    {
+      "check_id": "M5-016-sector-research-thesis",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "check_id": "M5-017-sector-market-coverage",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "check_id": "M5-018-sector-data-stream-state",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "check_id": "M5-019-110-task-products",
+      "status": "passed",
+      "detail": 110
+    },
+    {
+      "check_id": "M5-020-category-filter",
+      "status": "passed",
+      "detail": 22
+    },
+    {
+      "check_id": "M5-021-sector-filter",
+      "status": "passed",
+      "detail": 10
+    },
+    {
+      "check_id": "M5-022-search",
+      "status": "passed",
+      "detail": 22
+    },
+    {
+      "check_id": "M5-023-product-detail",
+      "status": "passed",
+      "detail": "product:2118ad5757873b92fb74749c"
+    },
+    {
+      "check_id": "M5-024-parameter-schema",
+      "status": "passed",
+      "detail": {
+        "additionalProperties": false,
+        "allowed": [
+          "cutoff_timestamp",
+          "research_question",
+          "markets",
+          "geographies"
+        ],
+        "properties": {
+          "cutoff_timestamp": {
+            "format": "date-time-with-timezone",
+            "type": "string"
+          },
+          "decision_rule": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "entities": {
+            "items": {
+              "optional": [
+                "security_id",
+                "display_name"
+              ],
+              "required": [
+                "entity_id"
+              ]
+            },
+            "type": "array"
+          },
+          "geographies": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "markets": {
+            "items": {
+              "enum": [
+                "A_SHARE",
+                "HK_SHARE"
+              ]
+            },
+            "type": "array"
+          },
+          "metric_queries": {
+            "items": {
+              "optional": [
+                "period_end"
+              ],
+              "required": [
+                "metric_id"
+              ]
+            },
+            "type": "array"
+          },
+          "research_question": {
+            "minLength": 5,
+            "type": "string"
+          }
+        },
+        "required": [
+          "cutoff_timestamp",
+          "research_question"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "check_id": "M5-025-data-readiness-visible",
+      "status": "passed",
+      "detail": "ready_with_data_gaps"
+    },
+    {
+      "check_id": "M5-026-write-token-required",
+      "status": "passed",
+      "detail": {
+        "error": {
+          "code": "request_token_invalid",
+          "message": "页面会话已失效，请刷新页面"
+        }
+      }
+    },
+    {
+      "check_id": "M5-027-favorite",
+      "status": "passed",
+      "detail": {
+        "product_id": "product:2118ad5757873b92fb74749c",
+        "favorite": true
+      }
+    },
+    {
+      "check_id": "M5-028-favorite-persisted",
+      "status": "passed",
+      "detail": 1
+    },
+    {
+      "check_id": "M5-029-unfavorite",
+      "status": "passed",
+      "detail": {
+        "product_id": "product:2118ad5757873b92fb74749c",
+        "favorite": false
+      }
+    },
+    {
+      "check_id": "M5-030-submit-job",
+      "status": "passed",
+      "detail": {
+        "job": {
+          "job_id": "job:71aecceb7dcf5032538d918d",
+          "product_id": "product:2118ad5757873b92fb74749c",
+          "submitted_by": "模块五验收基金经理",
+          "submitter_role": "public_fund_manager",
+          "request_hash": "sha256:32608a0938e3f6c19e37eb8c5de1433fe8d477b5a00dbb071493a8c230614b13",
+          "cutoff_timestamp": "2026-08-12T15:59:59.000Z",
+          "parameters_json": "{\"cutoff_timestamp\":\"2026-08-12T23:59:59+08:00\",\"markets\":[\"A_SHARE\"],\"priority\":\"normal\",\"research_question\":\"截至昨天，该行业景气方向、驱动和风险发生了哪些变化？\"}",
+          "priority": "normal",
+          "status": "queued",
+          "data_readiness": "ready_with_data_gaps",
+          "workflow_request_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-module5-t80rub9j\\workbench-data\\task-library\\jobs\\job-71aecceb7dcf5032538d918d\\workflow-request.json",
+          "workflow_run_id": null,
+          "result_artifact_path": null,
+          "error_json": null,
+          "created_at": "2026-08-13T11:46:00.691Z",
+          "started_at": null,
+          "completed_at": null,
+          "updated_at": "2026-08-13T11:46:00.691Z"
+        },
+        "idempotent_replay": false
+      }
+    },
+    {
+      "check_id": "M5-031-named-submitter",
+      "status": "passed",
+      "detail": {
+        "job_id": "job:71aecceb7dcf5032538d918d",
+        "product_id": "product:2118ad5757873b92fb74749c",
+        "submitted_by": "模块五验收基金经理",
+        "submitter_role": "public_fund_manager",
+        "request_hash": "sha256:32608a0938e3f6c19e37eb8c5de1433fe8d477b5a00dbb071493a8c230614b13",
+        "cutoff_timestamp": "2026-08-12T15:59:59.000Z",
+        "parameters_json": "{\"cutoff_timestamp\":\"2026-08-12T23:59:59+08:00\",\"markets\":[\"A_SHARE\"],\"priority\":\"normal\",\"research_question\":\"截至昨天，该行业景气方向、驱动和风险发生了哪些变化？\"}",
+        "priority": "normal",
+        "status": "queued",
+        "data_readiness": "ready_with_data_gaps",
+        "workflow_request_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-module5-t80rub9j\\workbench-data\\task-library\\jobs\\job-71aecceb7dcf5032538d918d\\workflow-request.json",
+        "workflow_run_id": null,
+        "result_artifact_path": null,
+        "error_json": null,
+        "created_at": "2026-08-13T11:46:00.691Z",
+        "started_at": null,
+        "completed_at": null,
+        "updated_at": "2026-08-13T11:46:00.691Z"
+      }
+    },
+    {
+      "check_id": "M5-032-cutoff-normalized",
+      "status": "passed",
+      "detail": "2026-08-12T15:59:59.000Z"
+    },
+    {
+      "check_id": "M5-033-own-job-visible",
+      "status": "passed",
+      "detail": 1
+    },
+    {
+      "check_id": "M5-034-future-cutoff-rejected",
+      "status": "passed",
+      "detail": {
+        "error": {
+          "code": "validation_failed",
+          "message": "正式行业研究的截止日期最晚只能是昨天"
+        }
+      }
+    },
+    {
+      "check_id": "M5-035-holdings-rejected",
+      "status": "passed",
+      "detail": {
+        "error": {
+          "code": "validation_failed",
+          "message": "禁止提交基金持仓、仓位或组合推断字段"
+        }
+      }
+    },
+    {
+      "check_id": "M5-036-alerts-visible",
+      "status": "passed",
+      "detail": 10
+    },
+    {
+      "check_id": "M5-036A-alert-source-detail",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "check_id": "M5-036B-public-source-link",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "check_id": "M5-037-alert-acknowledgement",
+      "status": "passed",
+      "detail": {
+        "alert_id": "alert:c8ad10a82c962702dbadfe50",
+        "state": "acknowledged",
+        "acknowledged_by": "模块五验收基金经理"
+      }
+    },
+    {
+      "check_id": "M5-038-report-list",
+      "status": "passed",
+      "detail": 3
+    },
+    {
+      "check_id": "M5-039-report-body",
+      "status": "passed",
+      "detail": 2189
+    },
+    {
+      "check_id": "M5-040-claim-graph",
+      "status": "passed",
+      "detail": 19
+    },
+    {
+      "check_id": "M5-041-claim-evidence-trace",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "check_id": "M5-042-counter-evidence",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "check_id": "M5-043-named-annotation",
+      "status": "passed",
+      "detail": {
+        "annotation_id": "annotation:5b87a3360a8fba4c4d0ecf6d",
+        "status": "open",
+        "author": "模块五验收基金经理"
+      }
+    },
+    {
+      "check_id": "M5-044-annotation-persisted",
+      "status": "passed",
+      "detail": 1
+    },
+    {
+      "check_id": "M5-045-human-review-endpoint-removed",
+      "status": "passed",
+      "detail": {
+        "error": {
+          "code": "not_found",
+          "message": "接口不存在"
+        }
+      }
+    },
+    {
+      "check_id": "M5-046-22-coverage-cells",
+      "status": "passed",
+      "detail": 22
+    },
+    {
+      "check_id": "M5-047-license-gates-visible",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "check_id": "M5-048-freshness-visible",
+      "status": "passed",
+      "detail": 22
+    },
+    {
+      "check_id": "M5-049-snapshot-status-visible",
+      "status": "passed",
+      "detail": {
+        "contract_and_redistribution_terms_pending_verification": 2
+      }
+    },
+    {
+      "check_id": "M5-050-audit-log",
+      "status": "passed",
+      "detail": 8
+    },
+    {
+      "check_id": "M5-051-loopback-session",
+      "status": "passed",
+      "detail": [
+        "loopback_only",
+        "active"
+      ]
+    },
+    {
+      "check_id": "M5-052-sqlite-query-indexes",
+      "status": "passed",
+      "detail": [
+        "idx_alias_lookup",
+        "idx_backfill_partition_status",
+        "idx_chunks_document",
+        "idx_classification_node",
+        "idx_documents_available",
+        "idx_entities_type_name",
+        "idx_model_runs_package",
+        "idx_monitor_alert_state",
+        "idx_monitor_alerts_state_severity_time",
+        "idx_monitor_event_time",
+        "idx_monitor_task_status",
+        "idx_observation_cutoff",
+        "idx_observation_query",
+        "idx_relationship_object",
+        "idx_relationship_subject",
+        "idx_snapshot_stream_date",
+        "idx_task_job_submitter",
+        "idx_task_jobs_status_priority",
+        "idx_task_library_jobs_submitter_status_time",
+        "idx_task_products_sector_template",
+        "idx_workbench_annotations_run_status",
+        "idx_workbench_audit_actor_time",
+        "idx_workflow_runs_status_time",
+        "sqlite_autoindex_backfill_partitions_1",
+        "sqlite_autoindex_backfill_runs_1",
+        "sqlite_autoindex_document_chunks_1",
+        "sqlite_autoindex_document_chunks_2",
+        "sqlite_autoindex_document_entities_1",
+        "sqlite_autoindex_documents_1",
+        "sqlite_autoindex_documents_2",
+        "sqlite_autoindex_entities_1",
+        "sqlite_autoindex_entity_aliases_1",
+        "sqlite_autoindex_entity_classifications_1",
+        "sqlite_autoindex_evidence_1",
+        "sqlite_autoindex_external_identifiers_1",
+        "sqlite_autoindex_freshness_state_1",
+        "sqlite_autoindex_ingestion_runs_1",
+        "sqlite_autoindex_ingestion_runs_2",
+        "sqlite_autoindex_metric_definitions_1",
+        "sqlite_autoindex_model_definitions_1",
+        "sqlite_autoindex_model_inputs_1",
+        "sqlite_autoindex_model_inputs_2",
+        "sqlite_autoindex_model_outputs_1",
+        "sqlite_autoindex_model_outputs_2",
+        "sqlite_autoindex_model_packages_1",
+        "sqlite_autoindex_model_runs_1",
+        "sqlite_autoindex_model_runs_2",
+        "sqlite_autoindex_model_sensitivity_results_1",
+        "sqlite_autoindex_model_sensitivity_results_2",
+        "sqlite_autoindex_model_validation_events_1",
+        "sqlite_autoindex_monitor_alert_events_1",
+        "sqlite_autoindex_monitor_alerts_1",
+        "sqlite_autoindex_monitor_alerts_2",
+        "sqlite_autoindex_monitor_briefs_1",
+        "sqlite_autoindex_monitor_delivery_outbox_1",
+        "sqlite_autoindex_monitor_events_1",
+        "sqlite_autoindex_monitor_rules_1",
+        "sqlite_autoindex_monitor_runs_1",
+        "sqlite_autoindex_monitor_subscriptions_1",
+        "sqlite_autoindex_monitor_task_triggers_1",
+        "sqlite_autoindex_observations_1",
+        "sqlite_autoindex_production_coverage_watermarks_1",
+        "sqlite_autoindex_production_dataset_contracts_1",
+        "sqlite_autoindex_production_quality_results_1",
+        "sqlite_autoindex_production_snapshots_1",
+        "sqlite_autoindex_quality_events_1",
+        "sqlite_autoindex_raw_packages_1",
+        "sqlite_autoindex_relationships_1",
+        "sqlite_autoindex_research_coverage_status_1",
+        "sqlite_autoindex_research_sector_packs_1",
+        "sqlite_autoindex_research_task_packages_1",
+        "sqlite_autoindex_research_universe_members_1",
+        "sqlite_autoindex_research_universe_snapshots_1",
+        "sqlite_autoindex_schema_migrations_1",
+        "sqlite_autoindex_snapshot_promotion_events_1",
+        "sqlite_autoindex_source_catalog_1",
+        "sqlite_autoindex_source_cursors_1",
+        "sqlite_autoindex_source_license_decisions_1",
+        "sqlite_autoindex_task_library_favorites_1",
+        "sqlite_autoindex_task_library_job_events_1",
+        "sqlite_autoindex_task_library_jobs_1",
+        "sqlite_autoindex_task_library_jobs_2",
+        "sqlite_autoindex_task_library_product_versions_1",
+        "sqlite_autoindex_task_library_product_versions_2",
+        "sqlite_autoindex_task_library_products_1",
+        "sqlite_autoindex_task_library_products_2",
+        "sqlite_autoindex_task_library_reviews_1",
+        "sqlite_autoindex_task_library_role_permissions_1",
+        "sqlite_autoindex_task_library_saved_views_1",
+        "sqlite_autoindex_task_library_templates_1",
+        "sqlite_autoindex_task_library_usage_events_1",
+        "sqlite_autoindex_taxonomy_nodes_1",
+        "sqlite_autoindex_taxonomy_vendor_mappings_1",
+        "sqlite_autoindex_workbench_audit_events_1",
+        "sqlite_autoindex_workbench_installations_1",
+        "sqlite_autoindex_workbench_report_annotations_1",
+        "sqlite_autoindex_workbench_sessions_1",
+        "sqlite_autoindex_workbench_user_preferences_1",
+        "sqlite_autoindex_workflow_artifacts_1",
+        "sqlite_autoindex_workflow_claim_evidence_1",
+        "sqlite_autoindex_workflow_claims_1",
+        "sqlite_autoindex_workflow_definitions_1",
+        "sqlite_autoindex_workflow_packages_1",
+        "sqlite_autoindex_workflow_reviews_1",
+        "sqlite_autoindex_workflow_runs_1",
+        "sqlite_autoindex_workflow_tasks_1"
+      ]
+    },
+    {
+      "check_id": "M5-053-host-header-defense",
+      "status": "passed",
+      "detail": {
+        "error": {
+          "code": "host_denied",
+          "message": "仅允许从本机访问"
+        }
+      }
+    },
+    {
+      "check_id": "M5-054-no-human-review-records",
+      "status": "passed",
+      "detail": 0
+    },
+    {
+      "check_id": "M5-055-report-directly-visible",
+      "status": "passed",
+      "detail": 1
+    },
+    {
+      "check_id": "M5-056-homepage-morning-brief",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "check_id": "M5-057-six-to-eight-priority-items",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "check_id": "M5-058-daily-report-deeplink",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "check_id": "M5-059-sector-and-task-pages-removed",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "check_id": "M5-060-brief-detail-interaction",
+      "status": "passed",
+      "detail": null
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "package_id": "CR.TEST.STAGE6.INVALID.FUND_HOLDINGS.001",
+  "issues": [
+    {
+      "code": "fund_holdings_forbidden",
+      "path": "$.fund_holdings",
+      "message": "阶段六禁止基金持仓、组合暴露或仓位推断字段"
+    }
+  ]
+}

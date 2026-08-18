@@ -1,0 +1,33 @@
+{
+  "package_id": "CR.MODEL.PKG.STAGE7.OPERATING_BRIDGE.001",
+  "model_id": "CR.MODEL.COMPANY_OPERATING_BRIDGE",
+  "model_type": "company_operating_bridge",
+  "as_of_timestamp": "2024-05-01T00:00:00+08:00",
+  "environment": "demonstration",
+  "scope": {
+    "scope_key": "CN:MIDEA:CONSOLIDATED:2023",
+    "entity_id": "cr:legal_entity:midea",
+    "period": "2023",
+    "note": "收入为阶段六事实；销量贡献是假设，价格与结构贡献由桥接反推。"
+  },
+  "fact_inputs": [
+    {"input_id": "revenue_previous", "entity_id": "cr:legal_entity:midea", "metric_id": "CR.CO.REVENUE", "period_end": "2022-12-31", "unit": "CNY", "scope_key": "CN:MIDEA:CONSOLIDATED:2023", "content_label": "FACT_OBSERVATION"},
+    {"input_id": "revenue_current", "entity_id": "cr:legal_entity:midea", "metric_id": "CR.CO.REVENUE", "period_end": "2023-12-31", "unit": "CNY", "scope_key": "CN:MIDEA:CONSOLIDATED:2023", "content_label": "FACT_OBSERVATION"}
+  ],
+  "scenarios": [
+    {
+      "scenario_id": "base",
+      "assumptions": [
+        {"input_id": "volume_growth_assumption", "value": 0.04, "unit": "ratio", "scope_key": "CN:MIDEA:CONSOLIDATED:2023", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示如何在缺少销量事实时显式记录量增假设。", "confidence": 0.3}
+      ]
+    }
+  ],
+  "calculations": [
+    {"output_id": "actual_revenue_growth", "output_role": "actual_revenue_growth", "formula": "revenue_current / revenue_previous - 1", "unit": "ratio", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "volume_contribution", "output_role": "volume_contribution", "formula": "volume_growth_assumption", "unit": "ratio", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "price_mix_contribution", "output_role": "price_mix_contribution", "formula": "(1 + actual_revenue_growth) / (1 + volume_contribution) - 1", "unit": "ratio", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "interaction_contribution", "output_role": "interaction_contribution", "formula": "volume_contribution * price_mix_contribution", "unit": "ratio", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "bridge_residual", "output_role": "bridge_residual", "formula": "actual_revenue_growth - volume_contribution - price_mix_contribution - interaction_contribution", "unit": "ratio", "content_label": "AGENT_CALCULATION"}
+  ],
+  "sensitivities": []
+}

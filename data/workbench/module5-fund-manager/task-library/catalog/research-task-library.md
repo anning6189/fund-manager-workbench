@@ -1,0 +1,131 @@
+# 全消费行业研究任务库
+
+> 任务产品：110 个；仅供内部研究使用。
+
+## 产品分类
+
+- company: 22
+- event: 22
+- industry: 22
+- model: 22
+- monitoring: 22
+
+## 使用边界
+
+- 任务上线不代表数据已齐备。
+- 研究结果在系统质量门通过后直接展示，不设置人工或外部审核。
+- 不使用或推断基金持仓、仓位。
+- 不自动生成交易指令。
+
+## 任务清单
+
+- `product:5ca907b544d30215cd6265fd`｜纺织服饰与运动户外 · 行业全景研究｜industry｜ready_with_data_gaps
+- `product:05131e054420b2c8eb533a46`｜纺织服饰与运动户外 · 景气跟踪｜monitoring｜ready_with_data_gaps
+- `product:9d94a4c5ee0447dadedd5d39`｜纺织服饰与运动户外 · 公司深度研究｜company｜ready_with_data_gaps
+- `product:5a220d5027a7db308fe09560`｜纺织服饰与运动户外 · 公司横向比较｜company｜ready_with_data_gaps
+- `product:f1b761878c00ae1bc22ae8ca`｜纺织服饰与运动户外 · 财报点评｜event｜ready_with_data_gaps
+- `product:f62e162382086eace08a4767`｜纺织服饰与运动户外 · 事件与政策影响｜event｜ready_with_data_gaps
+- `product:7ca5ca175164d13e11348e21`｜纺织服饰与运动户外 · 竞争格局研究｜industry｜ready_with_data_gaps
+- `product:e16edf8bd1bab881113f750e`｜纺织服饰与运动户外 · 市场规模测算｜model｜ready_with_data_gaps
+- `product:f81666007011e62a00ef0520`｜纺织服饰与运动户外 · 估值与预期差｜model｜ready_with_data_gaps
+- `product:4c3e277224030d4161b31435`｜纺织服饰与运动户外 · 风险与催化监控｜monitoring｜ready_with_data_gaps
+- `product:953b4933893beb397ff98bc8`｜家电与消费电子 · 行业全景研究｜industry｜ready_with_data_gaps
+- `product:449781957085365d74c82c7d`｜家电与消费电子 · 景气跟踪｜monitoring｜ready_with_data_gaps
+- `product:68dfcee582e75dd9dd32f7f2`｜家电与消费电子 · 公司深度研究｜company｜ready_with_data_gaps
+- `product:981ad72b036aaa30c393c4a8`｜家电与消费电子 · 公司横向比较｜company｜ready_with_data_gaps
+- `product:11ab7b354a6e10492f977d3b`｜家电与消费电子 · 财报点评｜event｜ready_with_data_gaps
+- `product:dfd27e1c42c22a88cfb1dff8`｜家电与消费电子 · 事件与政策影响｜event｜ready_with_data_gaps
+- `product:57c3e2777709aaf5146077ec`｜家电与消费电子 · 竞争格局研究｜industry｜ready_with_data_gaps
+- `product:26f9182570c3d31f94a6170b`｜家电与消费电子 · 市场规模测算｜model｜ready_with_data_gaps
+- `product:e76eb70eba85f85f013a807a`｜家电与消费电子 · 估值与预期差｜model｜ready_with_data_gaps
+- `product:2432f2a54aee4b8e3ee46575`｜家电与消费电子 · 风险与催化监控｜monitoring｜ready_with_data_gaps
+- `product:0b3fa62a9e21c43647529dca`｜汽车与出行消费 · 行业全景研究｜industry｜ready_with_data_gaps
+- `product:e41fb9ed8ca638aed4521ed3`｜汽车与出行消费 · 景气跟踪｜monitoring｜ready_with_data_gaps
+- `product:e393297ccaef63ccb31dd757`｜汽车与出行消费 · 公司深度研究｜company｜ready_with_data_gaps
+- `product:b8a11db3514d2efe810338a9`｜汽车与出行消费 · 公司横向比较｜company｜ready_with_data_gaps
+- `product:cc84ec8a54102b8a4dd88482`｜汽车与出行消费 · 财报点评｜event｜ready_with_data_gaps
+- `product:fa521d1c93cba05b9d500180`｜汽车与出行消费 · 事件与政策影响｜event｜ready_with_data_gaps
+- `product:6e649eeb4a1ba9ffc1931b4e`｜汽车与出行消费 · 竞争格局研究｜industry｜ready_with_data_gaps
+- `product:e9f600d53426f1707f5e3b44`｜汽车与出行消费 · 市场规模测算｜model｜ready_with_data_gaps
+- `product:7e0031e8ec670272f3baff55`｜汽车与出行消费 · 估值与预期差｜model｜ready_with_data_gaps
+- `product:e35dd23adaafaf5fd1937ab2`｜汽车与出行消费 · 风险与催化监控｜monitoring｜ready_with_data_gaps
+- `product:e81bdec9e701abec5c838b51`｜家居与生活空间 · 行业全景研究｜industry｜ready_with_data_gaps
+- `product:022af1b56d510ca4fa06b193`｜家居与生活空间 · 景气跟踪｜monitoring｜ready_with_data_gaps
+- `product:9cadd9a0dbf699982684df66`｜家居与生活空间 · 公司深度研究｜company｜ready_with_data_gaps
+- `product:e69c3e365908ab9b81704af7`｜家居与生活空间 · 公司横向比较｜company｜ready_with_data_gaps
+- `product:2f96bad95124caaed38bb210`｜家居与生活空间 · 财报点评｜event｜ready_with_data_gaps
+- `product:a2daddc08393d842e924c8f7`｜家居与生活空间 · 事件与政策影响｜event｜ready_with_data_gaps
+- `product:a1e572d54b6d770d66cd1897`｜家居与生活空间 · 竞争格局研究｜industry｜ready_with_data_gaps
+- `product:1de7fc1f9473382501d799e1`｜家居与生活空间 · 市场规模测算｜model｜ready_with_data_gaps
+- `product:f362749878f9cfcbdc97ba92`｜家居与生活空间 · 估值与预期差｜model｜ready_with_data_gaps
+- `product:6e3af164db0b61d14e34305c`｜家居与生活空间 · 风险与催化监控｜monitoring｜ready_with_data_gaps
+- `product:2118ad5757873b92fb74749c`｜食品饮料 · 行业全景研究｜industry｜ready_with_data_gaps
+- `product:171e5b66fe220605f6a273f2`｜食品饮料 · 景气跟踪｜monitoring｜ready_with_data_gaps
+- `product:6ebad1969360cf875c947ac2`｜食品饮料 · 公司深度研究｜company｜ready_with_data_gaps
+- `product:d1875bd59a9ab109d16a0e03`｜食品饮料 · 公司横向比较｜company｜ready_with_data_gaps
+- `product:35c3738456c2407f53e0eb52`｜食品饮料 · 财报点评｜event｜ready_with_data_gaps
+- `product:7ede29be6947f2e7766e84e2`｜食品饮料 · 事件与政策影响｜event｜ready_with_data_gaps
+- `product:62bff0c2ac02ed8c87f233c0`｜食品饮料 · 竞争格局研究｜industry｜ready_with_data_gaps
+- `product:d03c625445a7182bc0847aff`｜食品饮料 · 市场规模测算｜model｜ready_with_data_gaps
+- `product:3e52c963ad138b8bb7e7e144`｜食品饮料 · 估值与预期差｜model｜ready_with_data_gaps
+- `product:a2415405dea2e54038e17341`｜食品饮料 · 风险与催化监控｜monitoring｜ready_with_data_gaps
+- `product:967c3c3273de2c242db2eae6`｜美容个护与家庭护理 · 行业全景研究｜industry｜ready_with_data_gaps
+- `product:b89d97346de6680b195f698c`｜美容个护与家庭护理 · 景气跟踪｜monitoring｜ready_with_data_gaps
+- `product:49de91a6b87e338be194a78c`｜美容个护与家庭护理 · 公司深度研究｜company｜ready_with_data_gaps
+- `product:bf2ba2634fc1761039071504`｜美容个护与家庭护理 · 公司横向比较｜company｜ready_with_data_gaps
+- `product:6b2fb99ca7a09e67b0f444fe`｜美容个护与家庭护理 · 财报点评｜event｜ready_with_data_gaps
+- `product:12fc0206a6db5294b9b8dfca`｜美容个护与家庭护理 · 事件与政策影响｜event｜ready_with_data_gaps
+- `product:4bb120495514b079d0821f23`｜美容个护与家庭护理 · 竞争格局研究｜industry｜ready_with_data_gaps
+- `product:4eb5f2c2d869e6ca3767c21d`｜美容个护与家庭护理 · 市场规模测算｜model｜ready_with_data_gaps
+- `product:a5633dd20d2aac1fde95e029`｜美容个护与家庭护理 · 估值与预期差｜model｜ready_with_data_gaps
+- `product:52e357e98b7b63bb66735f06`｜美容个护与家庭护理 · 风险与催化监控｜monitoring｜ready_with_data_gaps
+- `product:2a587f2f1aca1ab0802c30a1`｜宠物与家庭新消费 · 行业全景研究｜industry｜ready_with_data_gaps
+- `product:fab36c2da99b22a5bb1cecf4`｜宠物与家庭新消费 · 景气跟踪｜monitoring｜ready_with_data_gaps
+- `product:e575cf0e1b604738ca68aacc`｜宠物与家庭新消费 · 公司深度研究｜company｜ready_with_data_gaps
+- `product:c324c8f296f6a83bed3c45bc`｜宠物与家庭新消费 · 公司横向比较｜company｜ready_with_data_gaps
+- `product:28ffcd272b5fd1be4d688a24`｜宠物与家庭新消费 · 财报点评｜event｜ready_with_data_gaps
+- `product:34ca50cd6d0f4880709125a9`｜宠物与家庭新消费 · 事件与政策影响｜event｜ready_with_data_gaps
+- `product:65686c074a517022122bdc5c`｜宠物与家庭新消费 · 竞争格局研究｜industry｜ready_with_data_gaps
+- `product:bfbe8cd3d667b68ffa38288e`｜宠物与家庭新消费 · 市场规模测算｜model｜ready_with_data_gaps
+- `product:b726e23f867867ab81a1dbb3`｜宠物与家庭新消费 · 估值与预期差｜model｜ready_with_data_gaps
+- `product:62c57abab16be9aab0f8221d`｜宠物与家庭新消费 · 风险与催化监控｜monitoring｜ready_with_data_gaps
+- `product:2987a1058999d30f297ef195`｜文化娱乐与教育消费 · 行业全景研究｜industry｜ready_with_data_gaps
+- `product:4dbc9a5fddc9533679b14d93`｜文化娱乐与教育消费 · 景气跟踪｜monitoring｜ready_with_data_gaps
+- `product:a75b24cca75fe15400a72d8d`｜文化娱乐与教育消费 · 公司深度研究｜company｜ready_with_data_gaps
+- `product:31798a1bf4eb9360cdf0bd7a`｜文化娱乐与教育消费 · 公司横向比较｜company｜ready_with_data_gaps
+- `product:dfa39b5603520457e907295a`｜文化娱乐与教育消费 · 财报点评｜event｜ready_with_data_gaps
+- `product:519e274b8f5e34ae58e46134`｜文化娱乐与教育消费 · 事件与政策影响｜event｜ready_with_data_gaps
+- `product:27468923e6e4ed3dc8db8efd`｜文化娱乐与教育消费 · 竞争格局研究｜industry｜ready_with_data_gaps
+- `product:a095633c05138da0c42a1a49`｜文化娱乐与教育消费 · 市场规模测算｜model｜ready_with_data_gaps
+- `product:fb7431cee80a124302c86fed`｜文化娱乐与教育消费 · 估值与预期差｜model｜ready_with_data_gaps
+- `product:753cd6d50792abcc001384a0`｜文化娱乐与教育消费 · 风险与催化监控｜monitoring｜ready_with_data_gaps
+- `product:5fd47e491c4d10a08bab95e6`｜餐饮与本地生活 · 行业全景研究｜industry｜ready_with_data_gaps
+- `product:3f9b0321c3f7cfcf3d8f6c42`｜餐饮与本地生活 · 景气跟踪｜monitoring｜ready_with_data_gaps
+- `product:78f659628273bfa4657da162`｜餐饮与本地生活 · 公司深度研究｜company｜ready_with_data_gaps
+- `product:95825325e80d578ba14ae67a`｜餐饮与本地生活 · 公司横向比较｜company｜ready_with_data_gaps
+- `product:6f0279079e3c39b2046debf0`｜餐饮与本地生活 · 财报点评｜event｜ready_with_data_gaps
+- `product:40128ad76e17533f0bdff57c`｜餐饮与本地生活 · 事件与政策影响｜event｜ready_with_data_gaps
+- `product:dc297df243c7af5d559fe045`｜餐饮与本地生活 · 竞争格局研究｜industry｜ready_with_data_gaps
+- `product:d2c361caae3b5b7bf91fad02`｜餐饮与本地生活 · 市场规模测算｜model｜ready_with_data_gaps
+- `product:56524adcbd687fa975c1deca`｜餐饮与本地生活 · 估值与预期差｜model｜ready_with_data_gaps
+- `product:a21272235c06bcf8bf85a0f6`｜餐饮与本地生活 · 风险与催化监控｜monitoring｜ready_with_data_gaps
+- `product:04707702ff7f3d5956a99dc9`｜商贸零售与电商 · 行业全景研究｜industry｜ready_with_data_gaps
+- `product:0ec7bf806f7062568a7d953b`｜商贸零售与电商 · 景气跟踪｜monitoring｜ready_with_data_gaps
+- `product:dbfefa118b1d323cd00d0368`｜商贸零售与电商 · 公司深度研究｜company｜ready_with_data_gaps
+- `product:22c8a8fff5e878421b6c97bc`｜商贸零售与电商 · 公司横向比较｜company｜ready_with_data_gaps
+- `product:5b614810b6cbe0276b07b6a4`｜商贸零售与电商 · 财报点评｜event｜ready_with_data_gaps
+- `product:e53f06d8dda4215d2cb7e912`｜商贸零售与电商 · 事件与政策影响｜event｜ready_with_data_gaps
+- `product:b109bed3dc6e467a5f191e35`｜商贸零售与电商 · 竞争格局研究｜industry｜ready_with_data_gaps
+- `product:4f04250d5ceda6c48b0fcad0`｜商贸零售与电商 · 市场规模测算｜model｜ready_with_data_gaps
+- `product:2e1d68ec64a0ec32b533b743`｜商贸零售与电商 · 估值与预期差｜model｜ready_with_data_gaps
+- `product:c51fcad1e056e3ee84285108`｜商贸零售与电商 · 风险与催化监控｜monitoring｜ready_with_data_gaps
+- `product:9556b74634642c3701fa6b67`｜酒店旅游与休闲服务 · 行业全景研究｜industry｜ready_with_data_gaps
+- `product:a41ee0d2af1bb5988975cab3`｜酒店旅游与休闲服务 · 景气跟踪｜monitoring｜ready_with_data_gaps
+- `product:b84197cb27538b462b990ed5`｜酒店旅游与休闲服务 · 公司深度研究｜company｜ready_with_data_gaps
+- `product:c18e30773ae3fe896d56ec54`｜酒店旅游与休闲服务 · 公司横向比较｜company｜ready_with_data_gaps
+- `product:e6a3e621ae9b809e57917716`｜酒店旅游与休闲服务 · 财报点评｜event｜ready_with_data_gaps
+- `product:0fc50262c0a84c34a876969e`｜酒店旅游与休闲服务 · 事件与政策影响｜event｜ready_with_data_gaps
+- `product:9d08be764bfec5365e57281b`｜酒店旅游与休闲服务 · 竞争格局研究｜industry｜ready_with_data_gaps
+- `product:e75bdf7d106a07fcbd03ab4b`｜酒店旅游与休闲服务 · 市场规模测算｜model｜ready_with_data_gaps
+- `product:0b57f4d89ab934939461e5e3`｜酒店旅游与休闲服务 · 估值与预期差｜model｜ready_with_data_gaps
+- `product:2b034d8e0e08817646911481`｜酒店旅游与休闲服务 · 风险与催化监控｜monitoring｜ready_with_data_gaps

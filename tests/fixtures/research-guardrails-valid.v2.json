@@ -1,0 +1,48 @@
+{
+  "query": {
+    "date_alignment_mode": "date_range",
+    "date_start": "2026-07-16",
+    "date_end": "2026-08-12"
+  },
+  "market_observations": [
+    {"observation_id":"market:pop:2026-08-12","as_of_date":"2026-08-12"},
+    {"observation_id":"market:miniso:2026-08-12","as_of_date":"2026-08-12"}
+  ],
+  "normalized_observations": [
+    {
+      "observation_id":"official:miniso:revenue:2025","canonical_key":"miniso|revenue|2025","evidence_tier":"A",
+      "raw_value":21443827,"raw_unit":"RMB_thousand","normalization_factor":1000,"normalized_value":21443827000,"normalized_unit":"CNY"
+    },
+    {
+      "observation_id":"vendor:miniso:revenue:2025","canonical_key":"miniso|revenue|2025","evidence_tier":"B",
+      "raw_value":214.43827,"raw_unit":"RMB_100_million","normalization_factor":100000000,"normalized_value":21443827000,"normalized_unit":"CNY"
+    }
+  ],
+  "risk_events": [
+    {
+      "event_id":"risk:miniso:verified","canonical_entity_id":"cr:issuer:miniso","legal_identifier":"91440101MA5AP5Q018",
+      "group_relationship":"consolidated_subsidiary","event_role":"defendant","materiality_status":"non_material",
+      "resolution_method":"legal_identifier_and_group_tree"
+    }
+  ],
+  "documents": [
+    {
+      "document_id":"doc:miniso:ar2025","source_type":"annual_report","source_url":"https://filecache.investorroom.com/miniso-2025.pdf",
+      "locator":"PDF page 6","published_at":"2026-04-24T00:00:00+08:00","content_hash":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "document_id":"doc:research:summary","source_type":"research_report","stable_document_id":"licensed:report:123",
+      "locator":"page 3","published_at":"2026-05-30T00:00:00+08:00","content_hash":"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  ],
+  "claims": [
+    {"claim_id":"claim:miniso:revenue","document_id":"doc:miniso:ar2025","importance":"core","content_label":"FACT_PRIMARY"},
+    {"claim_id":"claim:research:view","document_id":"doc:research:summary","importance":"enrichment","content_label":"THIRD_PARTY_VIEW"}
+  ],
+  "market_calculations": [
+    {
+      "calculation_id":"calc:pop:20d","window_size":20,"observation_count":20,"baseline_date":"2026-07-15",
+      "baseline_close":157.30,"end_date":"2026-08-12","end_close":151.00,"result":-0.0400508582326764
+    }
+  ]
+}

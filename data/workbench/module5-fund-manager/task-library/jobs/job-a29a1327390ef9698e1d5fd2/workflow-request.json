@@ -1,0 +1,152 @@
+{
+  "package_id": "CR.TASKLIB.JOB.A29A1327390EF9698E1D5FD2",
+  "workflow_id": "CR.WORKFLOW.RESEARCH_ORCHESTRATION.001",
+  "template_id": "P0_01_INDUSTRY_PANORAMA",
+  "cutoff_timestamp": "2026-08-12T23:59:59+08:00",
+  "reader": "public_fund_manager",
+  "research_question": "截至昨天，食品饮料行业景气、竞争格局与主要风险发生了哪些变化？",
+  "scope": {
+    "sector_codes": [
+      "CR.S.FB"
+    ],
+    "geographies": [
+      "CN"
+    ],
+    "markets": [
+      "A_SHARE"
+    ],
+    "accounting_standard": "CAS",
+    "consolidation_scope": "consolidated",
+    "currency": "CNY"
+  },
+  "entities": [],
+  "metric_queries": [
+    {
+      "metric_id": "CR.MAC.DISPOSABLE_INCOME_PC"
+    },
+    {
+      "metric_id": "CR.MAC.CONSUMPTION_EXPENDITURE_PC"
+    },
+    {
+      "metric_id": "CR.MAC.RETAIL_SALES"
+    },
+    {
+      "metric_id": "CR.MAC.CPI_CATEGORY"
+    },
+    {
+      "metric_id": "CR.MAC.CONSUMER_CONFIDENCE"
+    },
+    {
+      "metric_id": "CR.IND.MARKET_SIZE"
+    },
+    {
+      "metric_id": "CR.IND.SALES_VOLUME"
+    },
+    {
+      "metric_id": "CR.IND.ASP"
+    },
+    {
+      "metric_id": "CR.IND.PENETRATION_RATE"
+    },
+    {
+      "metric_id": "CR.IND.PURCHASE_FREQUENCY"
+    },
+    {
+      "metric_id": "CR.IND.MARKET_SHARE_VALUE"
+    },
+    {
+      "metric_id": "CR.IND.CR5"
+    },
+    {
+      "metric_id": "CR.IND.PRICE_INDEX"
+    },
+    {
+      "metric_id": "CR.IND.PROMOTION_DEPTH"
+    },
+    {
+      "metric_id": "CR.IND.CHANNEL_INVENTORY_MONTHS"
+    },
+    {
+      "metric_id": "CR.IND.STORE_COUNT"
+    },
+    {
+      "metric_id": "CR.IND.SSS_GROWTH"
+    },
+    {
+      "metric_id": "CR.CO.REVENUE"
+    },
+    {
+      "metric_id": "CR.CO.REVENUE_GROWTH_YOY"
+    },
+    {
+      "metric_id": "CR.CO.GROSS_MARGIN"
+    },
+    {
+      "metric_id": "CR.CO.SELLING_EXPENSE_RATIO"
+    },
+    {
+      "metric_id": "CR.CO.OPERATING_MARGIN"
+    },
+    {
+      "metric_id": "CR.CO.CFO_TO_NET_PROFIT"
+    },
+    {
+      "metric_id": "CR.CO.INVENTORY_DAYS"
+    },
+    {
+      "metric_id": "CR.CO.ROIC"
+    },
+    {
+      "metric_id": "CR.CO.FCF"
+    },
+    {
+      "metric_id": "CR.VAL.PE_FORWARD"
+    },
+    {
+      "metric_id": "CR.VAL.EV_EBITDA_FORWARD"
+    },
+    {
+      "metric_id": "CR.VAL.PEG_FORWARD"
+    },
+    {
+      "metric_id": "CR.EXP.EPS_REVISION_3M"
+    },
+    {
+      "metric_id": "CR.EXP.REVISION_BREADTH"
+    },
+    {
+      "metric_id": "CR.CO.OPERATING_COST"
+    },
+    {
+      "metric_id": "CR.CO.SELLING_EXPENSE"
+    },
+    {
+      "metric_id": "CR.CO.CFO_NET"
+    },
+    {
+      "metric_id": "CR.CO.PARENT_NET_PROFIT"
+    },
+    {
+      "metric_id": "CR.FB.VOLUME"
+    },
+    {
+      "metric_id": "CR.FB.UNIT_PRICE"
+    },
+    {
+      "metric_id": "CR.FB.WHOLESALE_PRICE"
+    },
+    {
+      "metric_id": "CR.FB.CHANNEL_INVENTORY"
+    },
+    {
+      "metric_id": "CR.FB.CONTRACT_LIABILITY_RATIO"
+    },
+    {
+      "metric_id": "CR.FB.RAW_MATERIAL_COST_INDEX"
+    }
+  ],
+  "model_packages": [],
+  "decision_rule": null,
+  "include_runtime_appendix": true,
+  "output_slug": "task-library/job-a29a1327390ef9698e1d5fd2"
+}

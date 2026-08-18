@@ -1,0 +1,5877 @@
+{
+  "module": 2,
+  "name": "全消费行业研究覆盖扩展",
+  "status": "passed",
+  "passed": 48,
+  "total": 48,
+  "checks": [
+    {
+      "name": "eleven_research_sector_packs",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.0.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-coverage-9e_nn7z0\\coverage.db",
+        "sector_packs": 11,
+        "leaf_nodes": 73,
+        "common_metrics": 35,
+        "sector_metrics": 64,
+        "metric_definitions": 99,
+        "vendor_mapping_rules": 16,
+        "research_templates": 10
+      }
+    },
+    {
+      "name": "all_73_leaf_nodes_in_taxonomy",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.0.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-coverage-9e_nn7z0\\coverage.db",
+        "sector_packs": 11,
+        "leaf_nodes": 73,
+        "common_metrics": 35,
+        "sector_metrics": 64,
+        "metric_definitions": 99,
+        "vendor_mapping_rules": 16,
+        "research_templates": 10
+      }
+    },
+    {
+      "name": "thirty_five_common_metrics",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.0.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-coverage-9e_nn7z0\\coverage.db",
+        "sector_packs": 11,
+        "leaf_nodes": 73,
+        "common_metrics": 35,
+        "sector_metrics": 64,
+        "metric_definitions": 99,
+        "vendor_mapping_rules": 16,
+        "research_templates": 10
+      }
+    },
+    {
+      "name": "sixty_four_sector_metrics",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.0.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-coverage-9e_nn7z0\\coverage.db",
+        "sector_packs": 11,
+        "leaf_nodes": 73,
+        "common_metrics": 35,
+        "sector_metrics": 64,
+        "metric_definitions": 99,
+        "vendor_mapping_rules": 16,
+        "research_templates": 10
+      }
+    },
+    {
+      "name": "ninety_nine_metric_definitions",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.0.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-coverage-9e_nn7z0\\coverage.db",
+        "sector_packs": 11,
+        "leaf_nodes": 73,
+        "common_metrics": 35,
+        "sector_metrics": 64,
+        "metric_definitions": 99,
+        "vendor_mapping_rules": 16,
+        "research_templates": 10
+      }
+    },
+    {
+      "name": "ten_research_templates",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.0.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-coverage-9e_nn7z0\\coverage.db",
+        "sector_packs": 11,
+        "leaf_nodes": 73,
+        "common_metrics": 35,
+        "sector_metrics": 64,
+        "metric_definitions": 99,
+        "vendor_mapping_rules": 16,
+        "research_templates": 10
+      }
+    },
+    {
+      "name": "vendor_mapping_rules_loaded",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.0.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-coverage-9e_nn7z0\\coverage.db",
+        "sector_packs": 11,
+        "leaf_nodes": 73,
+        "common_metrics": 35,
+        "sector_metrics": 64,
+        "metric_definitions": 99,
+        "vendor_mapping_rules": 16,
+        "research_templates": 10
+      }
+    },
+    {
+      "name": "all_sector_packs_have_dedicated_metrics",
+      "passed": true,
+      "detail": {
+        "CR.S.FB": [
+          "CR.FB.VOLUME",
+          "CR.FB.UNIT_PRICE",
+          "CR.FB.WHOLESALE_PRICE",
+          "CR.FB.CHANNEL_INVENTORY",
+          "CR.FB.CONTRACT_LIABILITY_RATIO",
+          "CR.FB.RAW_MATERIAL_COST_INDEX"
+        ],
+        "CR.S.PH": [
+          "CR.PH.GMV",
+          "CR.PH.TRAFFIC",
+          "CR.PH.CONVERSION",
+          "CR.PH.AOV",
+          "CR.PH.REPURCHASE",
+          "CR.PH.MARKETING_ROI",
+          "CR.PH.HERO_SKU_SHARE"
+        ],
+        "CR.S.PT": [
+          "CR.PT.HOUSEHOLD_PENETRATION",
+          "CR.PT.REPURCHASE",
+          "CR.PT.SPEND_PER_USER",
+          "CR.PT.SKU_PRODUCTIVITY",
+          "CR.PT.CAC"
+        ],
+        "CR.D.AP": [
+          "CR.AP.SHIPMENT",
+          "CR.AP.RETAIL_VOLUME",
+          "CR.AP.RETAIL_ASP",
+          "CR.AP.REPLACEMENT_RATE",
+          "CR.AP.CHANNEL_INVENTORY",
+          "CR.AP.EXPORT_VOLUME"
+        ],
+        "CR.D.AU": [
+          "CR.AU.RETAIL_SALES",
+          "CR.AU.ORDER_BACKLOG",
+          "CR.AU.DISCOUNT_RATE",
+          "CR.AU.DEALER_INVENTORY_COEF",
+          "CR.AU.AFTERSALES_REVENUE"
+        ],
+        "CR.D.HL": [
+          "CR.HL.ORDER_INTAKE",
+          "CR.HL.ORDER_TO_REVENUE",
+          "CR.HL.BACKLOG",
+          "CR.HL.STORE_COUNT",
+          "CR.HL.SSS",
+          "CR.HL.DELIVERY_CYCLE"
+        ],
+        "CR.D.AF": [
+          "CR.AF.SELL_THROUGH",
+          "CR.AF.FULL_PRICE_SHARE",
+          "CR.AF.DISCOUNT_RATE",
+          "CR.AF.INVENTORY_SALES_RATIO",
+          "CR.AF.DTC_SHARE"
+        ],
+        "CR.V.RT": [
+          "CR.RT.GMV",
+          "CR.RT.TAKE_RATE",
+          "CR.RT.TRAFFIC",
+          "CR.RT.CONVERSION",
+          "CR.RT.MEMBER_SHARE",
+          "CR.RT.SALES_PER_SQM"
+        ],
+        "CR.V.FS": [
+          "CR.FS.SSS",
+          "CR.FS.TABLE_TURNOVER",
+          "CR.FS.TRANSACTIONS",
+          "CR.FS.AVERAGE_TICKET",
+          "CR.FS.STORE_PAYBACK",
+          "CR.FS.CLOSURE_RATE"
+        ],
+        "CR.V.TL": [
+          "CR.TL.TRIPS",
+          "CR.TL.SPEND_PER_TRIP",
+          "CR.TL.OCCUPANCY",
+          "CR.TL.ADR",
+          "CR.TL.REVPAR",
+          "CR.TL.VISITOR_SPEND"
+        ],
+        "CR.V.CE": [
+          "CR.CE.MAU",
+          "CR.CE.PAYING_USERS",
+          "CR.CE.PAY_RATE",
+          "CR.CE.ARPPU",
+          "CR.CE.ATTENDANCE",
+          "CR.CE.CONTENT_PIPELINE"
+        ]
+      }
+    },
+    {
+      "name": "all_sector_packs_have_research_theses",
+      "passed": true,
+      "detail": [
+        "CR.S.FB",
+        "CR.S.PH",
+        "CR.S.PT",
+        "CR.D.AP",
+        "CR.D.AU",
+        "CR.D.HL",
+        "CR.D.AF",
+        "CR.V.RT",
+        "CR.V.FS",
+        "CR.V.TL",
+        "CR.V.CE"
+      ]
+    },
+    {
+      "name": "all_sector_packs_have_cycle_drivers",
+      "passed": true,
+      "detail": [
+        "CR.S.FB",
+        "CR.S.PH",
+        "CR.S.PT",
+        "CR.D.AP",
+        "CR.D.AU",
+        "CR.D.HL",
+        "CR.D.AF",
+        "CR.V.RT",
+        "CR.V.FS",
+        "CR.V.TL",
+        "CR.V.CE"
+      ]
+    },
+    {
+      "name": "all_sector_packs_have_value_chains",
+      "passed": true,
+      "detail": [
+        "CR.S.FB",
+        "CR.S.PH",
+        "CR.S.PT",
+        "CR.D.AP",
+        "CR.D.AU",
+        "CR.D.HL",
+        "CR.D.AF",
+        "CR.V.RT",
+        "CR.V.FS",
+        "CR.V.TL",
+        "CR.V.CE"
+      ]
+    },
+    {
+      "name": "all_leaf_nodes_reachable_from_level_two_packs",
+      "passed": true,
+      "detail": [
+        "CR.S.FB.BJ",
+        "CR.S.FB.BE",
+        "CR.S.FB.BV",
+        "CR.S.FB.DA",
+        "CR.S.FB.SN",
+        "CR.S.FB.CO",
+        "CR.S.FB.PF",
+        "CR.S.FB.BA",
+        "CR.S.FB.ME",
+        "CR.S.FB.NU",
+        "CR.S.PH.SK",
+        "CR.S.PH.MU",
+        "CR.S.PH.FR",
+        "CR.S.PH.HC",
+        "CR.S.PH.OC",
+        "CR.S.PH.PC",
+        "CR.S.PH.HH",
+        "CR.S.PH.TI",
+        "CR.S.PT.PF",
+        "CR.S.PT.PS",
+        "CR.S.PT.PV",
+        "CR.S.PT.MB",
+        "CR.S.PT.TY",
+        "CR.S.PT.OT",
+        "CR.D.AP.WH",
+        "CR.D.AP.KA",
+        "CR.D.AP.AV",
+        "CR.D.AP.SA",
+        "CR.D.AP.VC",
+        "CR.D.AP.SH",
+        "CR.D.AP.CE",
+        "CR.D.AU.PV",
+        "CR.D.AU.MC",
+        "CR.D.AU.AD",
+        "CR.D.AU.AM",
+        "CR.D.AU.MS",
+        "CR.D.HL.FF",
+        "CR.D.HL.CU",
+        "CR.D.HL.UP",
+        "CR.D.HL.HR",
+        "CR.D.HL.BM",
+        "CR.D.HL.HD",
+        "CR.D.AF.CL",
+        "CR.D.AF.FW",
+        "CR.D.AF.SO",
+        "CR.D.AF.HT",
+        "CR.D.AF.JE",
+        "CR.D.AF.WE",
+        "CR.V.RT.SM",
+        "CR.V.RT.DS",
+        "CR.V.RT.SC",
+        "CR.V.RT.DF",
+        "CR.V.RT.EC",
+        "CR.V.RT.IR",
+        "CR.V.RT.RS",
+        "CR.V.FS.FR",
+        "CR.V.FS.QS",
+        "CR.V.FS.BC",
+        "CR.V.FS.BS",
+        "CR.V.FS.FS",
+        "CR.V.FS.LP",
+        "CR.V.TL.HO",
+        "CR.V.TL.AT",
+        "CR.V.TL.TA",
+        "CR.V.TL.TP",
+        "CR.V.TL.SF",
+        "CR.V.TL.LS",
+        "CR.V.CE.GM",
+        "CR.V.CE.FC",
+        "CR.V.CE.MR",
+        "CR.V.CE.OE",
+        "CR.V.CE.NE",
+        "CR.V.CE.OC"
+      ]
+    },
+    {
+      "name": "all_ten_required_streams_declared",
+      "passed": true,
+      "detail": [
+        "master_data",
+        "market_daily",
+        "financials",
+        "announcements",
+        "macro",
+        "official_industry_releases",
+        "official_policy_documents",
+        "research_metadata",
+        "news_leads",
+        "enterprise_risk"
+      ]
+    },
+    {
+      "name": "no_fund_holdings_quality_gate",
+      "passed": true,
+      "detail": [
+        "all_11_sector_packs_present",
+        "all_73_leaf_nodes_reachable",
+        "common_and_sector_metrics_present",
+        "all_required_templates_generated",
+        "all_required_streams_routed",
+        "many_to_many_universe_mapping",
+        "unmapped_security_explicit",
+        "metric_population_gap_explicit",
+        "no_fund_holdings_or_position_inference"
+      ]
+    },
+    {
+      "name": "two_real_source_snapshots_used",
+      "passed": true,
+      "detail": [
+        "CR.BACKFILL.GILDATA.A_SHARE_CONSUMER.20260812",
+        "CR.COVERAGE.GILDATA.A_SHARE.CULTURE_EDU.20260812"
+      ]
+    },
+    {
+      "name": "source_rows_total_1297",
+      "passed": true,
+      "detail": 1297
+    },
+    {
+      "name": "deduplicated_security_count_1275",
+      "passed": true,
+      "detail": 1275
+    },
+    {
+      "name": "mapped_security_count_1169",
+      "passed": true,
+      "detail": 1169
+    },
+    {
+      "name": "review_required_count_106",
+      "passed": true,
+      "detail": 106
+    },
+    {
+      "name": "unmapped_breakdown_is_explicit",
+      "passed": true,
+      "detail": {
+        "轻工制造 / 包装印刷": 46,
+        "轻工制造 / 造纸": 24,
+        "轻工制造 / 文娱用品": 17,
+        "农林牧渔 / 动物保健Ⅱ": 12,
+        "农林牧渔 / 林业Ⅱ": 4,
+        "农林牧渔 / 农业综合Ⅱ": 3
+      }
+    },
+    {
+      "name": "many_to_many_mapping_active",
+      "passed": true,
+      "detail": {
+        "universe_snapshot_id": "universe:f5e0cc56bd863988544adbf8",
+        "as_of_date": "2026-08-12",
+        "source_snapshot_ids": [
+          "CR.BACKFILL.GILDATA.A_SHARE_CONSUMER.20260812",
+          "CR.COVERAGE.GILDATA.A_SHARE.CULTURE_EDU.20260812"
+        ],
+        "source_record_count": 1297,
+        "unique_security_count": 1275,
+        "mapped_security_count": 1169,
+        "review_required_count": 106,
+        "membership_count": 1321,
+        "multi_mapped_security_count": 46,
+        "status": "staged_license_gate",
+        "production_snapshot_id": "CR.COVERAGE.GILDATA.A_SHARE.FULL_CONSUMER.20260812",
+        "production_snapshot_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-coverage-9e_nn7z0\\output\\universe-f5e0cc56bd863988544adbf8\\full-consumer-production-snapshot.json",
+        "sector_security_counts": {
+          "CR.D.AF": 108,
+          "CR.D.AP": 103,
+          "CR.D.AU": 323,
+          "CR.D.HL": 77,
+          "CR.S.FB": 221,
+          "CR.S.PH": 32,
+          "CR.S.PT": 9,
+          "CR.V.CE": 168,
+          "CR.V.FS": 38,
+          "CR.V.RT": 100,
+          "CR.V.TL": 36
+        },
+        "unmapped_breakdown": {
+          "轻工制造 / 包装印刷": 46,
+          "轻工制造 / 造纸": 24,
+          "轻工制造 / 文娱用品": 17,
+          "农林牧渔 / 动物保健Ⅱ": 12,
+          "农林牧渔 / 林业Ⅱ": 4,
+          "农林牧渔 / 农业综合Ⅱ": 3
+        },
+        "truth_boundary": "The universe is research-mapped but remains non-publishable while source licence review is pending.",
+        "artifact_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-coverage-9e_nn7z0\\output\\universe-f5e0cc56bd863988544adbf8\\research-universe-summary.json"
+      }
+    },
+    {
+      "name": "all_11_sectors_have_a_share_members",
+      "passed": true,
+      "detail": {
+        "CR.D.AF": 108,
+        "CR.D.AP": 103,
+        "CR.D.AU": 323,
+        "CR.D.HL": 77,
+        "CR.S.FB": 221,
+        "CR.S.PH": 32,
+        "CR.S.PT": 9,
+        "CR.V.CE": 168,
+        "CR.V.FS": 38,
+        "CR.V.RT": 100,
+        "CR.V.TL": 36
+      }
+    },
+    {
+      "name": "pet_sector_has_specific_coverage",
+      "passed": true,
+      "detail": {
+        "CR.D.AF": 108,
+        "CR.D.AP": 103,
+        "CR.D.AU": 323,
+        "CR.D.HL": 77,
+        "CR.S.FB": 221,
+        "CR.S.PH": 32,
+        "CR.S.PT": 9,
+        "CR.V.CE": 168,
+        "CR.V.FS": 38,
+        "CR.V.RT": 100,
+        "CR.V.TL": 36
+      }
+    },
+    {
+      "name": "culture_education_sector_expanded",
+      "passed": true,
+      "detail": {
+        "CR.D.AF": 108,
+        "CR.D.AP": 103,
+        "CR.D.AU": 323,
+        "CR.D.HL": 77,
+        "CR.S.FB": 221,
+        "CR.S.PH": 32,
+        "CR.S.PT": 9,
+        "CR.V.CE": 168,
+        "CR.V.FS": 38,
+        "CR.V.RT": 100,
+        "CR.V.TL": 36
+      }
+    },
+    {
+      "name": "universe_remains_at_license_gate",
+      "passed": true,
+      "detail": "staged_license_gate"
+    },
+    {
+      "name": "universe_artifact_written",
+      "passed": true,
+      "detail": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-coverage-9e_nn7z0\\output\\universe-f5e0cc56bd863988544adbf8\\research-universe-summary.json"
+    },
+    {
+      "name": "coverage_matrix_has_22_cells",
+      "passed": true,
+      "detail": 22
+    },
+    {
+      "name": "a_share_has_11_sector_cells",
+      "passed": true,
+      "detail": [
+        {
+          "sector_code": "CR.S.FB",
+          "sector_name": "食品饮料",
+          "market": "A_SHARE",
+          "security_count": 221,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PH",
+          "sector_name": "美容个护与家庭护理",
+          "market": "A_SHARE",
+          "security_count": 32,
+          "metric_definition_count": 42,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PT",
+          "sector_name": "宠物与家庭新消费",
+          "market": "A_SHARE",
+          "security_count": 9,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AP",
+          "sector_name": "家电与消费电子",
+          "market": "A_SHARE",
+          "security_count": 103,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AU",
+          "sector_name": "汽车与出行消费",
+          "market": "A_SHARE",
+          "security_count": 323,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.HL",
+          "sector_name": "家居与生活空间",
+          "market": "A_SHARE",
+          "security_count": 77,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AF",
+          "sector_name": "纺织服饰与运动户外",
+          "market": "A_SHARE",
+          "security_count": 108,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.RT",
+          "sector_name": "商贸零售与电商",
+          "market": "A_SHARE",
+          "security_count": 100,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.FS",
+          "sector_name": "餐饮与本地生活",
+          "market": "A_SHARE",
+          "security_count": 38,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.TL",
+          "sector_name": "酒店旅游与休闲服务",
+          "market": "A_SHARE",
+          "security_count": 36,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.CE",
+          "sector_name": "文化娱乐与教育消费",
+          "market": "A_SHARE",
+          "security_count": 168,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "name": "hk_share_gap_has_11_explicit_cells",
+      "passed": true,
+      "detail": [
+        {
+          "sector_code": "CR.S.FB",
+          "sector_name": "食品饮料",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PH",
+          "sector_name": "美容个护与家庭护理",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 42,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PT",
+          "sector_name": "宠物与家庭新消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AP",
+          "sector_name": "家电与消费电子",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AU",
+          "sector_name": "汽车与出行消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.HL",
+          "sector_name": "家居与生活空间",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AF",
+          "sector_name": "纺织服饰与运动户外",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.RT",
+          "sector_name": "商贸零售与电商",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.FS",
+          "sector_name": "餐饮与本地生活",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.TL",
+          "sector_name": "酒店旅游与休闲服务",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.CE",
+          "sector_name": "文化娱乐与教育消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "name": "all_research_packs_ready",
+      "passed": true,
+      "detail": [
+        {
+          "sector_code": "CR.S.FB",
+          "sector_name": "食品饮料",
+          "market": "A_SHARE",
+          "security_count": 221,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.FB",
+          "sector_name": "食品饮料",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PH",
+          "sector_name": "美容个护与家庭护理",
+          "market": "A_SHARE",
+          "security_count": 32,
+          "metric_definition_count": 42,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PH",
+          "sector_name": "美容个护与家庭护理",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 42,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PT",
+          "sector_name": "宠物与家庭新消费",
+          "market": "A_SHARE",
+          "security_count": 9,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PT",
+          "sector_name": "宠物与家庭新消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AP",
+          "sector_name": "家电与消费电子",
+          "market": "A_SHARE",
+          "security_count": 103,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AP",
+          "sector_name": "家电与消费电子",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AU",
+          "sector_name": "汽车与出行消费",
+          "market": "A_SHARE",
+          "security_count": 323,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AU",
+          "sector_name": "汽车与出行消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.HL",
+          "sector_name": "家居与生活空间",
+          "market": "A_SHARE",
+          "security_count": 77,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.HL",
+          "sector_name": "家居与生活空间",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AF",
+          "sector_name": "纺织服饰与运动户外",
+          "market": "A_SHARE",
+          "security_count": 108,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AF",
+          "sector_name": "纺织服饰与运动户外",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.RT",
+          "sector_name": "商贸零售与电商",
+          "market": "A_SHARE",
+          "security_count": 100,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.RT",
+          "sector_name": "商贸零售与电商",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.FS",
+          "sector_name": "餐饮与本地生活",
+          "market": "A_SHARE",
+          "security_count": 38,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.FS",
+          "sector_name": "餐饮与本地生活",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.TL",
+          "sector_name": "酒店旅游与休闲服务",
+          "market": "A_SHARE",
+          "security_count": 36,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.TL",
+          "sector_name": "酒店旅游与休闲服务",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.CE",
+          "sector_name": "文化娱乐与教育消费",
+          "market": "A_SHARE",
+          "security_count": 168,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.CE",
+          "sector_name": "文化娱乐与教育消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "name": "definitions_never_count_as_population",
+      "passed": true,
+      "detail": [
+        {
+          "sector_code": "CR.S.FB",
+          "sector_name": "食品饮料",
+          "market": "A_SHARE",
+          "security_count": 221,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.FB",
+          "sector_name": "食品饮料",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PH",
+          "sector_name": "美容个护与家庭护理",
+          "market": "A_SHARE",
+          "security_count": 32,
+          "metric_definition_count": 42,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PH",
+          "sector_name": "美容个护与家庭护理",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 42,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PT",
+          "sector_name": "宠物与家庭新消费",
+          "market": "A_SHARE",
+          "security_count": 9,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PT",
+          "sector_name": "宠物与家庭新消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AP",
+          "sector_name": "家电与消费电子",
+          "market": "A_SHARE",
+          "security_count": 103,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AP",
+          "sector_name": "家电与消费电子",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AU",
+          "sector_name": "汽车与出行消费",
+          "market": "A_SHARE",
+          "security_count": 323,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AU",
+          "sector_name": "汽车与出行消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.HL",
+          "sector_name": "家居与生活空间",
+          "market": "A_SHARE",
+          "security_count": 77,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.HL",
+          "sector_name": "家居与生活空间",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AF",
+          "sector_name": "纺织服饰与运动户外",
+          "market": "A_SHARE",
+          "security_count": 108,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AF",
+          "sector_name": "纺织服饰与运动户外",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.RT",
+          "sector_name": "商贸零售与电商",
+          "market": "A_SHARE",
+          "security_count": 100,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.RT",
+          "sector_name": "商贸零售与电商",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.FS",
+          "sector_name": "餐饮与本地生活",
+          "market": "A_SHARE",
+          "security_count": 38,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.FS",
+          "sector_name": "餐饮与本地生活",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.TL",
+          "sector_name": "酒店旅游与休闲服务",
+          "market": "A_SHARE",
+          "security_count": 36,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.TL",
+          "sector_name": "酒店旅游与休闲服务",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.CE",
+          "sector_name": "文化娱乐与教育消费",
+          "market": "A_SHARE",
+          "security_count": 168,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.CE",
+          "sector_name": "文化娱乐与教育消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "name": "all_missing_streams_explicit",
+      "passed": true,
+      "detail": [
+        {
+          "sector_code": "CR.S.FB",
+          "sector_name": "食品饮料",
+          "market": "A_SHARE",
+          "security_count": 221,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.FB",
+          "sector_name": "食品饮料",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PH",
+          "sector_name": "美容个护与家庭护理",
+          "market": "A_SHARE",
+          "security_count": 32,
+          "metric_definition_count": 42,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PH",
+          "sector_name": "美容个护与家庭护理",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 42,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PT",
+          "sector_name": "宠物与家庭新消费",
+          "market": "A_SHARE",
+          "security_count": 9,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PT",
+          "sector_name": "宠物与家庭新消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AP",
+          "sector_name": "家电与消费电子",
+          "market": "A_SHARE",
+          "security_count": 103,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AP",
+          "sector_name": "家电与消费电子",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AU",
+          "sector_name": "汽车与出行消费",
+          "market": "A_SHARE",
+          "security_count": 323,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AU",
+          "sector_name": "汽车与出行消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.HL",
+          "sector_name": "家居与生活空间",
+          "market": "A_SHARE",
+          "security_count": 77,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.HL",
+          "sector_name": "家居与生活空间",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AF",
+          "sector_name": "纺织服饰与运动户外",
+          "market": "A_SHARE",
+          "security_count": 108,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AF",
+          "sector_name": "纺织服饰与运动户外",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.RT",
+          "sector_name": "商贸零售与电商",
+          "market": "A_SHARE",
+          "security_count": 100,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.RT",
+          "sector_name": "商贸零售与电商",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.FS",
+          "sector_name": "餐饮与本地生活",
+          "market": "A_SHARE",
+          "security_count": 38,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.FS",
+          "sector_name": "餐饮与本地生活",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.TL",
+          "sector_name": "酒店旅游与休闲服务",
+          "market": "A_SHARE",
+          "security_count": 36,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.TL",
+          "sector_name": "酒店旅游与休闲服务",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.CE",
+          "sector_name": "文化娱乐与教育消费",
+          "market": "A_SHARE",
+          "security_count": 168,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.CE",
+          "sector_name": "文化娱乐与教育消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "name": "a_share_license_blocker_explicit",
+      "passed": true,
+      "detail": [
+        {
+          "sector_code": "CR.S.FB",
+          "sector_name": "食品饮料",
+          "market": "A_SHARE",
+          "security_count": 221,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PH",
+          "sector_name": "美容个护与家庭护理",
+          "market": "A_SHARE",
+          "security_count": 32,
+          "metric_definition_count": 42,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PT",
+          "sector_name": "宠物与家庭新消费",
+          "market": "A_SHARE",
+          "security_count": 9,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AP",
+          "sector_name": "家电与消费电子",
+          "market": "A_SHARE",
+          "security_count": 103,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AU",
+          "sector_name": "汽车与出行消费",
+          "market": "A_SHARE",
+          "security_count": 323,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.HL",
+          "sector_name": "家居与生活空间",
+          "market": "A_SHARE",
+          "security_count": 77,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AF",
+          "sector_name": "纺织服饰与运动户外",
+          "market": "A_SHARE",
+          "security_count": 108,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.RT",
+          "sector_name": "商贸零售与电商",
+          "market": "A_SHARE",
+          "security_count": 100,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.FS",
+          "sector_name": "餐饮与本地生活",
+          "market": "A_SHARE",
+          "security_count": 38,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.TL",
+          "sector_name": "酒店旅游与休闲服务",
+          "market": "A_SHARE",
+          "security_count": 36,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.CE",
+          "sector_name": "文化娱乐与教育消费",
+          "market": "A_SHARE",
+          "security_count": 168,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "staged_license_gate",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "source_license_pending",
+              "scope": "security_universe"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "name": "hk_universe_blocker_explicit",
+      "passed": true,
+      "detail": [
+        {
+          "sector_code": "CR.S.FB",
+          "sector_name": "食品饮料",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PH",
+          "sector_name": "美容个护与家庭护理",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 42,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.S.PT",
+          "sector_name": "宠物与家庭新消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AP",
+          "sector_name": "家电与消费电子",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AU",
+          "sector_name": "汽车与出行消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.HL",
+          "sector_name": "家居与生活空间",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.D.AF",
+          "sector_name": "纺织服饰与运动户外",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 40,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.RT",
+          "sector_name": "商贸零售与电商",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.FS",
+          "sector_name": "餐饮与本地生活",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.TL",
+          "sector_name": "酒店旅游与休闲服务",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        },
+        {
+          "sector_code": "CR.V.CE",
+          "sector_name": "文化娱乐与教育消费",
+          "market": "HK_SHARE",
+          "security_count": 0,
+          "metric_definition_count": 41,
+          "required_stream_count": 10,
+          "populated_stream_count": 0,
+          "populated_streams": [],
+          "missing_streams": [
+            "master_data",
+            "market_daily",
+            "financials",
+            "announcements",
+            "macro",
+            "official_industry_releases",
+            "official_policy_documents",
+            "research_metadata",
+            "news_leads",
+            "enterprise_risk"
+          ],
+          "metric_population_status": "definitions_only",
+          "universe_status": "not_populated",
+          "research_pack_status": "ready",
+          "blockers": [
+            {
+              "code": "security_universe_not_populated",
+              "market": "HK_SHARE"
+            },
+            {
+              "code": "required_streams_not_populated",
+              "streams": [
+                "master_data",
+                "market_daily",
+                "financials",
+                "announcements",
+                "macro",
+                "official_industry_releases",
+                "official_policy_documents",
+                "research_metadata",
+                "news_leads",
+                "enterprise_risk"
+              ]
+            }
+          ],
+          "as_of_date": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "name": "coverage_matrix_artifact_written",
+      "passed": true,
+      "detail": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-coverage-9e_nn7z0\\output\\universe-f5e0cc56bd863988544adbf8\\full-consumer-coverage-matrix.json"
+    },
+    {
+      "name": "generated_110_research_tasks",
+      "passed": true,
+      "detail": 110
+    },
+    {
+      "name": "every_sector_has_ten_tasks",
+      "passed": true,
+      "detail": [
+        "CR.S.FB",
+        "CR.S.PH",
+        "CR.S.PT",
+        "CR.D.AP",
+        "CR.D.AU",
+        "CR.D.HL",
+        "CR.D.AF",
+        "CR.V.RT",
+        "CR.V.FS",
+        "CR.V.TL",
+        "CR.V.CE"
+      ]
+    },
+    {
+      "name": "every_template_has_eleven_tasks",
+      "passed": true,
+      "detail": [
+        "P0_01_INDUSTRY_PANORAMA",
+        "P0_02_PROSPERITY_TRACKING",
+        "P0_03_COMPANY_DEEP_DIVE",
+        "P0_04_COMPANY_COMPARISON",
+        "P0_05_EARNINGS_REVIEW",
+        "P0_06_EVENT_POLICY_IMPACT",
+        "P0_07_COMPETITION_LANDSCAPE",
+        "P0_08_MARKET_SIZE",
+        "P0_09_VALUATION_EXPECTATIONS",
+        "P0_10_RISK_CATALYST_MONITOR"
+      ]
+    },
+    {
+      "name": "all_tasks_use_exact_cutoff",
+      "passed": true,
+      "detail": "2026-08-12T23:59:59+08:00"
+    },
+    {
+      "name": "all_tasks_route_ten_streams",
+      "passed": true,
+      "detail": [
+        {
+          "stream_name": "master_data",
+          "registered_source_routes": 1
+        },
+        {
+          "stream_name": "market_daily",
+          "registered_source_routes": 1
+        },
+        {
+          "stream_name": "financials",
+          "registered_source_routes": 2
+        },
+        {
+          "stream_name": "announcements",
+          "registered_source_routes": 5
+        },
+        {
+          "stream_name": "macro",
+          "registered_source_routes": 3
+        },
+        {
+          "stream_name": "official_industry_releases",
+          "registered_source_routes": 4
+        },
+        {
+          "stream_name": "official_policy_documents",
+          "registered_source_routes": 3
+        },
+        {
+          "stream_name": "research_metadata",
+          "registered_source_routes": 1
+        },
+        {
+          "stream_name": "news_leads",
+          "registered_source_routes": 1
+        },
+        {
+          "stream_name": "enterprise_risk",
+          "registered_source_routes": 1
+        }
+      ]
+    },
+    {
+      "name": "all_tasks_have_common_and_sector_metrics",
+      "passed": true,
+      "detail": 35
+    },
+    {
+      "name": "tasks_truthfully_ready_with_gaps",
+      "passed": true,
+      "detail": "ready_with_data_gaps"
+    },
+    {
+      "name": "task_payload_has_no_forbidden_fund_fields",
+      "passed": true,
+      "detail": "clean"
+    },
+    {
+      "name": "task_artifact_written",
+      "passed": true,
+      "detail": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-coverage-9e_nn7z0\\output\\task-packages\\2026-08-12.json"
+    },
+    {
+      "name": "task_generation_idempotent",
+      "passed": true,
+      "detail": 110
+    },
+    {
+      "name": "coverage_audit_schema_complete",
+      "passed": true,
+      "detail": [
+        "research_coverage_status",
+        "research_sector_packs",
+        "research_task_packages",
+        "research_universe_members",
+        "research_universe_snapshots",
+        "taxonomy_vendor_mappings"
+      ]
+    },
+    {
+      "name": "database_keeps_110_idempotent_tasks",
+      "passed": true,
+      "detail": 110
+    },
+    {
+      "name": "database_keeps_106_explicit_review_rows",
+      "passed": true,
+      "detail": 106
+    }
+  ]
+}

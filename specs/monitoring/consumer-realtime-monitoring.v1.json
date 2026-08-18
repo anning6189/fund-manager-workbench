@@ -1,0 +1,99 @@
+{
+  "spec_id": "CR.MONITOR.REALTIME.V1",
+  "version": "1.0.0",
+  "status": "production_monitoring_contract_ready",
+  "scope": "full_consumer_research_without_fund_holdings",
+  "time_semantics": {
+    "research_timezone": "Asia/Shanghai",
+    "latest_completed_day": "previous_calendar_day_unless_market_calendar_is_available",
+    "event_time": "time the underlying event occurred or was published",
+    "available_time": "first time the event became available to the research system",
+    "detected_time": "time the monitoring engine evaluated the event",
+    "future_information": "event_time and available_time must not be later than the monitoring cutoff"
+  },
+  "monitoring_modes": {
+    "event_driven": ["announcements", "news_leads", "enterprise_risk", "official_policy_documents"],
+    "scheduled_scan": ["market_daily", "financials", "macro", "official_industry_releases", "research_metadata", "master_data"],
+    "system_health": ["freshness_state", "production_coverage", "license_gate", "workflow_backlog", "quality_events"]
+  },
+  "event_types": [
+    "market_move", "announcement", "earnings_release", "policy_release", "macro_release",
+    "industry_data_release", "news_lead", "research_report", "enterprise_risk", "data_quality", "source_freshness"
+  ],
+  "severity_levels": ["info", "watch", "important", "critical"],
+  "alert_state_machine": {
+    "states": ["open", "acknowledged", "resolved", "suppressed"],
+    "automatic_resolution": "allowed only when the underlying machine condition is no longer present",
+    "manual_acknowledgement": "requires a named human",
+    "publication": "alerts are internal research signals and never equal a published conclusion"
+  },
+  "default_rules": [
+    {
+      "rule_code": "CR.MON.FRESHNESS.STALE",
+      "name": "数据流新鲜度超时",
+      "signal_type": "source_freshness",
+      "condition": "freshness_status in [stale, not_started]",
+      "severity": "important",
+      "cooldown_minutes": 360,
+      "task_template_id": "P0_10_RISK_CATALYST_MONITOR"
+    },
+    {
+      "rule_code": "CR.MON.COVERAGE.GAP",
+      "name": "研究覆盖数据缺口",
+      "signal_type": "data_quality",
+      "condition": "metric_population_status != populated or security_count == 0",
+      "severity": "watch",
+      "cooldown_minutes": 1440,
+      "task_template_id": "P0_10_RISK_CATALYST_MONITOR"
+    },
+    {
+      "rule_code": "CR.MON.LICENSE.GATE",
+      "name": "数据许可闸门待处理",
+      "signal_type": "data_quality",
+      "condition": "license_decision == pending",
+      "severity": "important",
+      "cooldown_minutes": 1440,
+      "task_template_id": null
+    },
+    {
+      "rule_code": "CR.MON.WORKFLOW.BACKLOG",
+      "name": "研究阻断任务积压",
+      "signal_type": "data_quality",
+      "condition": "workflow status in [blocked, failed]",
+      "severity": "watch",
+      "cooldown_minutes": 360,
+      "task_template_id": null
+    },
+    {
+      "rule_code": "CR.MON.EVENT.MATERIAL",
+      "name": "重大研究事件",
+      "signal_type": "external_event",
+      "condition": "materiality_score >= 0.70",
+      "severity": "important",
+      "cooldown_minutes": 120,
+      "task_template_by_event": {
+        "earnings_release": "P0_05_EARNINGS_REVIEW",
+        "announcement": "P0_06_EVENT_POLICY_IMPACT",
+        "policy_release": "P0_06_EVENT_POLICY_IMPACT",
+        "macro_release": "P0_02_PROSPERITY_TRACKING",
+        "industry_data_release": "P0_02_PROSPERITY_TRACKING",
+        "market_move": "P0_09_VALUATION_EXPECTATIONS",
+        "news_lead": "P0_10_RISK_CATALYST_MONITOR",
+        "enterprise_risk": "P0_10_RISK_CATALYST_MONITOR"
+      }
+    }
+  ],
+  "delivery_policy": {
+    "internal_outbox_only": true,
+    "channels": ["in_app", "daily_brief"],
+    "automatic_external_message": false,
+    "automatic_report_publication": false,
+    "automatic_trade_instruction": false
+  },
+  "quality_gates": [
+    "cutoff_has_timezone", "event_and_available_time_not_after_cutoff", "source_registered",
+    "sector_scope_valid", "deduplication_key_stable", "cooldown_enforced", "evidence_locator_for_material_event",
+    "data_gap_explicit", "license_gate_enforced", "no_fund_holdings_or_position_inference",
+    "no_automatic_trade_instruction", "no_automatic_external_publication"
+  ]
+}

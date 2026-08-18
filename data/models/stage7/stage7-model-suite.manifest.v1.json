@@ -1,0 +1,39 @@
+{
+  "suite_id": "CR.MODEL.SUITE.STAGE7.001",
+  "version": "1.0.0",
+  "title": "消费行业研究阶段七模型套件",
+  "model_packages": [
+    {
+      "path": "market-size-dual.v1.json",
+      "model_id": "CR.MODEL.MARKET_SIZE_DUAL",
+      "scenarios": ["bear", "base", "bull"],
+      "data_status": "demonstration_assumptions"
+    },
+    {
+      "path": "competition-concentration.v1.json",
+      "model_id": "CR.MODEL.COMPETITION_CONCENTRATION",
+      "scenarios": ["base"],
+      "data_status": "demonstration_assumptions"
+    },
+    {
+      "path": "company-operating-bridge.v1.json",
+      "model_id": "CR.MODEL.COMPANY_OPERATING_BRIDGE",
+      "scenarios": ["base"],
+      "data_status": "stage6_facts_plus_demonstration_assumptions"
+    },
+    {
+      "path": "financial-forecast.v1.json",
+      "model_id": "CR.MODEL.FINANCIAL_FORECAST",
+      "scenarios": ["bear", "base", "bull"],
+      "data_status": "stage6_facts_plus_demonstration_assumptions"
+    },
+    {
+      "path": "valuation-expectations.v1.json",
+      "model_id": "CR.MODEL.VALUATION_EXPECTATIONS",
+      "scenarios": ["bear", "base", "bull"],
+      "data_status": "stage6_facts_plus_demonstration_assumptions"
+    }
+  ],
+  "publication_status": "demonstration_only",
+  "production_activation_rule": "用可合法使用的数据源写入阶段六事实仓，将演示假设替换为有依据的研究假设；全部必需系统质量门通过后直接进入内部研究输出。"
+}

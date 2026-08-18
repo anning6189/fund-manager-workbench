@@ -1,0 +1,15 @@
+{
+  "package_id": "CR.PROD.GILDATA.MACRO.2026-08-13.001",
+  "source_id": "CR.SRC.GILDATA.MACRO_INDUSTRY",
+  "retrieved_at": "2026-08-13T19:20:20+08:00",
+  "license_tag": "contract_terms_pending_verification",
+  "provider_response": {
+    "query": "中国消费宏观核心指标截至2026-08-12的最新可得数据",
+    "status": "success",
+    "contains_post_cutoff_rows": false,
+    "latest_period": "2026-06-30",
+    "returned_indicator_codes": ["110003918", "110003911", "501201063", "501202970", "701072869", "110420347", "701072874", "110418441", "150000075"],
+    "official_origin_fields": ["国家统计局", "中国人民银行", "中国统计年鉴", "OECD", "BIS", "聚源计算", "现有指标同比计算"],
+    "quality_notes": ["duplicate_rows_present", "derived_series_present", "official_origin_binding_required", "license_gate_preserved"]
+  }
+}

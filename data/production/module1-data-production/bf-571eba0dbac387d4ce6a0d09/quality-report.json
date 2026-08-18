@@ -1,0 +1,100 @@
+{
+  "quality_results": [
+    {
+      "quality_result_id": "pqr:3fa05cd4bd0a0259b27bf385",
+      "backfill_run_id": null,
+      "partition_id": null,
+      "snapshot_id": "CR.BACKFILL.GILDATA.A_SHARE_CONSUMER.20260812",
+      "gate_name": "license_gate",
+      "status": "blocked",
+      "observed_value": "pending",
+      "expected_value": "approved or public_official",
+      "detail_json": "{\"ingestion_target\":\"raw_license_gate\",\"publication_allowed\":false}",
+      "checked_at": "2026-08-13T06:24:03.814Z"
+    },
+    {
+      "quality_result_id": "pqr:2ad5885dee09633c6559ff4f",
+      "backfill_run_id": null,
+      "partition_id": null,
+      "snapshot_id": "CR.BACKFILL.GILDATA.A_SHARE_CONSUMER.20260812",
+      "gate_name": "no_fund_holdings",
+      "status": "passed",
+      "observed_value": "True",
+      "expected_value": "True",
+      "detail_json": "{}",
+      "checked_at": "2026-08-13T06:24:03.814Z"
+    },
+    {
+      "quality_result_id": "pqr:a83e48b2d31fa7182616cc65",
+      "backfill_run_id": null,
+      "partition_id": null,
+      "snapshot_id": "CR.BACKFILL.GILDATA.A_SHARE_CONSUMER.20260812",
+      "gate_name": "record_count",
+      "status": "passed",
+      "observed_value": "1159",
+      "expected_value": "1159",
+      "detail_json": "{}",
+      "checked_at": "2026-08-13T06:24:03.814Z"
+    },
+    {
+      "quality_result_id": "pqr:e2a86f8adbe9b2605834237a",
+      "backfill_run_id": null,
+      "partition_id": null,
+      "snapshot_id": "CR.BACKFILL.GILDATA.A_SHARE_CONSUMER.20260812",
+      "gate_name": "schema_projection",
+      "status": "passed",
+      "observed_value": "9",
+      "expected_value": "requested fields only",
+      "detail_json": "{}",
+      "checked_at": "2026-08-13T06:24:03.814Z"
+    },
+    {
+      "quality_result_id": "pqr:d211d4b043657e849c957fa2",
+      "backfill_run_id": null,
+      "partition_id": null,
+      "snapshot_id": "CR.COVERAGE.GILDATA.A_SHARE.FULL_CONSUMER.20260812",
+      "gate_name": "license_gate",
+      "status": "blocked",
+      "observed_value": "pending",
+      "expected_value": "approved or public_official",
+      "detail_json": "{\"ingestion_target\":\"raw_license_gate\",\"publication_allowed\":false}",
+      "checked_at": "2026-08-13T06:40:17.293Z"
+    },
+    {
+      "quality_result_id": "pqr:0f2c38e31829c608f6478ab3",
+      "backfill_run_id": null,
+      "partition_id": null,
+      "snapshot_id": "CR.COVERAGE.GILDATA.A_SHARE.FULL_CONSUMER.20260812",
+      "gate_name": "no_fund_holdings",
+      "status": "passed",
+      "observed_value": "True",
+      "expected_value": "True",
+      "detail_json": "{}",
+      "checked_at": "2026-08-13T06:40:17.293Z"
+    },
+    {
+      "quality_result_id": "pqr:cf0385ca870ae15c9e07b1b9",
+      "backfill_run_id": null,
+      "partition_id": null,
+      "snapshot_id": "CR.COVERAGE.GILDATA.A_SHARE.FULL_CONSUMER.20260812",
+      "gate_name": "record_count",
+      "status": "passed",
+      "observed_value": "1275",
+      "expected_value": "1275",
+      "detail_json": "{}",
+      "checked_at": "2026-08-13T06:40:17.293Z"
+    },
+    {
+      "quality_result_id": "pqr:2e6b53bc7281bfbc2473bc33",
+      "backfill_run_id": null,
+      "partition_id": null,
+      "snapshot_id": "CR.COVERAGE.GILDATA.A_SHARE.FULL_CONSUMER.20260812",
+      "gate_name": "schema_projection",
+      "status": "passed",
+      "observed_value": "9",
+      "expected_value": "requested fields only",
+      "detail_json": "{}",
+      "checked_at": "2026-08-13T06:40:17.293Z"
+    }
+  ]
+}

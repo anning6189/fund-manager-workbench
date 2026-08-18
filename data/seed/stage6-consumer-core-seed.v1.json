@@ -1,0 +1,247 @@
+{
+  "package_id": "CR.SEED.STAGE6.CORE.001",
+  "source_id": "CR.SRC.CNINFO",
+  "retrieved_at": "2026-08-12T12:00:00+08:00",
+  "license_tag": "public_filing_research_use",
+  "entities": [
+    {
+      "entity_id": "cr:legal_entity:midea",
+      "entity_type": "legal_entity",
+      "canonical_name": "美的集团股份有限公司",
+      "jurisdiction": "CN",
+      "status": "active",
+      "valid_from": "2000-04-07",
+      "attributes": {"registration_status": "active"}
+    },
+    {
+      "entity_id": "cr:issuer:midea",
+      "entity_type": "issuer",
+      "canonical_name": "美的集团",
+      "jurisdiction": "CN",
+      "status": "active",
+      "valid_from": "2013-09-18",
+      "attributes": {"legal_entity_id": "cr:legal_entity:midea", "disclosure_jurisdictions": ["CN-SZSE"]}
+    },
+    {
+      "entity_id": "cr:security:000333sz",
+      "entity_type": "security",
+      "canonical_name": "美的集团A股",
+      "jurisdiction": "CN",
+      "status": "active",
+      "valid_from": "2013-09-18",
+      "attributes": {"issuer_id": "cr:issuer:midea", "security_type": "equity", "exchange_mic": "XSHE", "ticker": "000333", "currency": "CNY"}
+    },
+    {
+      "entity_id": "cr:brand:midea",
+      "entity_type": "brand",
+      "canonical_name": "美的",
+      "jurisdiction": "CN",
+      "status": "active",
+      "attributes": {"owner_entity_id": "cr:legal_entity:midea"}
+    },
+    {
+      "entity_id": "cr:legal_entity:gree",
+      "entity_type": "legal_entity",
+      "canonical_name": "珠海格力电器股份有限公司",
+      "jurisdiction": "CN",
+      "status": "active",
+      "valid_from": "1989-12-13",
+      "attributes": {"registration_status": "active"}
+    },
+    {
+      "entity_id": "cr:issuer:gree",
+      "entity_type": "issuer",
+      "canonical_name": "格力电器",
+      "jurisdiction": "CN",
+      "status": "active",
+      "valid_from": "1996-11-18",
+      "attributes": {"legal_entity_id": "cr:legal_entity:gree", "disclosure_jurisdictions": ["CN-SZSE"]}
+    },
+    {
+      "entity_id": "cr:security:000651sz",
+      "entity_type": "security",
+      "canonical_name": "格力电器A股",
+      "jurisdiction": "CN",
+      "status": "active",
+      "valid_from": "1996-11-18",
+      "attributes": {"issuer_id": "cr:issuer:gree", "security_type": "equity", "exchange_mic": "XSHE", "ticker": "000651", "currency": "CNY"}
+    },
+    {
+      "entity_id": "cr:brand:gree",
+      "entity_type": "brand",
+      "canonical_name": "格力",
+      "jurisdiction": "CN",
+      "status": "active",
+      "attributes": {"owner_entity_id": "cr:legal_entity:gree"}
+    },
+    {
+      "entity_id": "cr:product_category:white_appliance",
+      "entity_type": "product_category",
+      "canonical_name": "白色家电",
+      "status": "active",
+      "attributes": {"taxonomy_scheme": "CR", "node_code": "CR.D.AP.WH"}
+    },
+    {
+      "entity_id": "cr:geography:cn",
+      "entity_type": "geography",
+      "canonical_name": "中国",
+      "jurisdiction": "CN",
+      "status": "active",
+      "attributes": {"geo_type": "country", "iso_or_admin_code": "CN"}
+    }
+  ],
+  "aliases": [
+    {"entity_id": "cr:legal_entity:midea", "alias": "美的集团", "alias_type": "short_name", "confidence": 1, "review_status": "reviewed"},
+    {"entity_id": "cr:legal_entity:midea", "alias": "Midea Group Co., Ltd.", "language": "en", "alias_type": "english_legal_name", "confidence": 1, "review_status": "reviewed"},
+    {"entity_id": "cr:legal_entity:gree", "alias": "格力电器", "alias_type": "short_name", "confidence": 1, "review_status": "reviewed"},
+    {"entity_id": "cr:legal_entity:gree", "alias": "Gree Electric Appliances, Inc. of Zhuhai", "language": "en", "alias_type": "english_legal_name", "confidence": 1, "review_status": "reviewed"}
+  ],
+  "identifiers": [
+    {"entity_id": "cr:security:000333sz", "id_type": "ticker", "issuer": "SZSE", "value": "000333.SZ", "valid_from": "2013-09-18", "is_primary": true},
+    {"entity_id": "cr:security:000651sz", "id_type": "ticker", "issuer": "SZSE", "value": "000651.SZ", "valid_from": "1996-11-18", "is_primary": true}
+  ],
+  "relationships": [
+    {"relationship_id": "cr:rel:midea-issuer", "subject_id": "cr:legal_entity:midea", "predicate": "CONTROLS", "object_id": "cr:issuer:midea", "valid_from": "2013-09-18", "observed_at": "2024-03-28T00:00:00+08:00", "confidence": 1, "review_status": "reviewed"},
+    {"relationship_id": "cr:rel:midea-issues-000333", "subject_id": "cr:issuer:midea", "predicate": "ISSUES", "object_id": "cr:security:000333sz", "valid_from": "2013-09-18", "observed_at": "2024-03-28T00:00:00+08:00", "confidence": 1, "review_status": "reviewed"},
+    {"relationship_id": "cr:rel:midea-owns-brand", "subject_id": "cr:legal_entity:midea", "predicate": "OWNS", "object_id": "cr:brand:midea", "observed_at": "2024-03-28T00:00:00+08:00", "confidence": 1, "review_status": "reviewed"},
+    {"relationship_id": "cr:rel:midea-brand-white", "subject_id": "cr:brand:midea", "predicate": "HAS_PRODUCT", "object_id": "cr:product_category:white_appliance", "observed_at": "2024-03-28T00:00:00+08:00", "confidence": 0.99, "review_status": "reviewed"},
+    {"relationship_id": "cr:rel:midea-cn", "subject_id": "cr:legal_entity:midea", "predicate": "OPERATES_IN", "object_id": "cr:geography:cn", "observed_at": "2024-03-28T00:00:00+08:00", "confidence": 1, "review_status": "reviewed"},
+    {"relationship_id": "cr:rel:gree-issuer", "subject_id": "cr:legal_entity:gree", "predicate": "CONTROLS", "object_id": "cr:issuer:gree", "valid_from": "1996-11-18", "observed_at": "2024-04-30T00:00:00+08:00", "confidence": 1, "review_status": "reviewed"},
+    {"relationship_id": "cr:rel:gree-issues-000651", "subject_id": "cr:issuer:gree", "predicate": "ISSUES", "object_id": "cr:security:000651sz", "valid_from": "1996-11-18", "observed_at": "2024-04-30T00:00:00+08:00", "confidence": 1, "review_status": "reviewed"},
+    {"relationship_id": "cr:rel:gree-owns-brand", "subject_id": "cr:legal_entity:gree", "predicate": "OWNS", "object_id": "cr:brand:gree", "observed_at": "2024-04-30T00:00:00+08:00", "confidence": 1, "review_status": "reviewed"},
+    {"relationship_id": "cr:rel:gree-brand-white", "subject_id": "cr:brand:gree", "predicate": "HAS_PRODUCT", "object_id": "cr:product_category:white_appliance", "observed_at": "2024-04-30T00:00:00+08:00", "confidence": 0.99, "review_status": "reviewed"},
+    {"relationship_id": "cr:rel:gree-cn", "subject_id": "cr:legal_entity:gree", "predicate": "OPERATES_IN", "object_id": "cr:geography:cn", "observed_at": "2024-04-30T00:00:00+08:00", "confidence": 1, "review_status": "reviewed"}
+  ],
+  "classifications": [
+    {"assignment_id": "cr:class:midea:white-appliance", "entity_id": "cr:legal_entity:midea", "node_code": "CR.D.AP.WH", "assignment_type": "primary_research_exposure", "observed_at": "2024-03-28T00:00:00+08:00", "confidence": 0.95, "review_status": "reviewed"},
+    {"assignment_id": "cr:class:gree:white-appliance", "entity_id": "cr:legal_entity:gree", "node_code": "CR.D.AP.WH", "assignment_type": "primary_research_exposure", "observed_at": "2024-04-30T00:00:00+08:00", "confidence": 0.98, "review_status": "reviewed"}
+  ],
+  "documents": [
+    {
+      "document_id": "CR.DOC.22F4915D91ADA74A37EAB8D0",
+      "source_record_id": "1219429374",
+      "document_type": "annual_report",
+      "title": "美的集团股份有限公司2023年年度报告",
+      "publisher": "美的集团股份有限公司",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-03-28/1219429374.PDF",
+      "published_at": "2024-03-28T00:00:00+08:00",
+      "available_at": "2024-03-28T23:59:59+08:00",
+      "as_of_date": "2023-12-31",
+      "content_hash": "sha256:22f4915d91ada74a37eab8d074aef4c15420f3b1a8b5f5bd5777c00f97d58b86",
+      "mime_type": "application/pdf",
+      "document_version": "2024-03-28-cn-annual-report",
+      "license_tag": "public_filing_research_use",
+      "access_class": "public",
+      "evidence_tier": "A",
+      "status": "curated",
+      "metadata": {"byte_length": 6617110, "verified_pages": [10, 161, 163]}
+    },
+    {
+      "document_id": "CR.DOC.32EBC475A2291CE4F1B5C1A9",
+      "source_record_id": "1219928418",
+      "document_type": "annual_report",
+      "title": "珠海格力电器股份有限公司2023年年度报告",
+      "publisher": "珠海格力电器股份有限公司",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-30/1219928418.PDF",
+      "published_at": "2024-04-30T00:00:00+08:00",
+      "available_at": "2024-04-30T23:59:59+08:00",
+      "as_of_date": "2023-12-31",
+      "content_hash": "sha256:32ebc475a2291ce4f1b5c1a9f9da55227e03192f07e75041e976c29d213ec8aa",
+      "mime_type": "application/pdf",
+      "document_version": "2024-04-30-cn-annual-report",
+      "license_tag": "public_filing_research_use",
+      "access_class": "public",
+      "evidence_tier": "A",
+      "status": "curated",
+      "metadata": {"verified_pages": [7, 116, 117]}
+    }
+  ],
+  "document_entities": [
+    {"document_id": "CR.DOC.22F4915D91ADA74A37EAB8D0", "entity_id": "cr:legal_entity:midea", "relation_type": "issuer_subject", "confidence": 1, "review_status": "reviewed"},
+    {"document_id": "CR.DOC.32EBC475A2291CE4F1B5C1A9", "entity_id": "cr:legal_entity:gree", "relation_type": "issuer_subject", "confidence": 1, "review_status": "reviewed"}
+  ],
+  "chunks": [
+    {
+      "chunk_id": "cr:chunk:midea-ar2023-financials",
+      "document_id": "CR.DOC.22F4915D91ADA74A37EAB8D0",
+      "sequence_no": 1,
+      "page_start": 10,
+      "page_end": 161,
+      "section_path": "主要财务指标/合并利润表",
+      "chunk_type": "table_extract",
+      "locator": "PDF第10页主要财务指标；第161页合并利润表",
+      "text_content": "美的集团2023年营业收入3720.37亿元，2022年为3439.18亿元；2023年归属于上市公司股东的净利润337.20亿元，营业成本2734.81亿元，销售费用348.81亿元。",
+      "table": {"revenue_2023_cny": 372037280000, "revenue_2022_cny": 343917531000, "parent_net_profit_2023_cny": 33719935000, "operating_cost_2023_cny": 273481373000, "selling_expense_2023_cny": 34880875000},
+      "content_hash": "sha256:69147c3a20710084f6bf1cd680c6296f8f12bcd24786b7c47be5cd78944d4513",
+      "available_at": "2024-03-28T23:59:59+08:00"
+    },
+    {
+      "chunk_id": "cr:chunk:midea-ar2023-cashflow",
+      "document_id": "CR.DOC.22F4915D91ADA74A37EAB8D0",
+      "sequence_no": 2,
+      "page_start": 163,
+      "page_end": 163,
+      "section_path": "合并现金流量表",
+      "chunk_type": "table_extract",
+      "locator": "PDF第163页合并现金流量表",
+      "text_content": "美的集团2023年经营活动产生的现金流量净额为579.03亿元。",
+      "table": {"cfo_net_2023_cny": 57902611000},
+      "content_hash": "sha256:90608868959209a718952387473662344d46d29fa64d729a4a7e314407807b31",
+      "available_at": "2024-03-28T23:59:59+08:00"
+    },
+    {
+      "chunk_id": "cr:chunk:gree-ar2023-financials",
+      "document_id": "CR.DOC.32EBC475A2291CE4F1B5C1A9",
+      "sequence_no": 1,
+      "page_start": 7,
+      "page_end": 116,
+      "section_path": "主要财务指标/合并利润表",
+      "chunk_type": "table_extract",
+      "locator": "PDF第7页主要财务指标；第116页合并利润表",
+      "text_content": "格力电器2023年营业收入2039.79亿元，2022年为1889.88亿元；2023年归属于上市公司股东的净利润290.17亿元，营业成本1416.26亿元，销售费用171.30亿元。",
+      "table": {"revenue_2023_cny": 203979266387.09, "revenue_2022_cny": 188988382706.68, "parent_net_profit_2023_cny": 29017387604.18, "operating_cost_2023_cny": 141625549746.95, "selling_expense_2023_cny": 17129639682.51},
+      "content_hash": "sha256:ed2d05256265e605934599e9eafc75be099375465bc7627b585d0a5378578360",
+      "available_at": "2024-04-30T23:59:59+08:00"
+    },
+    {
+      "chunk_id": "cr:chunk:gree-ar2023-cashflow",
+      "document_id": "CR.DOC.32EBC475A2291CE4F1B5C1A9",
+      "sequence_no": 2,
+      "page_start": 117,
+      "page_end": 117,
+      "section_path": "合并现金流量表",
+      "chunk_type": "table_extract",
+      "locator": "PDF第117页合并现金流量表",
+      "text_content": "格力电器2023年经营活动产生的现金流量净额为563.98亿元。",
+      "table": {"cfo_net_2023_cny": 56398426354.17},
+      "content_hash": "sha256:fb0e31acdf1c43cdc4633741def1db394719a3a6a1e70ee6585cc58d8d7f6b79",
+      "available_at": "2024-04-30T23:59:59+08:00"
+    }
+  ],
+  "evidence": [
+    {"evidence_id": "ev:midea:ar2023:financials", "document_id": "CR.DOC.22F4915D91ADA74A37EAB8D0", "chunk_id": "cr:chunk:midea-ar2023-financials", "locator": "PDF第10页主要财务指标；第161页合并利润表", "support_type": "direct", "evidence_tier": "A", "published_at": "2024-03-28T00:00:00+08:00", "available_at": "2024-03-28T23:59:59+08:00", "content_hash": "sha256:22f4915d91ada74a37eab8d074aef4c15420f3b1a8b5f5bd5777c00f97d58b86", "license_tag": "public_filing_research_use", "access_class": "public"},
+    {"evidence_id": "ev:midea:ar2023:cashflow", "document_id": "CR.DOC.22F4915D91ADA74A37EAB8D0", "chunk_id": "cr:chunk:midea-ar2023-cashflow", "locator": "PDF第163页合并现金流量表", "support_type": "direct", "evidence_tier": "A", "published_at": "2024-03-28T00:00:00+08:00", "available_at": "2024-03-28T23:59:59+08:00", "content_hash": "sha256:22f4915d91ada74a37eab8d074aef4c15420f3b1a8b5f5bd5777c00f97d58b86", "license_tag": "public_filing_research_use", "access_class": "public"},
+    {"evidence_id": "ev:gree:ar2023:financials", "document_id": "CR.DOC.32EBC475A2291CE4F1B5C1A9", "chunk_id": "cr:chunk:gree-ar2023-financials", "locator": "PDF第7页主要财务指标；第116页合并利润表", "support_type": "direct", "evidence_tier": "A", "published_at": "2024-04-30T00:00:00+08:00", "available_at": "2024-04-30T23:59:59+08:00", "content_hash": "sha256:32ebc475a2291ce4f1b5c1a9f9da55227e03192f07e75041e976c29d213ec8aa", "license_tag": "public_filing_research_use", "access_class": "public"},
+    {"evidence_id": "ev:gree:ar2023:cashflow", "document_id": "CR.DOC.32EBC475A2291CE4F1B5C1A9", "chunk_id": "cr:chunk:gree-ar2023-cashflow", "locator": "PDF第117页合并现金流量表", "support_type": "direct", "evidence_tier": "A", "published_at": "2024-04-30T00:00:00+08:00", "available_at": "2024-04-30T23:59:59+08:00", "content_hash": "sha256:32ebc475a2291ce4f1b5c1a9f9da55227e03192f07e75041e976c29d213ec8aa", "license_tag": "public_filing_research_use", "access_class": "public"}
+  ],
+  "observations": [
+    {"observation_id": "obs:midea:revenue:2022", "metric_id": "CR.CO.REVENUE", "entity_id": "cr:legal_entity:midea", "security_id": "000333.SZ", "value": 343917531000, "unit": "CNY", "period_start": "2022-01-01", "period_end": "2022-12-31", "as_of_date": "2022-12-31", "published_at": "2024-03-28T00:00:00+08:00", "available_at": "2024-03-28T23:59:59+08:00", "evidence_id": "ev:midea:ar2023:financials", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "comparative_in_2023_report", "fiscal_period_type": "annual"},
+    {"observation_id": "obs:midea:revenue:2023", "metric_id": "CR.CO.REVENUE", "entity_id": "cr:legal_entity:midea", "security_id": "000333.SZ", "value": 372037280000, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-03-28T00:00:00+08:00", "available_at": "2024-03-28T23:59:59+08:00", "evidence_id": "ev:midea:ar2023:financials", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"},
+    {"observation_id": "obs:midea:cost:2023", "metric_id": "CR.CO.OPERATING_COST", "entity_id": "cr:legal_entity:midea", "security_id": "000333.SZ", "value": 273481373000, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-03-28T00:00:00+08:00", "available_at": "2024-03-28T23:59:59+08:00", "evidence_id": "ev:midea:ar2023:financials", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"},
+    {"observation_id": "obs:midea:selling:2023", "metric_id": "CR.CO.SELLING_EXPENSE", "entity_id": "cr:legal_entity:midea", "security_id": "000333.SZ", "value": 34880875000, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-03-28T00:00:00+08:00", "available_at": "2024-03-28T23:59:59+08:00", "evidence_id": "ev:midea:ar2023:financials", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"},
+    {"observation_id": "obs:midea:cfo:2023", "metric_id": "CR.CO.CFO_NET", "entity_id": "cr:legal_entity:midea", "security_id": "000333.SZ", "value": 57902611000, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-03-28T00:00:00+08:00", "available_at": "2024-03-28T23:59:59+08:00", "evidence_id": "ev:midea:ar2023:cashflow", "value_status": "reported", "statement_scope": "cash_flow_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"},
+    {"observation_id": "obs:midea:np:2023", "metric_id": "CR.CO.PARENT_NET_PROFIT", "entity_id": "cr:legal_entity:midea", "security_id": "000333.SZ", "value": 33719935000, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-03-28T00:00:00+08:00", "available_at": "2024-03-28T23:59:59+08:00", "evidence_id": "ev:midea:ar2023:financials", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"},
+    {"observation_id": "obs:gree:revenue:2022", "metric_id": "CR.CO.REVENUE", "entity_id": "cr:legal_entity:gree", "security_id": "000651.SZ", "value": 188988382706.68, "unit": "CNY", "period_start": "2022-01-01", "period_end": "2022-12-31", "as_of_date": "2022-12-31", "published_at": "2024-04-30T00:00:00+08:00", "available_at": "2024-04-30T23:59:59+08:00", "evidence_id": "ev:gree:ar2023:financials", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "comparative_in_2023_report", "fiscal_period_type": "annual"},
+    {"observation_id": "obs:gree:revenue:2023", "metric_id": "CR.CO.REVENUE", "entity_id": "cr:legal_entity:gree", "security_id": "000651.SZ", "value": 203979266387.09, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-04-30T00:00:00+08:00", "available_at": "2024-04-30T23:59:59+08:00", "evidence_id": "ev:gree:ar2023:financials", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"},
+    {"observation_id": "obs:gree:cost:2023", "metric_id": "CR.CO.OPERATING_COST", "entity_id": "cr:legal_entity:gree", "security_id": "000651.SZ", "value": 141625549746.95, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-04-30T00:00:00+08:00", "available_at": "2024-04-30T23:59:59+08:00", "evidence_id": "ev:gree:ar2023:financials", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"},
+    {"observation_id": "obs:gree:selling:2023", "metric_id": "CR.CO.SELLING_EXPENSE", "entity_id": "cr:legal_entity:gree", "security_id": "000651.SZ", "value": 17129639682.51, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-04-30T00:00:00+08:00", "available_at": "2024-04-30T23:59:59+08:00", "evidence_id": "ev:gree:ar2023:financials", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"},
+    {"observation_id": "obs:gree:cfo:2023", "metric_id": "CR.CO.CFO_NET", "entity_id": "cr:legal_entity:gree", "security_id": "000651.SZ", "value": 56398426354.17, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-04-30T00:00:00+08:00", "available_at": "2024-04-30T23:59:59+08:00", "evidence_id": "ev:gree:ar2023:cashflow", "value_status": "reported", "statement_scope": "cash_flow_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"},
+    {"observation_id": "obs:gree:np:2023", "metric_id": "CR.CO.PARENT_NET_PROFIT", "entity_id": "cr:legal_entity:gree", "security_id": "000651.SZ", "value": 29017387604.18, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-04-30T00:00:00+08:00", "available_at": "2024-04-30T23:59:59+08:00", "evidence_id": "ev:gree:ar2023:financials", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"}
+  ],
+  "source_cursor": {
+    "stream_name": "financials",
+    "cursor_value": "cninfo:1219928418",
+    "watermark_available_at": "2024-04-30T23:59:59+08:00",
+    "metadata": {"seed_only": true, "population_mode": "incremental"}
+  }
+}

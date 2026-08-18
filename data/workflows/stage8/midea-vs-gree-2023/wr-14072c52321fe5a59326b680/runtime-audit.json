@@ -1,0 +1,304 @@
+{
+  "engine_version": "1.1.0",
+  "run": {
+    "run_id": "wr:14072c52321fe5a59326b680",
+    "package_id": "CR.WORKFLOW.PKG.STAGE8.COMPARE.001",
+    "status": "completed",
+    "started_at": "2026-08-13T05:57:09.276Z",
+    "completed_at": null,
+    "resumed_count": 0,
+    "publication_status": "internal_research_ready",
+    "human_review_required": 0,
+    "output_directory": "data\\workflows\\stage8\\midea-vs-gree-2023\\wr-14072c52321fe5a59326b680",
+    "summary_json": "{}"
+  },
+  "tasks": [
+    {
+      "task_id": "scope_guard",
+      "role_id": "research_director",
+      "lane": "control",
+      "wave_no": 0,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:57:09.330Z",
+      "completed_at": "2026-08-13T05:57:09.336Z",
+      "dependencies_json": "[]",
+      "error_json": null
+    },
+    {
+      "task_id": "entity_resolution",
+      "role_id": "entity_scope_agent",
+      "lane": "core",
+      "wave_no": 1,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:57:09.366Z",
+      "completed_at": "2026-08-13T05:57:09.387Z",
+      "dependencies_json": "[\"scope_guard\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "document_retrieval",
+      "role_id": "evidence_retrieval_agent",
+      "lane": "core",
+      "wave_no": 2,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:57:09.410Z",
+      "completed_at": "2026-08-13T05:57:09.450Z",
+      "dependencies_json": "[\"entity_resolution\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "fact_retrieval",
+      "role_id": "evidence_retrieval_agent",
+      "lane": "core",
+      "wave_no": 2,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:57:09.410Z",
+      "completed_at": "2026-08-13T05:57:09.453Z",
+      "dependencies_json": "[\"entity_resolution\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "model_execution",
+      "role_id": "model_agent",
+      "lane": "model",
+      "wave_no": 3,
+      "status": "completed",
+      "required": 0,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:57:09.481Z",
+      "completed_at": "2026-08-13T05:57:09.551Z",
+      "dependencies_json": "[\"fact_retrieval\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "claim_composition",
+      "role_id": "claim_agent",
+      "lane": "analysis",
+      "wave_no": 4,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:57:09.569Z",
+      "completed_at": "2026-08-13T05:57:09.574Z",
+      "dependencies_json": "[\"fact_retrieval\",\"document_retrieval\",\"model_execution\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "evidence_audit",
+      "role_id": "evidence_auditor",
+      "lane": "quality",
+      "wave_no": 5,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:57:09.643Z",
+      "completed_at": "2026-08-13T05:57:09.661Z",
+      "dependencies_json": "[\"claim_composition\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "skeptic_review",
+      "role_id": "skeptic_agent",
+      "lane": "quality",
+      "wave_no": 5,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:57:09.643Z",
+      "completed_at": "2026-08-13T05:57:09.695Z",
+      "dependencies_json": "[\"claim_composition\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "report_render",
+      "role_id": "report_agent",
+      "lane": "delivery",
+      "wave_no": 6,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:57:09.719Z",
+      "completed_at": "2026-08-13T05:57:09.754Z",
+      "dependencies_json": "[\"evidence_audit\",\"skeptic_review\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "compliance_review",
+      "role_id": "compliance_agent",
+      "lane": "quality",
+      "wave_no": 7,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:57:09.783Z",
+      "completed_at": "2026-08-13T05:57:09.789Z",
+      "dependencies_json": "[\"report_render\"]",
+      "error_json": null
+    }
+  ],
+  "events": [
+    {
+      "event_type": "run_planned",
+      "severity": "info",
+      "task_id": null,
+      "occurred_at": "2026-08-13T05:57:09.276Z",
+      "detail_json": "{\"package_hash\":\"sha256:67a5726605725e003b791f8a511f079ce8679b659be0c1823fd6e428a7fc5fa2\"}"
+    },
+    {
+      "event_type": "run_started",
+      "severity": "info",
+      "task_id": null,
+      "occurred_at": "2026-08-13T05:57:09.316Z",
+      "detail_json": "{}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "scope_guard",
+      "occurred_at": "2026-08-13T05:57:09.333Z",
+      "detail_json": "{\"wave_no\":0}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "scope_guard",
+      "occurred_at": "2026-08-13T05:57:09.350Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "entity_resolution",
+      "occurred_at": "2026-08-13T05:57:09.368Z",
+      "detail_json": "{\"wave_no\":1}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "entity_resolution",
+      "occurred_at": "2026-08-13T05:57:09.388Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "document_retrieval",
+      "occurred_at": "2026-08-13T05:57:09.412Z",
+      "detail_json": "{\"wave_no\":2}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "fact_retrieval",
+      "occurred_at": "2026-08-13T05:57:09.412Z",
+      "detail_json": "{\"wave_no\":2}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "document_retrieval",
+      "occurred_at": "2026-08-13T05:57:09.452Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "fact_retrieval",
+      "occurred_at": "2026-08-13T05:57:09.466Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "model_execution",
+      "occurred_at": "2026-08-13T05:57:09.483Z",
+      "detail_json": "{\"wave_no\":3}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "model_execution",
+      "occurred_at": "2026-08-13T05:57:09.553Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "claim_composition",
+      "occurred_at": "2026-08-13T05:57:09.571Z",
+      "detail_json": "{\"wave_no\":4}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "claim_composition",
+      "occurred_at": "2026-08-13T05:57:09.583Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "evidence_audit",
+      "occurred_at": "2026-08-13T05:57:09.645Z",
+      "detail_json": "{\"wave_no\":5}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "skeptic_review",
+      "occurred_at": "2026-08-13T05:57:09.646Z",
+      "detail_json": "{\"wave_no\":5}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "evidence_audit",
+      "occurred_at": "2026-08-13T05:57:09.663Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "skeptic_review",
+      "occurred_at": "2026-08-13T05:57:09.704Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "report_render",
+      "occurred_at": "2026-08-13T05:57:09.721Z",
+      "detail_json": "{\"wave_no\":6}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "report_render",
+      "occurred_at": "2026-08-13T05:57:09.755Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "compliance_review",
+      "occurred_at": "2026-08-13T05:57:09.785Z",
+      "detail_json": "{\"wave_no\":7}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "compliance_review",
+      "occurred_at": "2026-08-13T05:57:09.798Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    }
+  ],
+  "reviews": []
+}

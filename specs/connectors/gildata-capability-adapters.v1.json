@@ -1,0 +1,78 @@
+{
+  "spec_version": "1.1.0",
+  "status": "live_tools_verified_adapters_enforced",
+  "server": "aidata-assistant-srv-tool",
+  "common_rules": {
+    "response_format": "provider_json_wrapped_in_mcp_text_content",
+    "parser": "parse outer MCP result, then parse JSON text, then parse markdown tables without inferring absent fields",
+    "server_side_projection_reliability": "low",
+    "client_side_projection_required": true,
+    "over_retrieval_definition": "raw records outside requested entity, field, date, period, document type or topic scope",
+    "truncation_detection": ["tool_output_truncated", "provider_truncated_flag", "missing_closing_structure", "required_record_missing_with_excess_raw_rows"],
+    "license_gate": "runtime license tag from approved contract registry required before formal use",
+    "runtime_policy_ref": "research-runtime-policy.v2.json",
+    "date_guard": "requested date or inclusive range must match every accepted record",
+    "unit_guard": "raw value, raw unit, normalization factor and normalized value must be retained",
+    "evidence_guard": "summary without stable original URL/document ID and locator is non-core enrichment only",
+    "retry_guard": "one split retry only; repeating the same broad query is forbidden"
+  },
+  "capabilities": [
+    {
+      "adapter_id": "CR.CONNECTOR.GILDATA.FINANCIAL_RESEARCH",
+      "tool": "FinQuery",
+      "canonical_outputs": ["entity", "observation"],
+      "field_bindings_ref": "gildata-financial-research-adapter.v1.json",
+      "strict_filters": ["security_code", "financial_metric_code", "report_period", "report_type", "statement_name"],
+      "observed_probe_issue": "requested two fields but received subaccounts and quarterly rows",
+      "production_action": "partition one entity per request, project exact rows, validate scale and discard extras with audit log"
+    },
+    {
+      "adapter_id": "CR.CONNECTOR.GILDATA.ANNOUNCEMENT",
+      "tool": "AnnouncementData",
+      "canonical_outputs": ["document", "evidence"],
+      "strict_filters": ["issuer", "security_code", "exact_document_type", "language", "published_at", "title"],
+      "observed_probe_issue": "requested one Chinese annual report but received English report and later unrelated Hong Kong documents",
+      "production_action": "one issuer per request; exact title/type/language/cutoff filter; prefer official exchange URL; summary-only records are leads and missing locator blocks core claims"
+    },
+    {
+      "adapter_id": "CR.CONNECTOR.GILDATA.MACRO_INDUSTRY",
+      "tool": "MacroIndustryData",
+      "canonical_outputs": ["observation", "evidence"],
+      "strict_filters": ["indicator_code", "frequency", "period", "unit", "source"],
+      "observed_probe_issue": "requested 2024 period but received 2023 and provider-derived rows",
+      "production_action": "retain requested period only; separate official series from provider-derived calculations"
+    },
+    {
+      "adapter_id": "CR.CONNECTOR.GILDATA.RESEARCH",
+      "tool": "FinancialResearchReport",
+      "canonical_outputs": ["document", "third_party_view"],
+      "strict_filters": ["report_sector", "report_date", "publisher", "report_identity"],
+      "observed_probe_issue": "requested one appliance report but received multiple unrelated sector reports",
+      "production_action": "one company and at most three reports per request; copyright-limited excerpt; require original locator or downgrade to non-blocking THIRD_PARTY_VIEW"
+    },
+    {
+      "adapter_id": "CR.CONNECTOR.GILDATA.NEWS",
+      "tool": "NewsDataQuery",
+      "canonical_outputs": ["document", "unverified_signal"],
+      "strict_filters": ["date_window", "topic", "source", "event_identity"],
+      "observed_probe_issue": "requested one policy item but response contained very large unrelated news set",
+      "production_action": "date/topic/source filter; deduplicate events; policy claims require official document cross-check"
+    },
+    {
+      "adapter_id": "CR.CONNECTOR.GILDATA.ENTERPRISE",
+      "tool": "IcEnterpriseDataQuery",
+      "canonical_outputs": ["entity", "risk_event"],
+      "strict_filters": ["legal_name_or_credit_code", "requested_fields", "observed_at"],
+      "observed_probe_issue": "requested three fields but full corporate profile returned",
+      "production_action": "one verified legal entity per request; field projection and personal-data minimization; require group relationship, event role and materiality; material risks cross-check official registries"
+    },
+    {
+      "adapter_id": "CR.CONNECTOR.GILDATA.STOCK_UNIVERSE",
+      "tool": "SmartStockSelection",
+      "canonical_outputs": ["universe_member", "market_observation"],
+      "strict_filters": ["universe", "classification_scheme", "as_of_date", "requested_fields"],
+      "observed_probe_issue": "requested code/name but full market snapshot returned",
+      "production_action": "project security and classification fields; market fields accepted only when explicitly requested"
+    }
+  ]
+}

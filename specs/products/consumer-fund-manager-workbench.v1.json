@@ -1,0 +1,62 @@
+{
+  "spec_id": "CR.PRODUCT.FUND_MANAGER_WORKBENCH",
+  "version": "1.1.0",
+  "name": "消费行业研究工作台",
+  "primary_user": "public_fund_manager",
+  "delivery": {
+    "default_mode": "local_single_user",
+    "interface": "web",
+    "bind_host": "127.0.0.1",
+    "default_port": 8765,
+    "public_internet_publication": false,
+    "installation_target": "fund_manager_windows_pc",
+    "development_runtime_required_after_packaging": false
+  },
+  "navigation": [
+    "today_research",
+    "consumer_sector_map",
+    "research_task_library",
+    "job_queue",
+    "report_workbench",
+    "data_and_evidence"
+  ],
+  "capabilities": {
+    "today_research": ["yesterday_cutoff", "alert_priority", "internal_ready_reports", "data_gap_visibility"],
+    "consumer_sector_map": ["eleven_sector_coverage", "a_h_market_status", "metrics_and_blockers"],
+    "research_task_library": ["search", "filter", "favorite", "named_submit", "explicit_execution"],
+    "job_queue": ["durable_status", "progress", "failure_reason", "result_link"],
+    "report_workbench": ["markdown_report", "claim_evidence_trace", "counter_evidence", "annotation", "automatic_quality_release"],
+    "data_and_evidence": ["freshness", "coverage", "license_gate", "source_status", "snapshot_status"]
+  },
+  "roles": {
+    "public_fund_manager": ["view", "search", "favorite", "submit", "view_own_jobs", "annotate"],
+    "research_analyst": ["view", "search", "favorite", "submit", "view_team_jobs", "annotate"],
+    "research_operator": ["view", "search", "submit", "manage_queue", "view_all_jobs"]
+  },
+  "time_policy": {
+    "timezone": "Asia/Shanghai",
+    "default_formal_cutoff": "previous_calendar_day_23:59:59",
+    "future_cutoff_allowed": false,
+    "event_time_fields": ["event_time", "available_at", "detected_at", "cutoff_timestamp"]
+  },
+  "truth_and_safety": {
+    "show_data_gaps": true,
+    "show_license_gates": true,
+    "show_source_and_locator": true,
+    "human_review_gate_enabled": false,
+    "automatic_internal_release_after_quality_gates": true,
+    "fund_holdings_allowed": false,
+    "position_inference_allowed": false,
+    "automatic_trading_allowed": false,
+    "automatic_external_publication_allowed": false
+  },
+  "acceptance": {
+    "sectors_visible": 11,
+    "task_products_visible": 110,
+    "one_click_local_start": true,
+    "command_line_required_for_end_user": false,
+    "persistent_jobs_and_reports": true,
+    "claim_to_evidence_trace": true,
+    "loopback_only_by_default": true
+  }
+}

@@ -1,0 +1,92 @@
+{
+    "report_id":  "CR.REMEDIATION.S3S4.001",
+    "generated_at":  "2026-08-12T16:11:10.6878701+08:00",
+    "prior_score":  65,
+    "current_score":  95,
+    "score_note":  "内部生产规格量表；保留5分给真实连接器全量联调与生产数据覆盖",
+    "p0_remaining":  0,
+    "p1_remaining":  0,
+    "spec_versions":  {
+                          "domain":  "1.1.0",
+                          "metrics":  "1.1.0",
+                          "evidence":  "1.1.0",
+                          "gildata_adapter":  "1.0.0",
+                          "validator":  "1.0.0"
+                      },
+    "counts":  {
+                   "sectors":  11,
+                   "subcategories_with_stable_codes":  73,
+                   "common_metrics":  35,
+                   "professional_metrics_fully_specified":  64,
+                   "p0_templates_with_schema":  5,
+                   "evidence_required_fields":  16
+               },
+    "regression":  {
+                       "suite_id":  "CR.REGRESSION.S3S4.001",
+                       "run_at":  "2026-08-12T16:11:10.1546120+08:00",
+                       "passed":  true,
+                       "total":  8,
+                       "passed_count":  8,
+                       "failed_count":  0,
+                       "results":  [
+                                       {
+                                           "name":  "规格完整性",
+                                           "passed":  true,
+                                           "expected":  "pass",
+                                           "actual":  "exit=0, passed=True"
+                                       },
+                                       {
+                                           "name":  "合格历史比较用例",
+                                           "passed":  true,
+                                           "expected":  "pass with 0 errors",
+                                           "actual":  "exit=0, errors=0"
+                                       },
+                                       {
+                                           "name":  "未来信息穿越阻断",
+                                           "passed":  true,
+                                           "expected":  "hard block future_information_leakage",
+                                           "actual":  "future_information_leakage"
+                                       },
+                                       {
+                                           "name":  "截断响应阻断",
+                                           "passed":  true,
+                                           "expected":  "hard block connector_result_truncated",
+                                           "actual":  "connector_result_truncated"
+                                       },
+                                       {
+                                           "name":  "无规则单一赢家阻断",
+                                           "passed":  true,
+                                           "expected":  "hard block single_winner_without_decision_rule",
+                                           "actual":  "single_winner_without_decision_rule"
+                                       },
+                                       {
+                                           "name":  "越界实体后过滤",
+                                           "passed":  true,
+                                           "expected":  "discard and log, answer remains valid",
+                                           "actual":  "exit=0, discarded=1, codes=out_of_scope_entity"
+                                       },
+                                       {
+                                           "name":  "错误计算阻断",
+                                           "passed":  true,
+                                           "expected":  "hard block calculation_result_mismatch",
+                                           "actual":  "calculation_result_mismatch"
+                                       },
+                                       {
+                                           "name":  "不可定位证据阻断",
+                                           "passed":  true,
+                                           "expected":  "hard block unlocatable_citation",
+                                           "actual":  "unlocatable_citation,evidence_not_accepted,evidence_not_accepted,evidence_not_accepted,evidence_not_accepted,evidence_not_accepted,evidence_not_accepted,calculation_input_not_accepted,calculation_input_not_accepted,calculation_input_not_accepted,calculation_input_not_accepted,calculation_input_not_accepted,calculation_input_not_accepted,calculation_input_not_accepted,calculation_input_not_accepted"
+                                       }
+                                   ]
+                   },
+    "live_mcp_probe":  {
+                           "status":  "timeout_after_90_seconds",
+                           "impact":  "none_on_gate",
+                           "handling":  "adapter_requires_partition_retry_or_blocks_truncated_or_incomplete_response"
+                       },
+    "remaining_external_dependencies":  [
+                                            "Gildata合同许可条款确认",
+                                            "真实连接器字段绑定和分页/截断信号适配",
+                                            "公司与业务暴露主数据持续扩充"
+                                        ]
+}

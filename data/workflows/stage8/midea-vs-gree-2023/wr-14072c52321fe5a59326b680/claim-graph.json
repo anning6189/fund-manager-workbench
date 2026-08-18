@@ -1,0 +1,230 @@
+{
+  "claims": [
+    {
+      "claim_id": "wc:e19c646531ae4f6780ed94c8",
+      "module_id": "reported_financials",
+      "text": "美的集团2022年营业收入为3439.18亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:midea:revenue:2022"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:d8928d04ec5cd903d73d961e",
+      "module_id": "reported_financials",
+      "text": "美的集团2023年营业收入为3720.37亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:midea:revenue:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:a5d2bb2fe4fd1a5e86c6a6c7",
+      "module_id": "reported_financials",
+      "text": "美的集团2023年营业成本为2734.81亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:midea:cost:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:de3a51e403e741c3952a56b3",
+      "module_id": "reported_financials",
+      "text": "美的集团2023年归母净利润为337.20亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:midea:np:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:ed4edd98eb4f8adbbe36809c",
+      "module_id": "reported_financials",
+      "text": "美的集团2023年经营活动现金流净额为579.03亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:midea:cfo:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:cashflow",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:16c7a19c42f8dfff6e2279d8",
+      "module_id": "revenue_growth",
+      "text": "美的集团2023年营业收入同比增长8.18%。",
+      "content_label": "AGENT_CALCULATION",
+      "importance": "key",
+      "confidence": 0.96,
+      "as_of_date": "2023-12-31",
+      "formula": "revenue_2023 / revenue_2022 - 1",
+      "input_ids": [
+        "obs:midea:revenue:2023",
+        "obs:midea:revenue:2022"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        },
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:d5857ddb15592ffb2f1f87d1",
+      "module_id": "gross_margin",
+      "text": "美的集团2023年报表口径毛利率为26.49%。",
+      "content_label": "AGENT_CALCULATION",
+      "importance": "key",
+      "confidence": 0.96,
+      "as_of_date": "2023-12-31",
+      "formula": "1 - operating_cost_2023 / revenue_2023",
+      "input_ids": [
+        "obs:midea:cost:2023",
+        "obs:midea:revenue:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        },
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:fc2f74667145dc6c611ee94c",
+      "module_id": "net_margin",
+      "text": "美的集团2023年归母净利率为9.06%。",
+      "content_label": "AGENT_CALCULATION",
+      "importance": "key",
+      "confidence": 0.96,
+      "as_of_date": "2023-12-31",
+      "formula": "parent_net_profit_2023 / revenue_2023",
+      "input_ids": [
+        "obs:midea:np:2023",
+        "obs:midea:revenue:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        },
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:597db352f6a682666ba252a2",
+      "module_id": "cfo_conversion",
+      "text": "美的集团2023年经营现金流/归母净利润为1.72倍。",
+      "content_label": "AGENT_CALCULATION",
+      "importance": "key",
+      "confidence": 0.96,
+      "as_of_date": "2023-12-31",
+      "formula": "cfo_net_2023 / parent_net_profit_2023",
+      "input_ids": [
+        "obs:midea:cfo:2023",
+        "obs:midea:np:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:cashflow",
+          "relation_type": "supporting"
+        },
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    }
+  ],
+  "claim_count": 9,
+  "entity_summary": {
+    "cr:legal_entity:midea": {
+      "display_name": "美的集团",
+      "status": "complete",
+      "revenue_2023": 372037280000.0,
+      "revenue_growth": 0.08176305790006388,
+      "gross_margin": 0.2649086860327545,
+      "net_margin": 0.09063590347719992,
+      "cfo_conversion": 1.71716259239527,
+      "evidence_ids": [
+        "ev:midea:ar2023:cashflow",
+        "ev:midea:ar2023:financials"
+      ],
+      "calculation_claim_ids": {
+        "revenue_growth": "wc:16c7a19c42f8dfff6e2279d8",
+        "gross_margin": "wc:d5857ddb15592ffb2f1f87d1",
+        "net_margin": "wc:fc2f74667145dc6c611ee94c",
+        "cfo_conversion": "wc:597db352f6a682666ba252a2"
+      }
+    },
+    "cr:legal_entity:gree": {
+      "display_name": "格力电器",
+      "status": "insufficient_facts"
+    }
+  }
+}

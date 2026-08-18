@@ -1,0 +1,54 @@
+{
+  "package_id": "CR.PROD.PBOC.MACRO.2026-08-13.001",
+  "source_id": "CR.SRC.PBOC",
+  "retrieved_at": "2026-08-13T19:20:20+08:00",
+  "license_tag": "public_government_information",
+  "documents": [
+    {
+      "document_id": "CR.DOC.PBOC.FINANCIAL-STATISTICS.2026H1",
+      "source_record_id": "2026H1-financial-statistics",
+      "document_type": "official_statistics_release",
+      "title": "2026年上半年金融统计数据报告",
+      "publisher": "中国人民银行",
+      "source_url": "https://www.pbc.gov.cn/",
+      "published_at": "2026-07-15T17:00:00+08:00",
+      "available_at": "2026-07-15T17:00:00+08:00",
+      "as_of_date": "2026-06-30",
+      "content_hash": "sha256:3a12d67684b30ab3c34ab99b9db6257a26b83f304c0219e635d58a09190eecaa",
+      "mime_type": "text/html",
+      "document_version": "2026-07-15-official-release",
+      "license_tag": "public_government_information",
+      "access_class": "public",
+      "evidence_tier": "A",
+      "status": "curated",
+      "metadata": {"retrieval_mode": "official_release_cross_verified", "cross_check": "Gildata source field=中国人民银行; official government reproduction", "point_in_time_verified": true}
+    }
+  ],
+  "document_entities": [
+    {"document_id": "CR.DOC.PBOC.FINANCIAL-STATISTICS.2026H1", "entity_id": "cr:geography:cn", "relation_type": "about", "confidence": 1, "review_status": "source_verified"}
+  ],
+  "chunks": [
+    {
+      "chunk_id": "cr:chunk:pboc:financial-statistics:2026h1:main",
+      "document_id": "CR.DOC.PBOC.FINANCIAL-STATISTICS.2026H1",
+      "sequence_no": 1,
+      "section_path": "社会融资规模增量及存量",
+      "chunk_type": "table_extract",
+      "locator": "2026年上半年金融统计数据报告：社会融资规模",
+      "text_content": "2026年上半年社会融资规模增量累计20.84万亿元；6月份社会融资规模增量33645亿元；6月末社会融资规模存量462.06万亿元，同比增长7.4%。",
+      "table": {"period": "2026H1", "afre_flow_cumulative_cny_100m": 208400, "june_afre_flow_cny_100m": 33645, "afre_stock_cny_trillion": 462.06, "afre_stock_yoy_percent": 7.4},
+      "content_hash": "sha256:3a12d67684b30ab3c34ab99b9db6257a26b83f304c0219e635d58a09190eecaa",
+      "available_at": "2026-07-15T17:00:00+08:00"
+    }
+  ],
+  "evidence": [
+    {"evidence_id": "ev:pboc:financial-statistics:2026h1", "document_id": "CR.DOC.PBOC.FINANCIAL-STATISTICS.2026H1", "chunk_id": "cr:chunk:pboc:financial-statistics:2026h1:main", "locator": "2026年上半年金融统计数据报告：社会融资规模", "support_type": "direct", "evidence_tier": "A", "published_at": "2026-07-15T17:00:00+08:00", "available_at": "2026-07-15T17:00:00+08:00", "content_hash": "sha256:3a12d67684b30ab3c34ab99b9db6257a26b83f304c0219e635d58a09190eecaa", "license_tag": "public_government_information", "access_class": "public"}
+  ],
+  "source_cursor": {
+    "stream_name": "macro",
+    "cursor_value": "pboc:2026-07-15:financial-statistics",
+    "watermark_available_at": "2026-08-12T23:59:59+08:00",
+    "next_due_at": "2026-08-14T09:00:00+08:00",
+    "metadata": {"schedule": "daily_release_scan", "coverage_through_research_cutoff": true, "latest_release_available_at": "2026-07-15T17:00:00+08:00", "no_new_release_through": "2026-08-12T23:59:59+08:00"}
+  }
+}

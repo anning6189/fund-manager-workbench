@@ -1,0 +1,18 @@
+{
+  "request_id": "CONSUMER.BLIND.TEST.20260812",
+  "cutoff_timestamp": "2026-08-12T16:10:00+08:00",
+  "entities": [
+    {"entity_id":"cr:issuer:popmart","security_id":"09992.HK"},
+    {"entity_id":"cr:issuer:miniso","security_id":"09896.HK"}
+  ],
+  "cache_state": {
+    "entity_resolution": true,
+    "historical_financials": false,
+    "announcement_index": false,
+    "completed_market_bars": false,
+    "macro_releases": true,
+    "official_page_extracts": true,
+    "research_metadata": false,
+    "enterprise_risk": false
+  }
+}

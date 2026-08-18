@@ -1,0 +1,81 @@
+{
+  "license_gates": [
+    {
+      "source_id": "CR.SRC.GILDATA.ANNOUNCEMENT",
+      "decision": "pending",
+      "allowed_targets_json": "[\"raw_license_gate\"]",
+      "redistribution_allowed": 0,
+      "cache_policy": "pending_contract_review",
+      "decided_by": null,
+      "decided_at": null,
+      "notes": "Initialized from the stage-5 source registry; legal approval can only be recorded by a named human.",
+      "updated_at": "2026-08-13T06:23:35.849Z"
+    },
+    {
+      "source_id": "CR.SRC.GILDATA.ENTERPRISE",
+      "decision": "pending",
+      "allowed_targets_json": "[\"raw_license_gate\"]",
+      "redistribution_allowed": 0,
+      "cache_policy": "pending_contract_review",
+      "decided_by": null,
+      "decided_at": null,
+      "notes": "Initialized from the stage-5 source registry; legal approval can only be recorded by a named human.",
+      "updated_at": "2026-08-13T06:23:35.849Z"
+    },
+    {
+      "source_id": "CR.SRC.GILDATA.FINQUERY",
+      "decision": "pending",
+      "allowed_targets_json": "[\"raw_license_gate\"]",
+      "redistribution_allowed": 0,
+      "cache_policy": "pending_contract_review",
+      "decided_by": null,
+      "decided_at": null,
+      "notes": "Initialized from the stage-5 source registry; legal approval can only be recorded by a named human.",
+      "updated_at": "2026-08-13T06:23:35.849Z"
+    },
+    {
+      "source_id": "CR.SRC.GILDATA.MACRO_INDUSTRY",
+      "decision": "pending",
+      "allowed_targets_json": "[\"raw_license_gate\"]",
+      "redistribution_allowed": 0,
+      "cache_policy": "pending_contract_review",
+      "decided_by": null,
+      "decided_at": null,
+      "notes": "Initialized from the stage-5 source registry; legal approval can only be recorded by a named human.",
+      "updated_at": "2026-08-13T06:23:35.849Z"
+    },
+    {
+      "source_id": "CR.SRC.GILDATA.NEWS",
+      "decision": "pending",
+      "allowed_targets_json": "[\"raw_license_gate\"]",
+      "redistribution_allowed": 0,
+      "cache_policy": "pending_contract_review",
+      "decided_by": null,
+      "decided_at": null,
+      "notes": "Initialized from the stage-5 source registry; legal approval can only be recorded by a named human.",
+      "updated_at": "2026-08-13T06:23:35.849Z"
+    },
+    {
+      "source_id": "CR.SRC.GILDATA.RESEARCH",
+      "decision": "pending",
+      "allowed_targets_json": "[\"raw_license_gate\"]",
+      "redistribution_allowed": 0,
+      "cache_policy": "pending_contract_review",
+      "decided_by": null,
+      "decided_at": null,
+      "notes": "Initialized from the stage-5 source registry; legal approval can only be recorded by a named human.",
+      "updated_at": "2026-08-13T06:23:35.849Z"
+    },
+    {
+      "source_id": "CR.SRC.GILDATA.STOCK_UNIVERSE",
+      "decision": "pending",
+      "allowed_targets_json": "[\"raw_license_gate\"]",
+      "redistribution_allowed": 0,
+      "cache_policy": "pending_contract_review",
+      "decided_by": null,
+      "decided_at": null,
+      "notes": "Initialized from the stage-5 source registry; legal approval can only be recorded by a named human.",
+      "updated_at": "2026-08-13T06:23:35.849Z"
+    }
+  ]
+}

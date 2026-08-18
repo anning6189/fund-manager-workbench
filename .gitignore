@@ -1,0 +1,32 @@
+﻿# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+runtime/python/
+*.egg-info/
+
+# 环境变量 / 密钥
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# Codex / 缓存
+.codex/
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# 日志
+*.log
+logs/

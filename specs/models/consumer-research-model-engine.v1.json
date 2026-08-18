@@ -1,0 +1,93 @@
+{
+  "spec_id": "CR.SPEC.MODEL_ENGINE.001",
+  "version": "1.1.0",
+  "title": "消费行业研究统一模型与计算引擎",
+  "purpose": "把阶段六的可追溯事实转化为可复算、可做情景与敏感性分析、可按历史时点重放的研究模型结果。",
+  "research_boundary": {
+    "user": "公募基金经理",
+    "coverage": "整个消费行业，不收窄到单一子行业",
+    "excluded_inputs": [
+      "基金持仓",
+      "基金仓位推断",
+      "组合暴露"
+    ],
+    "decision_boundary": "模型只提供研究事实、假设、计算和风险，不输出自动买卖指令或组合操作。",
+    "delivery": "所有必需系统质量门通过后直接供内部研究使用，不设置人工或外部审核。"
+  },
+  "content_labels": {
+    "fact": "FACT_OBSERVATION",
+    "assumption": "SCENARIO_ASSUMPTION",
+    "calculation": "AGENT_CALCULATION"
+  },
+  "safe_formula_language": {
+    "operators": ["+", "-", "*", "/", "**"],
+    "functions": ["abs", "min", "max", "round"],
+    "forbidden": ["attribute_access", "subscript", "import", "lambda", "comprehension", "file_or_network_io"]
+  },
+  "model_types": [
+    {
+      "model_id": "CR.MODEL.MARKET_SIZE_DUAL",
+      "model_type": "market_size_dual",
+      "name": "市场空间双路径测算",
+      "required_output_roles": ["market_size_top_down", "market_size_bottom_up", "market_size_midpoint", "cross_check_gap"],
+      "mandatory_controls": ["same_scope_key", "base_bear_bull", "cross_method_reconciliation", "sensitivity"]
+    },
+    {
+      "model_id": "CR.MODEL.COMPETITION_CONCENTRATION",
+      "model_type": "competition_concentration",
+      "name": "竞争格局与集中度",
+      "required_output_roles": ["market_share_leader", "cr3", "cr5", "long_tail_share"],
+      "mandatory_controls": ["same_scope_key", "share_bounds", "cr3_not_above_cr5", "market_denominator_positive"]
+    },
+    {
+      "model_id": "CR.MODEL.COMPANY_OPERATING_BRIDGE",
+      "model_type": "company_operating_bridge",
+      "name": "公司经营量价与利润桥",
+      "required_output_roles": ["actual_revenue_growth", "volume_contribution", "price_mix_contribution", "interaction_contribution", "bridge_residual"],
+      "mandatory_controls": ["point_in_time_facts", "bridge_reconciliation", "single_entity_scope"]
+    },
+    {
+      "model_id": "CR.MODEL.FINANCIAL_FORECAST",
+      "model_type": "financial_forecast",
+      "name": "三情景财务预测",
+      "required_output_roles": ["forecast_revenue", "forecast_gross_profit", "forecast_operating_profit", "forecast_net_profit", "forecast_cfo", "forecast_fcf"],
+      "mandatory_controls": ["base_bear_bull", "statement_reconciliation", "point_in_time_facts", "sensitivity", "automatic_quality_gates"]
+    },
+    {
+      "model_id": "CR.MODEL.VALUATION_EXPECTATIONS",
+      "model_type": "valuation_expectations",
+      "name": "估值与市场预期差",
+      "required_output_roles": ["forward_pe", "implied_market_cap", "reverse_implied_earnings", "forecast_vs_consensus", "expectation_gap"],
+      "mandatory_controls": ["valuation_forecast_timestamp_alignment", "base_bear_bull", "reverse_valuation", "sensitivity", "automatic_quality_gates"]
+    }
+  ],
+  "package_contract": {
+    "required_top_level_fields": ["package_id", "model_id", "model_type", "as_of_timestamp", "environment", "scope", "fact_inputs", "scenarios", "calculations"],
+    "fact_input": {
+      "required": ["input_id", "entity_id", "metric_id", "period_end", "unit", "scope_key", "content_label"],
+      "content_label": "FACT_OBSERVATION",
+      "rule": "必须按 as_of_timestamp 从阶段六事实仓取数，并保留 observation_id 与 evidence_id。"
+    },
+    "scenario_assumption": {
+      "required": ["input_id", "value", "unit", "scope_key", "content_label", "available_at", "rationale", "confidence"],
+      "content_label": "SCENARIO_ASSUMPTION",
+      "rule": "不得伪装为事实；历史重放时 available_at 不得晚于 as_of_timestamp。"
+    },
+    "calculation": {
+      "required": ["output_id", "output_role", "formula", "unit", "content_label"],
+      "content_label": "AGENT_CALCULATION"
+    }
+  },
+  "quality_gates": [
+    "包内容哈希一致与幂等",
+    "公式使用白名单语法",
+    "事实输入有唯一时点值和证据",
+    "所有输入不晚于研究截止时点",
+    "所需输出角色齐全",
+    "数值为有限值且分母不为零",
+    "情景、桥接、报表和集中度关系通过模型专属校验",
+    "敏感性矩阵可独立重算",
+    "无基金持仓与自动交易字段"
+  ],
+  "publication_states": ["demonstration_only", "internal_research_ready"]
+}

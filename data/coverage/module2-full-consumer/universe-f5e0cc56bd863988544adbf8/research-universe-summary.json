@@ -1,0 +1,39 @@
+{
+  "universe_snapshot_id": "universe:f5e0cc56bd863988544adbf8",
+  "as_of_date": "2026-08-12",
+  "source_snapshot_ids": [
+    "CR.BACKFILL.GILDATA.A_SHARE_CONSUMER.20260812",
+    "CR.COVERAGE.GILDATA.A_SHARE.CULTURE_EDU.20260812"
+  ],
+  "source_record_count": 1297,
+  "unique_security_count": 1275,
+  "mapped_security_count": 1169,
+  "review_required_count": 106,
+  "membership_count": 1321,
+  "multi_mapped_security_count": 46,
+  "status": "staged_license_gate",
+  "production_snapshot_id": "CR.COVERAGE.GILDATA.A_SHARE.FULL_CONSUMER.20260812",
+  "production_snapshot_path": "C:\\Users\\chi\\Documents\\ChatGPT\\New project\\data\\coverage\\module2-full-consumer\\universe-f5e0cc56bd863988544adbf8\\full-consumer-production-snapshot.json",
+  "sector_security_counts": {
+    "CR.D.AF": 108,
+    "CR.D.AP": 103,
+    "CR.D.AU": 323,
+    "CR.D.HL": 77,
+    "CR.S.FB": 221,
+    "CR.S.PH": 32,
+    "CR.S.PT": 9,
+    "CR.V.CE": 168,
+    "CR.V.FS": 38,
+    "CR.V.RT": 100,
+    "CR.V.TL": 36
+  },
+  "unmapped_breakdown": {
+    "轻工制造 / 包装印刷": 46,
+    "轻工制造 / 造纸": 24,
+    "轻工制造 / 文娱用品": 17,
+    "农林牧渔 / 动物保健Ⅱ": 12,
+    "农林牧渔 / 林业Ⅱ": 4,
+    "农林牧渔 / 农业综合Ⅱ": 3
+  },
+  "truth_boundary": "The universe is research-mapped but remains non-publishable while source licence review is pending."
+}

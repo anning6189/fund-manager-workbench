@@ -1,0 +1,29 @@
+{
+    "suite_id":  "CR.TEST.STAGE5.ACCEPTANCE.001",
+    "run_at":  "2026-08-13T15:09:41.5794418+08:00",
+    "passed":  true,
+    "decision":  "accept_core_data_access_layer_with_declared_external_gates",
+    "counts":  {
+                   "registered_sources":  20,
+                   "source_families":  18,
+                   "gildata_transport_success":  7,
+                   "official_usable_access_paths":  13,
+                   "commercial_categories_pending_procurement":  3,
+                   "stage34_regression_passed":  8,
+                   "stage34_regression_total":  8,
+                   "runtime_v2_guardrails_passed":  5,
+                   "runtime_v2_modeled_full_seconds":  44.65,
+                   "runtime_v2_modeled_improvement_ratio":  0.656
+               },
+    "required_runtime_gates":  [
+                                   "Gildata is restricted to connectivity and internal technical validation until license terms are confirmed.",
+                                   "Every Gildata result requires exact entity, metric, period, and field projection filters.",
+                                   "Runtime v2 enforces date alignment, unit lineage, verified risk entities, bounded split retries, cache-safe reads, and nonblocking enrichment.",
+                                   "Material facts prefer official sources with locators and SHA-256.",
+                                   "Use NBS release pages and licensed structured-source cross-checks when the interactive page blocks program access.",
+                                   "Fund holdings, portfolio exposure, and position inference are prohibited."
+                               ],
+    "failures":  [
+
+                 ]
+}

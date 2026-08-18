@@ -1,0 +1,484 @@
+{
+  "claims": [
+    {
+      "claim_id": "wc:d926a829ef4771b9338c5a4e",
+      "module_id": "reported_financials",
+      "text": "美的集团2022年营业收入为3439.18亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:midea:revenue:2022"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:9aebdce6f1e487675eafdc55",
+      "module_id": "reported_financials",
+      "text": "美的集团2023年营业收入为3720.37亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:midea:revenue:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:c4af3ce9492c04bb3e1de99d",
+      "module_id": "reported_financials",
+      "text": "美的集团2023年营业成本为2734.81亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:midea:cost:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:5e5e32d57112c1ac03d5761a",
+      "module_id": "reported_financials",
+      "text": "美的集团2023年归母净利润为337.20亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:midea:np:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:6c440ab2798919bcaa501be2",
+      "module_id": "reported_financials",
+      "text": "美的集团2023年经营活动现金流净额为579.03亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:midea:cfo:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:cashflow",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:12c1abf58bf3e4c0d52b3d14",
+      "module_id": "revenue_growth",
+      "text": "美的集团2023年营业收入同比增长8.18%。",
+      "content_label": "AGENT_CALCULATION",
+      "importance": "key",
+      "confidence": 0.96,
+      "as_of_date": "2023-12-31",
+      "formula": "revenue_2023 / revenue_2022 - 1",
+      "input_ids": [
+        "obs:midea:revenue:2023",
+        "obs:midea:revenue:2022"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        },
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:61821e6465078ac9bb6cedc5",
+      "module_id": "gross_margin",
+      "text": "美的集团2023年报表口径毛利率为26.49%。",
+      "content_label": "AGENT_CALCULATION",
+      "importance": "key",
+      "confidence": 0.96,
+      "as_of_date": "2023-12-31",
+      "formula": "1 - operating_cost_2023 / revenue_2023",
+      "input_ids": [
+        "obs:midea:cost:2023",
+        "obs:midea:revenue:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        },
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:6b0b25206986ea40d0d14f29",
+      "module_id": "net_margin",
+      "text": "美的集团2023年归母净利率为9.06%。",
+      "content_label": "AGENT_CALCULATION",
+      "importance": "key",
+      "confidence": 0.96,
+      "as_of_date": "2023-12-31",
+      "formula": "parent_net_profit_2023 / revenue_2023",
+      "input_ids": [
+        "obs:midea:np:2023",
+        "obs:midea:revenue:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        },
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:f50f191d7d4009fe7516062c",
+      "module_id": "cfo_conversion",
+      "text": "美的集团2023年经营现金流/归母净利润为1.72倍。",
+      "content_label": "AGENT_CALCULATION",
+      "importance": "key",
+      "confidence": 0.96,
+      "as_of_date": "2023-12-31",
+      "formula": "cfo_net_2023 / parent_net_profit_2023",
+      "input_ids": [
+        "obs:midea:cfo:2023",
+        "obs:midea:np:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:cashflow",
+          "relation_type": "supporting"
+        },
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:7b19e5fc861f66ee32e40218",
+      "module_id": "reported_financials",
+      "text": "格力电器2022年营业收入为1889.88亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:gree:revenue:2022"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:gree:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:a8591b9deb1c614c7ff179a8",
+      "module_id": "reported_financials",
+      "text": "格力电器2023年营业收入为2039.79亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:gree:revenue:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:gree:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:20b11e5998e373385c94715b",
+      "module_id": "reported_financials",
+      "text": "格力电器2023年营业成本为1416.26亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:gree:cost:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:gree:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:2921c0a0f60f3b6f727619ac",
+      "module_id": "reported_financials",
+      "text": "格力电器2023年归母净利润为290.17亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:gree:np:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:gree:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:89b99d85e990d69b543f9a44",
+      "module_id": "reported_financials",
+      "text": "格力电器2023年经营活动现金流净额为563.98亿元。",
+      "content_label": "FACT_PRIMARY",
+      "importance": "supporting",
+      "confidence": 0.98,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "obs:gree:cfo:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:gree:ar2023:cashflow",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:f1055578df91daf959956c29",
+      "module_id": "revenue_growth",
+      "text": "格力电器2023年营业收入同比增长7.93%。",
+      "content_label": "AGENT_CALCULATION",
+      "importance": "key",
+      "confidence": 0.96,
+      "as_of_date": "2023-12-31",
+      "formula": "revenue_2023 / revenue_2022 - 1",
+      "input_ids": [
+        "obs:gree:revenue:2023",
+        "obs:gree:revenue:2022"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:gree:ar2023:financials",
+          "relation_type": "supporting"
+        },
+        {
+          "evidence_id": "ev:gree:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:82ead4d71d866f0df9efd321",
+      "module_id": "gross_margin",
+      "text": "格力电器2023年报表口径毛利率为30.57%。",
+      "content_label": "AGENT_CALCULATION",
+      "importance": "key",
+      "confidence": 0.96,
+      "as_of_date": "2023-12-31",
+      "formula": "1 - operating_cost_2023 / revenue_2023",
+      "input_ids": [
+        "obs:gree:cost:2023",
+        "obs:gree:revenue:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:gree:ar2023:financials",
+          "relation_type": "supporting"
+        },
+        {
+          "evidence_id": "ev:gree:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:6764a341517b353320a73d77",
+      "module_id": "net_margin",
+      "text": "格力电器2023年归母净利率为14.23%。",
+      "content_label": "AGENT_CALCULATION",
+      "importance": "key",
+      "confidence": 0.96,
+      "as_of_date": "2023-12-31",
+      "formula": "parent_net_profit_2023 / revenue_2023",
+      "input_ids": [
+        "obs:gree:np:2023",
+        "obs:gree:revenue:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:gree:ar2023:financials",
+          "relation_type": "supporting"
+        },
+        {
+          "evidence_id": "ev:gree:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:4ad3980fd116da4a13ed4b0e",
+      "module_id": "cfo_conversion",
+      "text": "格力电器2023年经营现金流/归母净利润为1.94倍。",
+      "content_label": "AGENT_CALCULATION",
+      "importance": "key",
+      "confidence": 0.96,
+      "as_of_date": "2023-12-31",
+      "formula": "cfo_net_2023 / parent_net_profit_2023",
+      "input_ids": [
+        "obs:gree:cfo:2023",
+        "obs:gree:np:2023"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:gree:ar2023:cashflow",
+          "relation_type": "supporting"
+        },
+        {
+          "evidence_id": "ev:gree:ar2023:financials",
+          "relation_type": "supporting"
+        }
+      ]
+    },
+    {
+      "claim_id": "wc:099c4c1fb016b47e1bf8e771",
+      "module_id": "limited_conclusion",
+      "text": "有限结论：美的集团收入规模领先、美的集团收入增速略高；格力电器毛利率更高、格力电器现金利润转换更强。在没有预设决策规则、估值与更长周期证据时，不给出单一优胜者。",
+      "content_label": "AGENT_INFERENCE",
+      "importance": "material",
+      "confidence": 0.78,
+      "as_of_date": "2023-12-31",
+      "formula": null,
+      "input_ids": [
+        "wc:12c1abf58bf3e4c0d52b3d14",
+        "wc:61821e6465078ac9bb6cedc5",
+        "wc:6b0b25206986ea40d0d14f29",
+        "wc:f50f191d7d4009fe7516062c",
+        "wc:f1055578df91daf959956c29",
+        "wc:82ead4d71d866f0df9efd321",
+        "wc:6764a341517b353320a73d77",
+        "wc:4ad3980fd116da4a13ed4b0e"
+      ],
+      "status": "draft",
+      "evidence_relations": [
+        {
+          "evidence_id": "ev:midea:ar2023:cashflow",
+          "relation_type": "supporting"
+        },
+        {
+          "evidence_id": "ev:midea:ar2023:financials",
+          "relation_type": "supporting"
+        },
+        {
+          "evidence_id": "ev:gree:ar2023:cashflow",
+          "relation_type": "counter"
+        },
+        {
+          "evidence_id": "ev:gree:ar2023:financials",
+          "relation_type": "counter"
+        }
+      ]
+    }
+  ],
+  "claim_count": 19,
+  "entity_summary": {
+    "cr:legal_entity:midea": {
+      "display_name": "美的集团",
+      "status": "complete",
+      "revenue_2023": 372037280000.0,
+      "revenue_growth": 0.08176305790006388,
+      "gross_margin": 0.2649086860327545,
+      "net_margin": 0.09063590347719992,
+      "cfo_conversion": 1.71716259239527,
+      "evidence_ids": [
+        "ev:midea:ar2023:cashflow",
+        "ev:midea:ar2023:financials"
+      ],
+      "calculation_claim_ids": {
+        "revenue_growth": "wc:12c1abf58bf3e4c0d52b3d14",
+        "gross_margin": "wc:61821e6465078ac9bb6cedc5",
+        "net_margin": "wc:6b0b25206986ea40d0d14f29",
+        "cfo_conversion": "wc:f50f191d7d4009fe7516062c"
+      }
+    },
+    "cr:legal_entity:gree": {
+      "display_name": "格力电器",
+      "status": "complete",
+      "revenue_2023": 203979266387.09,
+      "revenue_growth": 0.07932172055081632,
+      "gross_margin": 0.30568654228715475,
+      "net_margin": 0.14225655439467025,
+      "cfo_conversion": 1.9436079885442794,
+      "evidence_ids": [
+        "ev:gree:ar2023:cashflow",
+        "ev:gree:ar2023:financials"
+      ],
+      "calculation_claim_ids": {
+        "revenue_growth": "wc:f1055578df91daf959956c29",
+        "gross_margin": "wc:82ead4d71d866f0df9efd321",
+        "net_margin": "wc:6764a341517b353320a73d77",
+        "cfo_conversion": "wc:4ad3980fd116da4a13ed4b0e"
+      }
+    }
+  }
+}

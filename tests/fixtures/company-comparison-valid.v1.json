@@ -1,0 +1,117 @@
+{
+  "connector_metadata": {
+    "connector_name": "gildata_and_cninfo_test_adapter",
+    "query_id": "query:company-comparison-valid",
+    "retrieved_at": "2026-08-12T12:00:00+08:00",
+    "raw_record_count": 14,
+    "truncated": false
+  },
+  "query": {
+    "cutoff_timestamp": "2024-05-01T00:00:00+08:00",
+    "availability_mode": "end_of_day",
+    "allowed_entity_ids": ["cr:legal_entity:midea", "cr:legal_entity:gree"],
+    "allowed_security_ids": ["000333.SZ", "000651.SZ"],
+    "allowed_metric_ids": [
+      "CR.CO.REVENUE", "CR.CO.OPERATING_COST", "CR.CO.SELLING_EXPENSE",
+      "CR.CO.CFO_NET", "CR.CO.PARENT_NET_PROFIT"
+    ],
+    "allowed_periods": ["2022-01-01/2022-12-31", "2023-01-01/2023-12-31"],
+    "allowed_statement_scopes": ["income_statement", "cash_flow_statement"]
+  },
+  "evidence": [
+    {
+      "evidence_id": "ev:midea:ar2023",
+      "source_id": "cninfo:1219429374",
+      "source_type": "annual_report",
+      "title": "美的集团股份有限公司2023年年度报告",
+      "publisher": "美的集团股份有限公司",
+      "published_at": "2024-03-28T00:00:00+08:00",
+      "available_at": "2024-03-28T23:59:59+08:00",
+      "as_of_date": "2023-12-31",
+      "retrieved_at": "2026-08-12T12:00:00+08:00",
+      "locator": "巨潮资讯公告1219429374：PDF第10页主要财务指标；第161页合并利润表；第163页合并现金流量表",
+      "content_hash": "sha256:22f4915d91ada74a37eab8d074aef4c15420f3b1a8b5f5bd5777c00f97d58b86",
+      "license_tag": "public_filing_research_use",
+      "access_class": "public",
+      "evidence_tier": "A",
+      "support_type": "direct",
+      "document_version": "2024-03-28-cn-annual-report"
+    },
+    {
+      "evidence_id": "ev:gree:ar2023",
+      "source_id": "cninfo:1219928418",
+      "source_type": "annual_report",
+      "title": "珠海格力电器股份有限公司2023年年度报告",
+      "publisher": "珠海格力电器股份有限公司",
+      "published_at": "2024-04-30T00:00:00+08:00",
+      "available_at": "2024-04-30T23:59:59+08:00",
+      "as_of_date": "2023-12-31",
+      "retrieved_at": "2026-08-12T12:00:00+08:00",
+      "locator": "巨潮资讯公告1219928418：PDF第7页主要财务指标；第116页合并利润表；第117页合并现金流量表",
+      "content_hash": "sha256:32ebc475a2291ce4f1b5c1a9f9da55227e03192f07e75041e976c29d213ec8aa",
+      "license_tag": "public_filing_research_use",
+      "access_class": "public",
+      "evidence_tier": "A",
+      "support_type": "direct",
+      "document_version": "2024-04-30-cn-annual-report"
+    }
+  ],
+  "observations": [
+    {
+      "observation_id": "obs:midea:revenue:2022", "metric_id": "CR.CO.REVENUE", "entity_id": "cr:legal_entity:midea", "security_id": "000333.SZ", "value": 343917531000, "unit": "CNY", "period_start": "2022-01-01", "period_end": "2022-12-31", "as_of_date": "2022-12-31", "published_at": "2024-03-28T00:00:00+08:00", "available_at": "2024-03-28T23:59:59+08:00", "source_id": "cninfo:1219429374", "evidence_id": "ev:midea:ar2023", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"
+    },
+    {
+      "observation_id": "obs:midea:revenue:2023", "metric_id": "CR.CO.REVENUE", "entity_id": "cr:legal_entity:midea", "security_id": "000333.SZ", "value": 372037280000, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-03-28T00:00:00+08:00", "available_at": "2024-03-28T23:59:59+08:00", "source_id": "cninfo:1219429374", "evidence_id": "ev:midea:ar2023", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"
+    },
+    {
+      "observation_id": "obs:midea:cost:2023", "metric_id": "CR.CO.OPERATING_COST", "entity_id": "cr:legal_entity:midea", "security_id": "000333.SZ", "value": 273481373000, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-03-28T00:00:00+08:00", "available_at": "2024-03-28T23:59:59+08:00", "source_id": "cninfo:1219429374", "evidence_id": "ev:midea:ar2023", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"
+    },
+    {
+      "observation_id": "obs:midea:selling:2023", "metric_id": "CR.CO.SELLING_EXPENSE", "entity_id": "cr:legal_entity:midea", "security_id": "000333.SZ", "value": 34880875000, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-03-28T00:00:00+08:00", "available_at": "2024-03-28T23:59:59+08:00", "source_id": "cninfo:1219429374", "evidence_id": "ev:midea:ar2023", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"
+    },
+    {
+      "observation_id": "obs:midea:cfo:2023", "metric_id": "CR.CO.CFO_NET", "entity_id": "cr:legal_entity:midea", "security_id": "000333.SZ", "value": 57902611000, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-03-28T00:00:00+08:00", "available_at": "2024-03-28T23:59:59+08:00", "source_id": "cninfo:1219429374", "evidence_id": "ev:midea:ar2023", "value_status": "reported", "statement_scope": "cash_flow_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"
+    },
+    {
+      "observation_id": "obs:midea:np:2023", "metric_id": "CR.CO.PARENT_NET_PROFIT", "entity_id": "cr:legal_entity:midea", "security_id": "000333.SZ", "value": 33719935000, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-03-28T00:00:00+08:00", "available_at": "2024-03-28T23:59:59+08:00", "source_id": "cninfo:1219429374", "evidence_id": "ev:midea:ar2023", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"
+    },
+    {
+      "observation_id": "obs:gree:revenue:2022", "metric_id": "CR.CO.REVENUE", "entity_id": "cr:legal_entity:gree", "security_id": "000651.SZ", "value": 188988382706.68, "unit": "CNY", "period_start": "2022-01-01", "period_end": "2022-12-31", "as_of_date": "2022-12-31", "published_at": "2024-04-30T00:00:00+08:00", "available_at": "2024-04-30T23:59:59+08:00", "source_id": "cninfo:1219928418", "evidence_id": "ev:gree:ar2023", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"
+    },
+    {
+      "observation_id": "obs:gree:revenue:2023", "metric_id": "CR.CO.REVENUE", "entity_id": "cr:legal_entity:gree", "security_id": "000651.SZ", "value": 203979266387.09, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-04-30T00:00:00+08:00", "available_at": "2024-04-30T23:59:59+08:00", "source_id": "cninfo:1219928418", "evidence_id": "ev:gree:ar2023", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"
+    },
+    {
+      "observation_id": "obs:gree:cost:2023", "metric_id": "CR.CO.OPERATING_COST", "entity_id": "cr:legal_entity:gree", "security_id": "000651.SZ", "value": 141625549746.95, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-04-30T00:00:00+08:00", "available_at": "2024-04-30T23:59:59+08:00", "source_id": "cninfo:1219928418", "evidence_id": "ev:gree:ar2023", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"
+    },
+    {
+      "observation_id": "obs:gree:selling:2023", "metric_id": "CR.CO.SELLING_EXPENSE", "entity_id": "cr:legal_entity:gree", "security_id": "000651.SZ", "value": 17129639682.51, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-04-30T00:00:00+08:00", "available_at": "2024-04-30T23:59:59+08:00", "source_id": "cninfo:1219928418", "evidence_id": "ev:gree:ar2023", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"
+    },
+    {
+      "observation_id": "obs:gree:cfo:2023", "metric_id": "CR.CO.CFO_NET", "entity_id": "cr:legal_entity:gree", "security_id": "000651.SZ", "value": 56398426354.17, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-04-30T00:00:00+08:00", "available_at": "2024-04-30T23:59:59+08:00", "source_id": "cninfo:1219928418", "evidence_id": "ev:gree:ar2023", "value_status": "reported", "statement_scope": "cash_flow_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"
+    },
+    {
+      "observation_id": "obs:gree:np:2023", "metric_id": "CR.CO.PARENT_NET_PROFIT", "entity_id": "cr:legal_entity:gree", "security_id": "000651.SZ", "value": 29017387604.18, "unit": "CNY", "period_start": "2023-01-01", "period_end": "2023-12-31", "as_of_date": "2023-12-31", "published_at": "2024-04-30T00:00:00+08:00", "available_at": "2024-04-30T23:59:59+08:00", "source_id": "cninfo:1219928418", "evidence_id": "ev:gree:ar2023", "value_status": "reported", "statement_scope": "income_statement", "consolidation_scope": "consolidated", "accounting_standard": "CAS", "currency": "CNY", "scale": 1, "restatement_status": "original", "fiscal_period_type": "annual"
+    }
+  ],
+  "calculations": [
+    {"calculation_id":"calc:midea:growth","metric_id":"CR.CO.REVENUE_GROWTH_YOY","formula":"revenue_2023/revenue_2022-1","input_observation_ids":["obs:midea:revenue:2023","obs:midea:revenue:2022"],"result":0.0818,"unit":"ratio","tolerance":0.0001},
+    {"calculation_id":"calc:midea:gm","metric_id":"CR.CO.GROSS_MARGIN","formula":"(revenue-operating_cost)/revenue","input_observation_ids":["obs:midea:revenue:2023","obs:midea:cost:2023"],"result":0.2649,"unit":"ratio","tolerance":0.0001},
+    {"calculation_id":"calc:midea:ser","metric_id":"CR.CO.SELLING_EXPENSE_RATIO","formula":"selling_expense/revenue","input_observation_ids":["obs:midea:selling:2023","obs:midea:revenue:2023"],"result":0.0938,"unit":"ratio","tolerance":0.0001},
+    {"calculation_id":"calc:midea:cfo_np","metric_id":"CR.CO.CFO_TO_NET_PROFIT","formula":"cfo_net/parent_net_profit","input_observation_ids":["obs:midea:cfo:2023","obs:midea:np:2023"],"result":1.72,"unit":"ratio","tolerance":0.005},
+    {"calculation_id":"calc:gree:growth","metric_id":"CR.CO.REVENUE_GROWTH_YOY","formula":"revenue_2023/revenue_2022-1","input_observation_ids":["obs:gree:revenue:2023","obs:gree:revenue:2022"],"result":0.0793,"unit":"ratio","tolerance":0.0001},
+    {"calculation_id":"calc:gree:gm","metric_id":"CR.CO.GROSS_MARGIN","formula":"(revenue-operating_cost)/revenue","input_observation_ids":["obs:gree:revenue:2023","obs:gree:cost:2023"],"result":0.3057,"unit":"ratio","tolerance":0.0001},
+    {"calculation_id":"calc:gree:ser","metric_id":"CR.CO.SELLING_EXPENSE_RATIO","formula":"selling_expense/revenue","input_observation_ids":["obs:gree:selling:2023","obs:gree:revenue:2023"],"result":0.0840,"unit":"ratio","tolerance":0.0001},
+    {"calculation_id":"calc:gree:cfo_np","metric_id":"CR.CO.CFO_TO_NET_PROFIT","formula":"cfo_net/parent_net_profit","input_observation_ids":["obs:gree:cfo:2023","obs:gree:np:2023"],"result":1.94,"unit":"ratio","tolerance":0.005}
+  ],
+  "comparison": {
+    "conclusion_type": "dimension_only",
+    "decision_rule": null,
+    "dimension_results": ["格力毛利率、销售费用率和经营现金流覆盖利润占优", "美的收入增速略高"],
+    "supporting_evidence": ["ev:midea:ar2023", "ev:gree:ar2023"],
+    "counter_evidence": ["公司业务结构和分部构成不同", "单年经营现金流受营运资本影响"],
+    "comparability_limits": ["营业成本和销售费用分类需核对附注", "只有单年度截面"],
+    "cannot_conclude": ["未来增长", "估值", "股票收益", "买卖建议", "整体公司优劣排名"],
+    "pm_judgment_required": ["研究维度权重", "时间周期", "估值与预期差"]
+  }
+}

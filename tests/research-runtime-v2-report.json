@@ -1,0 +1,29 @@
+{
+    "suite_id":  "CR.TEST.RESEARCH.RUNTIME.V2",
+    "run_at":  "2026-08-13T15:09:41.5556309+08:00",
+    "passed":  true,
+    "guardrails":  {
+                       "valid_passed":  true,
+                       "wrong_year_blocked":  true,
+                       "ten_x_scale_blocked":  true,
+                       "risk_name_match_blocked":  true,
+                       "unlocatable_report_downgraded":  true
+                   },
+    "performance_model":  {
+                              "legacy_serial":  129.8,
+                              "optimized_core":  26.2,
+                              "optimized_full":  44.65,
+                              "improvement_ratio":  0.656,
+                              "basis":  "stage-5 measured connector probe latency; deterministic critical-path model, not a live SLA measurement"
+                          },
+    "task_count":  13,
+    "wave_count":  4,
+    "output_contract":  {
+                            "contract_id":  "CR.OUTPUT.PM.COMPANY_COMPARISON.V2_1",
+                            "presentation_order_locked":  true,
+                            "runtime_appendix_last":  true
+                        },
+    "failures":  [
+
+                 ]
+}

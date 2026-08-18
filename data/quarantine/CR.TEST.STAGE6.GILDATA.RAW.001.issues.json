@@ -1,0 +1,10 @@
+{
+  "package_id": "CR.TEST.STAGE6.GILDATA.RAW.001",
+  "issues": [
+    {
+      "code": "license_not_curatable",
+      "path": "$.source_id",
+      "message": "来源仍处许可闸门后，禁止进入curated层；可使用raw目标保存原始包"
+    }
+  ]
+}

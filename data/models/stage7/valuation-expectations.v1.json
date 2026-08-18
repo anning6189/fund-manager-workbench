@@ -1,0 +1,61 @@
+{
+  "package_id": "CR.MODEL.PKG.STAGE7.VALUATION.001",
+  "model_id": "CR.MODEL.VALUATION_EXPECTATIONS",
+  "model_type": "valuation_expectations",
+  "as_of_timestamp": "2024-05-01T00:00:00+08:00",
+  "environment": "demonstration",
+  "scope": {
+    "scope_key": "CN:MIDEA:VALUATION:2024E",
+    "entity_id": "cr:legal_entity:midea",
+    "forecast_period": "2024E",
+    "currency": "CNY",
+    "note": "2023A 净利润来自阶段六；市值、增速、一致预期与目标估值均为算法演示假设。"
+  },
+  "controls": {
+    "valuation_input_timestamp": "2024-04-30T16:00:00Z",
+    "forecast_snapshot_timestamp": "2024-05-01T00:00:00+08:00"
+  },
+  "fact_inputs": [
+    {"input_id": "actual_net_profit", "entity_id": "cr:legal_entity:midea", "metric_id": "CR.CO.PARENT_NET_PROFIT", "period_end": "2023-12-31", "unit": "CNY", "scope_key": "CN:MIDEA:VALUATION:2024E", "content_label": "FACT_OBSERVATION"}
+  ],
+  "scenarios": [
+    {
+      "scenario_id": "bear",
+      "assumptions": [
+        {"input_id": "current_market_cap", "value": 420000000000, "unit": "CNY", "scope_key": "CN:MIDEA:VALUATION:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示市值输入；未接入正式行情前不能视为事实。", "confidence": 0.3},
+        {"input_id": "earnings_growth", "value": 0.04, "unit": "ratio", "scope_key": "CN:MIDEA:VALUATION:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示下行情景盈利增速。", "confidence": 0.3},
+        {"input_id": "consensus_net_profit", "value": 37000000000, "unit": "CNY", "scope_key": "CN:MIDEA:VALUATION:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示一致预期输入；非真实卖方一致预期。", "confidence": 0.3},
+        {"input_id": "target_pe", "value": 11, "unit": "multiple", "scope_key": "CN:MIDEA:VALUATION:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示下行情景目标估值。", "confidence": 0.3}
+      ]
+    },
+    {
+      "scenario_id": "base",
+      "assumptions": [
+        {"input_id": "current_market_cap", "value": 420000000000, "unit": "CNY", "scope_key": "CN:MIDEA:VALUATION:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示市值输入；未接入正式行情前不能视为事实。", "confidence": 0.3},
+        {"input_id": "earnings_growth", "value": 0.09, "unit": "ratio", "scope_key": "CN:MIDEA:VALUATION:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示基准情景盈利增速。", "confidence": 0.4},
+        {"input_id": "consensus_net_profit", "value": 37000000000, "unit": "CNY", "scope_key": "CN:MIDEA:VALUATION:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示一致预期输入；非真实卖方一致预期。", "confidence": 0.3},
+        {"input_id": "target_pe", "value": 14, "unit": "multiple", "scope_key": "CN:MIDEA:VALUATION:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示基准情景目标估值。", "confidence": 0.4}
+      ]
+    },
+    {
+      "scenario_id": "bull",
+      "assumptions": [
+        {"input_id": "current_market_cap", "value": 420000000000, "unit": "CNY", "scope_key": "CN:MIDEA:VALUATION:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示市值输入；未接入正式行情前不能视为事实。", "confidence": 0.3},
+        {"input_id": "earnings_growth", "value": 0.14, "unit": "ratio", "scope_key": "CN:MIDEA:VALUATION:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示上行情景盈利增速。", "confidence": 0.3},
+        {"input_id": "consensus_net_profit", "value": 37000000000, "unit": "CNY", "scope_key": "CN:MIDEA:VALUATION:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示一致预期输入；非真实卖方一致预期。", "confidence": 0.3},
+        {"input_id": "target_pe", "value": 17, "unit": "multiple", "scope_key": "CN:MIDEA:VALUATION:2024E", "content_label": "SCENARIO_ASSUMPTION", "available_at": "2024-04-30T16:00:00Z", "rationale": "演示上行情景目标估值。", "confidence": 0.3}
+      ]
+    }
+  ],
+  "calculations": [
+    {"output_id": "forecast_net_profit", "output_role": "forecast_net_profit", "formula": "actual_net_profit * (1 + earnings_growth)", "unit": "CNY", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "forward_pe", "output_role": "forward_pe", "formula": "current_market_cap / forecast_net_profit", "unit": "multiple", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "implied_market_cap", "output_role": "implied_market_cap", "formula": "forecast_net_profit * target_pe", "unit": "CNY", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "reverse_implied_earnings", "output_role": "reverse_implied_earnings", "formula": "current_market_cap / target_pe", "unit": "CNY", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "forecast_vs_consensus", "output_role": "forecast_vs_consensus", "formula": "forecast_net_profit / consensus_net_profit - 1", "unit": "ratio", "content_label": "AGENT_CALCULATION"},
+    {"output_id": "expectation_gap", "output_role": "expectation_gap", "formula": "forecast_net_profit / reverse_implied_earnings - 1", "unit": "ratio", "content_label": "AGENT_CALCULATION"}
+  ],
+  "sensitivities": [
+    {"sensitivity_id": "growth_x_target_pe", "scenario_id": "base", "x_input_id": "earnings_growth", "x_values": [0.04, 0.09, 0.14], "y_input_id": "target_pe", "y_values": [11, 14, 17], "output_id": "implied_market_cap"}
+  ]
+}

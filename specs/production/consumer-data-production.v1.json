@@ -1,0 +1,132 @@
+{
+  "spec_id": "CR.PRODUCTION.DATA.BACKFILL.V1",
+  "version": "1.0.0",
+  "status": "production_pipeline_ready_external_license_gates_declared",
+  "scope": "full_consumer_research_without_fund_holdings",
+  "purpose": "把阶段五来源和阶段六事实仓落为可分区、可续跑、可审计的全量与增量数据生产管线。",
+  "completion_semantics": {
+    "pipeline_complete": "生产合同、分区、检查点、许可闸门、质量检查、晋级和审计均可运行",
+    "data_population_complete": "所有必需分区均completed，不能用planned、external_gate或样例数据替代",
+    "external_gate_policy": "采购、合同、再分发或付费访问未完成时必须显示external_gate，禁止声明全量正式数据完成"
+  },
+  "markets": ["A_SHARE", "HK_SHARE"],
+  "execution_order": [
+    "master_data",
+    "market_daily",
+    "financials",
+    "announcements",
+    "macro",
+    "official_industry_releases",
+    "official_policy_documents",
+    "research_metadata",
+    "news_leads",
+    "enterprise_risk"
+  ],
+  "dataset_contracts": [
+    {
+      "stream_name": "master_data",
+      "description": "证券、法人、发行人、品牌和消费行业分类主数据",
+      "history_start": null,
+      "partition_strategy": "source+market+snapshot",
+      "dependencies": [],
+      "quality_gates": ["unique_security", "valid_market", "classification_present", "field_projection", "license_gate", "no_fund_holdings"],
+      "service_level": {"schedule":"weekly_full_reconciliation_and_event_trigger","maximum_lag_hours":168}
+    },
+    {
+      "stream_name": "market_daily",
+      "description": "消费证券日行情、复权因子和估值快照",
+      "history_start": "2015-01-01",
+      "partition_strategy": "source+market+calendar_year",
+      "dependencies": ["master_data"],
+      "quality_gates": ["trading_calendar", "ohlc_consistency", "nonnegative_volume", "corporate_action_alignment", "license_gate"],
+      "service_level": {"schedule":"trading_day_after_exchange_final","maximum_lag_hours":12}
+    },
+    {
+      "stream_name": "financials",
+      "description": "上市公司财务报表、财务指标及重述版本",
+      "history_start": "2015-01-01",
+      "partition_strategy": "source+market+fiscal_year",
+      "dependencies": ["master_data"],
+      "quality_gates": ["statement_scope", "accounting_standard", "currency_and_scale", "revision_version", "official_filing_cross_check"],
+      "service_level": {"schedule":"daily_filing_scan_and_event_trigger","maximum_lag_hours":24}
+    },
+    {
+      "stream_name": "announcements",
+      "description": "法定公告、定期报告与监管问询原文",
+      "history_start": "2015-01-01",
+      "partition_strategy": "source+market+publication_year",
+      "dependencies": ["master_data"],
+      "quality_gates": ["issuer_match", "published_at", "available_at", "content_hash", "page_or_table_locator"],
+      "service_level": {"schedule":"hourly_incremental","maximum_lag_hours":6}
+    },
+    {
+      "stream_name": "macro",
+      "description": "宏观消费、居民收入、社零、价格和信贷时序",
+      "history_start": "2010-01-01",
+      "partition_strategy": "source+calendar_year",
+      "dependencies": [],
+      "quality_gates": ["indicator_identity", "frequency", "period", "unit", "release_date", "revision_version"],
+      "service_level": {"schedule":"daily_release_scan","maximum_lag_hours":24}
+    },
+    {
+      "stream_name": "official_industry_releases",
+      "description": "产量、销量、库存、进出口、旅游和行业经营统计",
+      "history_start": "2015-01-01",
+      "partition_strategy": "source+sector+calendar_year",
+      "dependencies": [],
+      "quality_gates": ["sector_scope", "period", "unit", "release_date", "methodology", "revision_version"],
+      "service_level": {"schedule":"daily_incremental","maximum_lag_hours":24}
+    },
+    {
+      "stream_name": "official_policy_documents",
+      "description": "消费、产业、监管和促消费政策文件",
+      "history_start": "2015-01-01",
+      "partition_strategy": "source+sector+publication_year",
+      "dependencies": [],
+      "quality_gates": ["issuing_authority", "document_number", "publication_time", "effective_time", "version_status", "content_hash"],
+      "service_level": {"schedule":"daily_incremental","maximum_lag_hours":24}
+    },
+    {
+      "stream_name": "research_metadata",
+      "description": "券商研报元数据、作者观点标签和有限许可摘要",
+      "history_start": "2021-01-01",
+      "partition_strategy": "source+sector+publication_year",
+      "dependencies": ["master_data"],
+      "quality_gates": ["report_identity", "sector_filter", "publication_date", "copyright_excerpt_limit", "view_label", "license_gate"],
+      "service_level": {"schedule":"daily_incremental","maximum_lag_hours":24}
+    },
+    {
+      "stream_name": "news_leads",
+      "description": "高时效资讯线索和待官方核验事件",
+      "history_start": "2021-01-01",
+      "partition_strategy": "source+sector+calendar_year",
+      "dependencies": ["master_data"],
+      "quality_gates": ["date_window", "source_identity", "deduplicate_event", "signal_only", "official_cross_check", "license_gate"],
+      "service_level": {"schedule":"hourly_incremental","maximum_lag_hours":2}
+    },
+    {
+      "stream_name": "enterprise_risk",
+      "description": "工商、司法、处罚、质押、担保和信用风险事件",
+      "history_start": "2021-01-01",
+      "partition_strategy": "source+market+calendar_year",
+      "dependencies": ["master_data"],
+      "quality_gates": ["legal_entity_match", "observed_at", "official_cross_check", "personal_data_minimization", "license_gate"],
+      "service_level": {"schedule":"daily_incremental","maximum_lag_hours":24}
+    }
+  ],
+  "required_artifacts": [
+    "backfill-plan.json",
+    "snapshot-registry.json",
+    "quality-report.json",
+    "coverage-watermarks.json",
+    "external-gates.json"
+  ],
+  "prohibited_fields": [
+    "fund_holdings",
+    "fund_position",
+    "portfolio_holdings",
+    "portfolio_exposure",
+    "position_inference",
+    "trade_instruction"
+  ]
+}

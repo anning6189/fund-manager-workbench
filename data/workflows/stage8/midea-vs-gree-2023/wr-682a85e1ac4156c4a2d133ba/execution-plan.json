@@ -1,0 +1,273 @@
+{
+  "workflow_id": "CR.WORKFLOW.RESEARCH_ORCHESTRATION.001",
+  "package_id": "CR.WORKFLOW.PKG.STAGE8.COMPARE.001",
+  "cutoff_timestamp": "2024-04-30T16:00:00.000Z",
+  "roles": [
+    {
+      "role_id": "research_director",
+      "name": "研究总控Agent",
+      "responsibilities": [
+        "规范化任务",
+        "固定截止时间和研究边界",
+        "生成任务DAG",
+        "决定降级与停止条件"
+      ]
+    },
+    {
+      "role_id": "entity_scope_agent",
+      "name": "实体与口径Agent",
+      "responsibilities": [
+        "实体消歧",
+        "证券与公司分离",
+        "指标期间币种和报表范围统一"
+      ]
+    },
+    {
+      "role_id": "evidence_retrieval_agent",
+      "name": "事实与证据Agent",
+      "responsibilities": [
+        "阶段六时点查询",
+        "阶段五外部任务清单",
+        "证据定位",
+        "来源缺口记录"
+      ]
+    },
+    {
+      "role_id": "model_agent",
+      "name": "模型Agent",
+      "responsibilities": [
+        "调用阶段七模型",
+        "保留公式和输入血缘",
+        "隔离事实与假设",
+        "输出敏感性结果"
+      ]
+    },
+    {
+      "role_id": "claim_agent",
+      "name": "研究结论Agent",
+      "responsibilities": [
+        "构建逐结论图",
+        "区分事实推断和计算",
+        "只形成按维度的有限结论"
+      ]
+    },
+    {
+      "role_id": "evidence_auditor",
+      "name": "证据审核Agent",
+      "responsibilities": [
+        "检查截止时点",
+        "检查逐结论引用",
+        "检查来源等级",
+        "阻断未来信息"
+      ]
+    },
+    {
+      "role_id": "skeptic_agent",
+      "name": "反方审查Agent",
+      "responsibilities": [
+        "提出替代解释",
+        "列出反方证据和不可下结论事项",
+        "设置证伪指标"
+      ]
+    },
+    {
+      "role_id": "report_agent",
+      "name": "报告交付Agent",
+      "responsibilities": [
+        "按基金经理模板组织文字报告",
+        "生成证据索引",
+        "将运行附录置于正文之后"
+      ]
+    },
+    {
+      "role_id": "compliance_agent",
+      "name": "合规闸门Agent",
+      "responsibilities": [
+        "???????????",
+        "????????",
+        "????????",
+        "?????????"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "scope_guard",
+      "role_id": "research_director",
+      "lane": "control",
+      "depends_on": [],
+      "required": true,
+      "failure_action": "block",
+      "wave_no": 0
+    },
+    {
+      "task_id": "entity_resolution",
+      "role_id": "entity_scope_agent",
+      "lane": "core",
+      "depends_on": [
+        "scope_guard"
+      ],
+      "required": true,
+      "failure_action": "block",
+      "wave_no": 1
+    },
+    {
+      "task_id": "document_retrieval",
+      "role_id": "evidence_retrieval_agent",
+      "lane": "core",
+      "depends_on": [
+        "entity_resolution"
+      ],
+      "required": true,
+      "failure_action": "block",
+      "wave_no": 2
+    },
+    {
+      "task_id": "fact_retrieval",
+      "role_id": "evidence_retrieval_agent",
+      "lane": "core",
+      "depends_on": [
+        "entity_resolution"
+      ],
+      "required": true,
+      "failure_action": "block",
+      "wave_no": 2
+    },
+    {
+      "task_id": "model_execution",
+      "role_id": "model_agent",
+      "lane": "model",
+      "depends_on": [
+        "fact_retrieval"
+      ],
+      "required": false,
+      "failure_action": "degrade",
+      "wave_no": 3
+    },
+    {
+      "task_id": "claim_composition",
+      "role_id": "claim_agent",
+      "lane": "analysis",
+      "depends_on": [
+        "fact_retrieval",
+        "document_retrieval",
+        "model_execution"
+      ],
+      "required": true,
+      "failure_action": "block",
+      "wave_no": 4
+    },
+    {
+      "task_id": "evidence_audit",
+      "role_id": "evidence_auditor",
+      "lane": "quality",
+      "depends_on": [
+        "claim_composition"
+      ],
+      "required": true,
+      "failure_action": "block",
+      "wave_no": 5
+    },
+    {
+      "task_id": "skeptic_review",
+      "role_id": "skeptic_agent",
+      "lane": "quality",
+      "depends_on": [
+        "claim_composition"
+      ],
+      "required": true,
+      "failure_action": "block",
+      "wave_no": 5
+    },
+    {
+      "task_id": "report_render",
+      "role_id": "report_agent",
+      "lane": "delivery",
+      "depends_on": [
+        "evidence_audit",
+        "skeptic_review"
+      ],
+      "required": true,
+      "failure_action": "block",
+      "wave_no": 6
+    },
+    {
+      "task_id": "compliance_review",
+      "role_id": "compliance_agent",
+      "lane": "quality",
+      "depends_on": [
+        "report_render"
+      ],
+      "required": true,
+      "failure_action": "block",
+      "wave_no": 7
+    }
+  ],
+  "execution_waves": [
+    {
+      "wave_no": 0,
+      "concurrent_tasks": [
+        "scope_guard"
+      ]
+    },
+    {
+      "wave_no": 1,
+      "concurrent_tasks": [
+        "entity_resolution"
+      ]
+    },
+    {
+      "wave_no": 2,
+      "concurrent_tasks": [
+        "document_retrieval",
+        "fact_retrieval"
+      ]
+    },
+    {
+      "wave_no": 3,
+      "concurrent_tasks": [
+        "model_execution"
+      ]
+    },
+    {
+      "wave_no": 4,
+      "concurrent_tasks": [
+        "claim_composition"
+      ]
+    },
+    {
+      "wave_no": 5,
+      "concurrent_tasks": [
+        "evidence_audit",
+        "skeptic_review"
+      ]
+    },
+    {
+      "wave_no": 6,
+      "concurrent_tasks": [
+        "report_render"
+      ]
+    },
+    {
+      "wave_no": 7,
+      "concurrent_tasks": [
+        "compliance_review"
+      ]
+    }
+  ],
+  "quality_gates": [
+    "cutoff_timestamp_has_timezone",
+    "no_future_information",
+    "fact_claim_has_direct_evidence",
+    "calculation_has_formula_and_inputs",
+    "material_conclusion_has_counter_analysis",
+    "source_gap_is_explicit",
+    "no_portfolio_or_position_fields",
+    "no_automatic_trade_instruction",
+    "no_automatic_external_publication"
+  ],
+  "human_review_required": false,
+  "run_id": "wr:682a85e1ac4156c4a2d133ba",
+  "package_hash": "sha256:67a5726605725e003b791f8a511f079ce8679b659be0c1823fd6e428a7fc5fa2",
+  "release_mode": "automatic_internal_release_after_required_quality_gates"
+}

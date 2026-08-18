@@ -1,0 +1,12 @@
+{
+  "package_id": "CR.TEST.STAGE6.GILDATA.RAW.001",
+  "source_id": "CR.SRC.GILDATA.NEWS",
+  "retrieved_at": "2026-08-13T00:00:00+08:00",
+  "license_tag": "contract_and_redistribution_terms_pending_verification",
+  "provider_response": {
+    "query_id": "test-only",
+    "raw_record_count": 1,
+    "truncated": false,
+    "records": [{"title": "仅用于验证许可闸门的原始层样例"}]
+  }
+}

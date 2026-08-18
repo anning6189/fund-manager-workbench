@@ -1,0 +1,87 @@
+{
+  "package_id": "CR.TEST.STAGE6.REVISION.001",
+  "source_id": "CR.SRC.CNINFO",
+  "retrieved_at": "2025-03-30T12:00:00+08:00",
+  "license_tag": "public_filing_research_use",
+  "documents": [
+    {
+      "document_id": "CR.DOC.TEST.MIDEA2023REVISION",
+      "source_record_id": "test-revision-2025",
+      "document_type": "test_correction",
+      "title": "阶段六测试用更正记录（非真实披露）",
+      "publisher": "Stage6 Test Fixture",
+      "published_at": "2025-03-30T00:00:00+08:00",
+      "available_at": "2025-03-30T23:59:59+08:00",
+      "as_of_date": "2023-12-31",
+      "content_hash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "mime_type": "application/json",
+      "document_version": "test-only-2025-03-30",
+      "license_tag": "public_filing_research_use",
+      "access_class": "public",
+      "evidence_tier": "A",
+      "status": "curated",
+      "metadata": {"test_fixture": true, "not_real_company_data": true}
+    }
+  ],
+  "document_entities": [
+    {"document_id": "CR.DOC.TEST.MIDEA2023REVISION", "entity_id": "cr:legal_entity:midea", "relation_type": "test_subject", "confidence": 1, "review_status": "reviewed"}
+  ],
+  "chunks": [
+    {
+      "chunk_id": "cr:chunk:test-midea-revision",
+      "document_id": "CR.DOC.TEST.MIDEA2023REVISION",
+      "sequence_no": 1,
+      "page_start": 1,
+      "page_end": 1,
+      "section_path": "test/revision",
+      "chunk_type": "test_fixture",
+      "locator": "test fixture row 1",
+      "text_content": "仅用于验证知识库保留修订历史，不代表真实公司披露。",
+      "content_hash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "available_at": "2025-03-30T23:59:59+08:00"
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "ev:test:midea:revision",
+      "document_id": "CR.DOC.TEST.MIDEA2023REVISION",
+      "chunk_id": "cr:chunk:test-midea-revision",
+      "locator": "test fixture row 1",
+      "support_type": "direct",
+      "evidence_tier": "A",
+      "published_at": "2025-03-30T00:00:00+08:00",
+      "available_at": "2025-03-30T23:59:59+08:00",
+      "content_hash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "license_tag": "public_filing_research_use",
+      "access_class": "public"
+    }
+  ],
+  "observations": [
+    {
+      "observation_id": "obs:test:midea:revenue:2023:revision",
+      "metric_id": "CR.CO.REVENUE",
+      "entity_id": "cr:legal_entity:midea",
+      "security_id": "000333.SZ",
+      "value": 372037280001,
+      "unit": "CNY",
+      "period_start": "2023-01-01",
+      "period_end": "2023-12-31",
+      "as_of_date": "2023-12-31",
+      "published_at": "2025-03-30T00:00:00+08:00",
+      "available_at": "2025-03-30T23:59:59+08:00",
+      "evidence_id": "ev:test:midea:revision",
+      "value_status": "restated",
+      "statement_scope": "income_statement",
+      "consolidation_scope": "consolidated",
+      "accounting_standard": "CAS",
+      "currency": "CNY",
+      "scale": 1,
+      "restatement_status": "test_revision",
+      "fiscal_period_type": "annual",
+      "version_no": 2,
+      "is_current": true,
+      "supersedes_observation_id": "obs:midea:revenue:2023",
+      "attributes": {"test_fixture": true, "not_real_company_data": true}
+    }
+  ]
+}

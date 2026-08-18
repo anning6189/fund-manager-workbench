@@ -1,0 +1,87 @@
+{
+  "status": "passed",
+  "cutoff_timestamp": "2024-04-30T16:00:00.000Z",
+  "claims_audited": 19,
+  "checks": [
+    {
+      "claim_id": "wc:d926a829ef4771b9338c5a4e",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:9aebdce6f1e487675eafdc55",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:c4af3ce9492c04bb3e1de99d",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:5e5e32d57112c1ac03d5761a",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:6c440ab2798919bcaa501be2",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:12c1abf58bf3e4c0d52b3d14",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:61821e6465078ac9bb6cedc5",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:6b0b25206986ea40d0d14f29",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:f50f191d7d4009fe7516062c",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:7b19e5fc861f66ee32e40218",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:a8591b9deb1c614c7ff179a8",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:20b11e5998e373385c94715b",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:2921c0a0f60f3b6f727619ac",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:89b99d85e990d69b543f9a44",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:f1055578df91daf959956c29",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:82ead4d71d866f0df9efd321",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:6764a341517b353320a73d77",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:4ad3980fd116da4a13ed4b0e",
+      "result": "passed"
+    },
+    {
+      "claim_id": "wc:099c4c1fb016b47e1bf8e771",
+      "result": "passed"
+    }
+  ],
+  "future_information_count": 0,
+  "fact_direct_evidence": "passed",
+  "calculation_lineage": "passed",
+  "material_counter_analysis": "passed"
+}

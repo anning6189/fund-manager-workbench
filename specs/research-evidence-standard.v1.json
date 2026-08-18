@@ -1,0 +1,364 @@
+{
+    "spec_version":  "1.1.0",
+    "status":  "production_spec_complete_connector_enforcement_required",
+    "content_labels":  [
+                           "FACT_PRIMARY",
+                           "FACT_SECONDARY",
+                           "MANAGEMENT_STATEMENT",
+                           "THIRD_PARTY_VIEW",
+                           "AGENT_CALCULATION",
+                           "AGENT_INFERENCE",
+                           "SCENARIO_ASSUMPTION",
+                           "UNVERIFIED_SIGNAL",
+                           "PM_JUDGMENT_REQUIRED"
+                       ],
+    "evidence_tiers":  {
+                           "A":  "政府、监管、交易所、法定公告和正式财报等原始权威来源",
+                           "B":  "授权专业数据库、行业协会、可信平台或渠道数据",
+                           "C":  "券商研报、专家访谈、公司自愿披露、经销商和终端调研",
+                           "D":  "新闻、社媒、搜索热度和其他线索数据"
+                       },
+    "claim_required_fields":  [
+                                  "claim_id",
+                                  "text",
+                                  "content_label",
+                                  "importance",
+                                  "as_of_date",
+                                  "confidence",
+                                  "evidence_ids",
+                                  "counter_evidence_ids",
+                                  "status"
+                              ],
+    "evidence_required_fields":  [
+                                     "evidence_id",
+                                     "source_id",
+                                     "source_type",
+                                     "title",
+                                     "publisher",
+                                     "published_at",
+                                     "available_at",
+                                     "as_of_date",
+                                     "retrieved_at",
+                                     "locator",
+                                     "content_hash",
+                                     "license_tag",
+                                     "access_class",
+                                     "evidence_tier",
+                                     "support_type",
+                                     "document_version"
+                                 ],
+    "support_types":  [
+                          "direct",
+                          "partial",
+                          "background",
+                          "contradictory"
+                      ],
+    "claim_rules":  [
+                        "每个事实性claim至少一个direct证据",
+                        "关键结论必须包含事实证据、推理链和counter evidence",
+                        "来源冲突必须显式列出并给采用理由",
+                        "Agent计算必须保存公式和输入证据ID",
+                        "只有C/D级证据时结论降级为待验证",
+                        "禁止一个引用隐式支持整段多个独立主张"
+                    ],
+    "research_modules":  [
+                             "M01_RESEARCH_DEFINITION",
+                             "M02_HISTORY",
+                             "M03_MACRO_DEMAND",
+                             "M04_MARKET_SIZE",
+                             "M05_VALUE_CHAIN_SUPPLY",
+                             "M06_BUSINESS_MODEL",
+                             "M07_COMPETITION",
+                             "M08_COMPANY_CAPABILITIES",
+                             "M09_FINANCIAL_FORECAST",
+                             "M10_VALUATION_EXPECTATIONS",
+                             "M11_RESEARCH_CONCLUSION",
+                             "M12_CATALYSTS_RISKS"
+                         ],
+    "p0_templates":  [
+                         {
+                             "template_id":  "P0_01_DAILY_SCAN",
+                             "name":  "每日信息扫描与晨报",
+                             "purpose":  "在明确时间窗内筛选消费行业新增信息并解释研究影响",
+                             "required_input_fields":  [
+                                                           "cutoff_timestamp",
+                                                           "availability_mode",
+                                                           "window_start",
+                                                           "sector_codes",
+                                                           "source_scope"
+                                                       ],
+                             "required_output_fields":  [
+                                                            "coverage_statement",
+                                                            "material_events",
+                                                            "data_changes",
+                                                            "research_implications",
+                                                            "counter_signals",
+                                                            "source_gaps",
+                                                            "evidence_index"
+                                                        ],
+                             "allowed_content_labels":  [
+                                                            "FACT_PRIMARY",
+                                                            "FACT_SECONDARY",
+                                                            "MANAGEMENT_STATEMENT",
+                                                            "THIRD_PARTY_VIEW",
+                                                            "AGENT_CALCULATION",
+                                                            "AGENT_INFERENCE",
+                                                            "UNVERIFIED_SIGNAL",
+                                                            "PM_JUDGMENT_REQUIRED"
+                                                        ],
+                             "evidence_requirements":  [
+                                                           "每个事件逐项claim引用",
+                                                           "关键事件至少一个A/B级直接证据",
+                                                           "截止时点后信息硬阻断"
+                                                       ],
+                             "validation_rules":  [
+                                                      "覆盖区间完整",
+                                                      "去重同一事件",
+                                                      "无证据不进入material_events",
+                                                      "不得出现基金持仓或交易建议"
+                                                  ]
+                         },
+                         {
+                             "template_id":  "P0_02_POLICY_EVENT",
+                             "name":  "政策、监管与重大事件解读",
+                             "purpose":  "把政策或事件转化为产业链、需求、供给和公司影响路径",
+                             "required_input_fields":  [
+                                                           "cutoff_timestamp",
+                                                           "event_id",
+                                                           "affected_geographies",
+                                                           "affected_sector_codes"
+                                                       ],
+                             "required_output_fields":  [
+                                                            "event_facts",
+                                                            "effective_timeline",
+                                                            "transmission_chain",
+                                                            "affected_entities",
+                                                            "base_case",
+                                                            "alternative_explanations",
+                                                            "monitoring_indicators",
+                                                            "evidence_index"
+                                                        ],
+                             "allowed_content_labels":  [
+                                                            "FACT_PRIMARY",
+                                                            "FACT_SECONDARY",
+                                                            "AGENT_INFERENCE",
+                                                            "SCENARIO_ASSUMPTION",
+                                                            "PM_JUDGMENT_REQUIRED"
+                                                        ],
+                             "evidence_requirements":  [
+                                                           "政策原文或法定公告为首要证据",
+                                                           "生效日和发布日期分离",
+                                                           "推断不得伪装成事实"
+                                                       ],
+                             "validation_rules":  [
+                                                      "事件实体已消歧",
+                                                      "适用范围明确",
+                                                      "传导链每一跳可解释",
+                                                      "包含反方情景和失效条件"
+                                                  ]
+                         },
+                         {
+                             "template_id":  "P0_03_DATA_QUERY",
+                             "name":  "行业及公司数据资料查询",
+                             "purpose":  "返回口径明确、可复算、可追溯的数据答案",
+                             "required_input_fields":  [
+                                                           "cutoff_timestamp",
+                                                           "entity_or_sector_scope",
+                                                           "metric_ids",
+                                                           "periods",
+                                                           "statement_scope"
+                                                       ],
+                             "required_output_fields":  [
+                                                            "query_scope",
+                                                            "metric_definitions",
+                                                            "observations",
+                                                            "calculations",
+                                                            "comparability_notes",
+                                                            "missing_data",
+                                                            "evidence_index"
+                                                        ],
+                             "allowed_content_labels":  [
+                                                            "FACT_PRIMARY",
+                                                            "FACT_SECONDARY",
+                                                            "AGENT_CALCULATION",
+                                                            "UNVERIFIED_SIGNAL"
+                                                        ],
+                             "evidence_requirements":  [
+                                                           "每个原值绑定evidence_id",
+                                                           "计算保存公式和输入observation_id",
+                                                           "历史查询通过时间准入门"
+                                                       ],
+                             "validation_rules":  [
+                                                      "公司与证券分离",
+                                                      "指标和期间白名单",
+                                                      "单位币种统一",
+                                                      "报表范围明确",
+                                                      "结果可复算"
+                                                  ]
+                         },
+                         {
+                             "template_id":  "P0_04_COMPANY_COMPARISON",
+                             "name":  "消费公司横向比较",
+                             "purpose":  "按统一维度比较公司并给出有限、可反驳的结论",
+                             "required_input_fields":  [
+                                                           "cutoff_timestamp",
+                                                           "company_ids",
+                                                           "metric_ids",
+                                                           "periods",
+                                                           "decision_rule_or_null"
+                                                       ],
+                             "required_output_fields":  [
+                                                            "entity_mapping",
+                                                            "dimension_results",
+                                                            "metric_bridge",
+                                                            "supporting_evidence",
+                                                            "counter_evidence",
+                                                            "comparability_limits",
+                                                            "cannot_conclude",
+                                                            "pm_judgment_required"
+                                                        ],
+                             "allowed_content_labels":  [
+                                                            "FACT_PRIMARY",
+                                                            "FACT_SECONDARY",
+                                                            "AGENT_CALCULATION",
+                                                            "AGENT_INFERENCE",
+                                                            "PM_JUDGMENT_REQUIRED"
+                                                        ],
+                             "evidence_requirements":  [
+                                                           "关键财务事实优先A类年报或公告",
+                                                           "所有派生指标可复算",
+                                                           "来源冲突显式呈现"
+                                                       ],
+                             "validation_rules":  [
+                                                      "同口径同期间",
+                                                      "无决策规则不得输出单一赢家",
+                                                      "至少一个反方解释",
+                                                      "不得转化为买卖建议"
+                                                  ]
+                         },
+                         {
+                             "template_id":  "P0_05_EARNINGS_EVENT_REVIEW",
+                             "name":  "财报、公告与重大公司事件点评",
+                             "purpose":  "区分披露事实、预期差、驱动因素和后续验证信号",
+                             "required_input_fields":  [
+                                                           "cutoff_timestamp",
+                                                           "issuer_id",
+                                                           "event_document_ids",
+                                                           "comparison_periods"
+                                                       ],
+                             "required_output_fields":  [
+                                                            "reported_facts",
+                                                            "changes_vs_prior",
+                                                            "driver_bridge",
+                                                            "cash_flow_quality",
+                                                            "management_statements",
+                                                            "surprises_vs_available_expectations",
+                                                            "risks",
+                                                            "next_validation_points",
+                                                            "evidence_index"
+                                                        ],
+                             "allowed_content_labels":  [
+                                                            "FACT_PRIMARY",
+                                                            "MANAGEMENT_STATEMENT",
+                                                            "AGENT_CALCULATION",
+                                                            "AGENT_INFERENCE",
+                                                            "SCENARIO_ASSUMPTION",
+                                                            "PM_JUDGMENT_REQUIRED"
+                                                        ],
+                             "evidence_requirements":  [
+                                                           "财报与法定公告为首要证据",
+                                                           "管理层表述单独标记",
+                                                           "预期数据必须为截止时点可得版本"
+                                                       ],
+                             "validation_rules":  [
+                                                      "并表范围和重述版本明确",
+                                                      "一次性项目单列",
+                                                      "利润与现金流勾稽",
+                                                      "禁止用后见信息解释历史预期差"
+                                                  ]
+                         }
+                     ],
+    "hard_blocks":  [
+                        "suspected_mnpi",
+                        "license_unknown_for_required_use",
+                        "entity_unresolved",
+                        "material_source_conflict_unresolved",
+                        "future_information_leakage",
+                        "fabricated_or_unlocatable_citation"
+                    ],
+    "prohibited_outputs":  [
+                               "fund_holding_analysis",
+                               "position_inference",
+                               "portfolio_exposure",
+                               "rebalance_advice",
+                               "trade_execution"
+                           ],
+    "point_in_time_control":  {
+                                  "cutoff_field":  "cutoff_timestamp",
+                                  "cutoff_format":  "ISO-8601 timestamp with explicit UTC offset",
+                                  "default_timezone":  "Asia/Shanghai",
+                                  "availability_modes":  {
+                                                             "exact_timestamp":  "只使用在cutoff_timestamp之前已经公开可得的信息",
+                                                             "end_of_day":  "日期型问题归一化为当地次日00:00:00的排他上界；当日未知具体时刻的材料按23:59:59保守处理",
+                                                             "market_open":  "仅使用当日开盘前已公开可得的信息；盘中及盘后材料排除",
+                                                             "market_close":  "仅使用当日收盘前已公开可得的信息；盘后材料排除"
+                                                         },
+                                  "eligibility_rule":  "published_at != null AND available_at != null AND published_at \u003c cutoff_exclusive AND available_at \u003c cutoff_exclusive",
+                                  "unknown_time_rule":  "只有日期时按来源所在地当日23:59:59归一化并标记time_precision=date；未知日期直接阻断",
+                                  "later_retrieval_rule":  "retrieved_at可晚于截止时点，但必须证明document_version在截止时点已存在；可修订来源还需archived_snapshot_at或版本哈希",
+                                  "hard_block":  "future_information_leakage"
+                              },
+    "connector_result_contract":  {
+                                      "query_required_fields":  [
+                                                                    "cutoff_timestamp",
+                                                                    "availability_mode",
+                                                                    "allowed_entity_ids",
+                                                                    "allowed_security_ids",
+                                                                    "allowed_metric_ids",
+                                                                    "allowed_periods",
+                                                                    "allowed_statement_scopes"
+                                                                ],
+                                      "response_required_fields":  [
+                                                                       "connector_name",
+                                                                       "query_id",
+                                                                       "retrieved_at",
+                                                                       "raw_record_count",
+                                                                       "truncated"
+                                                                   ],
+                                      "deterministic_post_filters":  [
+                                                                         "entity_or_security_whitelist",
+                                                                         "metric_whitelist",
+                                                                         "period_whitelist",
+                                                                         "statement_scope_whitelist",
+                                                                         "point_in_time_filter",
+                                                                         "evidence_completeness_filter"
+                                                                     ],
+                                      "out_of_scope_action":  "discard_and_log",
+                                      "future_record_action":  "hard_block_entire_answer",
+                                      "truncation_action":  "mark_incomplete_and_retry_with_smaller_query_partition",
+                                      "empty_after_filter_action":  "return_no_eligible_data_not_unfiltered_fallback"
+                                  },
+    "comparative_conclusion_policy":  {
+                                          "required_sections":  [
+                                                                    "dimension_results",
+                                                                    "supporting_evidence",
+                                                                    "counter_evidence",
+                                                                    "comparability_limits",
+                                                                    "cannot_conclude",
+                                                                    "pm_judgment_required"
+                                                                ],
+                                          "single_winner_allowed_when":  [
+                                                                             "explicit_decision_rule",
+                                                                             "explicit_weights",
+                                                                             "defined_time_horizon",
+                                                                             "all_material_dimensions_comparable"
+                                                                         ],
+                                          "default_without_rule":  "按维度给出有限结论，不合成为单一公司排名",
+                                          "prohibited_inference":  [
+                                                                       "future_stock_return",
+                                                                       "buy_or_sell_recommendation",
+                                                                       "portfolio_action",
+                                                                       "overall_superiority_from_single_period_subset"
+                                                                   ]
+                                      }
+}

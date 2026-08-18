@@ -1,0 +1,1248 @@
+{
+  "stage": 8,
+  "name": "研究工作流与Agent编排",
+  "status": "passed",
+  "passed": 55,
+  "total": 55,
+  "checks": [
+    {
+      "name": "workflow_engine_initialized",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.1.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-stage8-5mplnqvz\\stage8.db",
+        "workflow_id": "CR.WORKFLOW.RESEARCH_ORCHESTRATION.001",
+        "roles": 9,
+        "tasks": 10,
+        "waves": 8
+      }
+    },
+    {
+      "name": "nine_agent_roles_registered",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.1.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-stage8-5mplnqvz\\stage8.db",
+        "workflow_id": "CR.WORKFLOW.RESEARCH_ORCHESTRATION.001",
+        "roles": 9,
+        "tasks": 10,
+        "waves": 8
+      }
+    },
+    {
+      "name": "ten_orchestrated_tasks_registered",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.1.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-stage8-5mplnqvz\\stage8.db",
+        "workflow_id": "CR.WORKFLOW.RESEARCH_ORCHESTRATION.001",
+        "roles": 9,
+        "tasks": 10,
+        "waves": 8
+      }
+    },
+    {
+      "name": "stage6_seed_ingested",
+      "passed": true,
+      "detail": {
+        "status": "success",
+        "package_id": "CR.SEED.STAGE6.CORE.001",
+        "run_id": "ingest:9f1726af41cc28ff06e9",
+        "inserted_records": 52,
+        "updated_records": 0
+      }
+    },
+    {
+      "name": "all_role_contracts_present",
+      "passed": true,
+      "detail": [
+        "claim_agent",
+        "compliance_agent",
+        "entity_scope_agent",
+        "evidence_auditor",
+        "evidence_retrieval_agent",
+        "model_agent",
+        "report_agent",
+        "research_director",
+        "skeptic_agent"
+      ]
+    },
+    {
+      "name": "portfolio_data_explicitly_forbidden",
+      "passed": true,
+      "detail": {
+        "portfolio_data": "forbidden",
+        "portfolio_position_inference": "forbidden",
+        "automatic_trade_instruction": "forbidden",
+        "automatic_external_publication": "forbidden",
+        "internal_research_release": "automatic_after_all_required_quality_gates_pass"
+      }
+    },
+    {
+      "name": "position_inference_explicitly_forbidden",
+      "passed": true,
+      "detail": {
+        "portfolio_data": "forbidden",
+        "portfolio_position_inference": "forbidden",
+        "automatic_trade_instruction": "forbidden",
+        "automatic_external_publication": "forbidden",
+        "internal_research_release": "automatic_after_all_required_quality_gates_pass"
+      }
+    },
+    {
+      "name": "automatic_trade_instruction_forbidden",
+      "passed": true,
+      "detail": {
+        "portfolio_data": "forbidden",
+        "portfolio_position_inference": "forbidden",
+        "automatic_trade_instruction": "forbidden",
+        "automatic_external_publication": "forbidden",
+        "internal_research_release": "automatic_after_all_required_quality_gates_pass"
+      }
+    },
+    {
+      "name": "dag_is_acyclic_and_topological",
+      "passed": true,
+      "detail": {
+        "scope_guard": 0,
+        "entity_resolution": 1,
+        "document_retrieval": 2,
+        "fact_retrieval": 2,
+        "model_execution": 3,
+        "claim_composition": 4,
+        "evidence_audit": 5,
+        "skeptic_review": 5,
+        "report_render": 6,
+        "compliance_review": 7
+      }
+    },
+    {
+      "name": "quality_tasks_run_concurrently",
+      "passed": true,
+      "detail": {
+        "evidence_audit": 5,
+        "skeptic_review": 5
+      }
+    },
+    {
+      "name": "canonical_request_valid",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "execution_plan_has_eight_waves",
+      "passed": true,
+      "detail": [
+        {
+          "wave_no": 0,
+          "concurrent_tasks": [
+            "scope_guard"
+          ]
+        },
+        {
+          "wave_no": 1,
+          "concurrent_tasks": [
+            "entity_resolution"
+          ]
+        },
+        {
+          "wave_no": 2,
+          "concurrent_tasks": [
+            "document_retrieval",
+            "fact_retrieval"
+          ]
+        },
+        {
+          "wave_no": 3,
+          "concurrent_tasks": [
+            "model_execution"
+          ]
+        },
+        {
+          "wave_no": 4,
+          "concurrent_tasks": [
+            "claim_composition"
+          ]
+        },
+        {
+          "wave_no": 5,
+          "concurrent_tasks": [
+            "evidence_audit",
+            "skeptic_review"
+          ]
+        },
+        {
+          "wave_no": 6,
+          "concurrent_tasks": [
+            "report_render"
+          ]
+        },
+        {
+          "wave_no": 7,
+          "concurrent_tasks": [
+            "compliance_review"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_review_not_planned",
+      "passed": true,
+      "detail": false
+    },
+    {
+      "name": "automatic_internal_release_planned",
+      "passed": true,
+      "detail": "automatic_internal_release_after_required_quality_gates"
+    },
+    {
+      "name": "cutoff_without_timezone_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "cutoff_timezone_missing",
+          "message": "cutoff_timestamp must include a timezone",
+          "path": "$.cutoff_timestamp"
+        }
+      ]
+    },
+    {
+      "name": "fund_holdings_request_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "portfolio_or_trade_field_forbidden",
+          "message": "Portfolio, position, and trade-instruction fields are forbidden",
+          "path": "$.fund_holdings"
+        }
+      ]
+    },
+    {
+      "name": "position_inference_request_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "portfolio_or_trade_field_forbidden",
+          "message": "Portfolio, position, and trade-instruction fields are forbidden",
+          "path": "$.scope.position_inference"
+        }
+      ]
+    },
+    {
+      "name": "model_path_traversal_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "model_path_forbidden",
+          "message": "Model package must stay under data/models/stage7",
+          "path": "$.model_packages[0].path"
+        }
+      ]
+    },
+    {
+      "name": "controlled_interruption_keeps_run_resumable",
+      "passed": true,
+      "detail": {
+        "run_id": "wr:63885d86824565a01d006dde",
+        "package_id": "CR.WORKFLOW.PKG.STAGE8.COMPARE.001",
+        "status": "running",
+        "started_at": "2026-08-13T08:45:59.349Z",
+        "completed_at": null,
+        "resumed_count": 0,
+        "publication_status": "quality_checks_pending",
+        "human_review_required": 0,
+        "output_directory": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-stage8-5mplnqvz\\outputs\\midea-vs-gree-2023\\wr-63885d86824565a01d006dde",
+        "summary_json": "{}"
+      }
+    },
+    {
+      "name": "interruption_completed_whole_parallel_wave",
+      "passed": true,
+      "detail": {
+        "scope_guard": "completed",
+        "entity_resolution": "completed",
+        "document_retrieval": "completed",
+        "fact_retrieval": "completed",
+        "model_execution": "pending",
+        "claim_composition": "pending",
+        "evidence_audit": "pending",
+        "skeptic_review": "pending",
+        "report_render": "pending",
+        "compliance_review": "pending"
+      }
+    },
+    {
+      "name": "downstream_tasks_not_started_before_resume",
+      "passed": true,
+      "detail": {
+        "scope_guard": "completed",
+        "entity_resolution": "completed",
+        "document_retrieval": "completed",
+        "fact_retrieval": "completed",
+        "model_execution": "pending",
+        "claim_composition": "pending",
+        "evidence_audit": "pending",
+        "skeptic_review": "pending",
+        "report_render": "pending",
+        "compliance_review": "pending"
+      }
+    },
+    {
+      "name": "resume_completes_and_releases_directly",
+      "passed": true,
+      "detail": {
+        "run_id": "wr:63885d86824565a01d006dde",
+        "package_id": "CR.WORKFLOW.PKG.STAGE8.COMPARE.001",
+        "status": "completed",
+        "started_at": "2026-08-13T08:45:59.349Z",
+        "completed_at": "2026-08-13T08:46:00.172Z",
+        "resumed_count": 1,
+        "publication_status": "internal_research_ready",
+        "human_review_required": 0,
+        "output_directory": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-stage8-5mplnqvz\\outputs\\midea-vs-gree-2023\\wr-63885d86824565a01d006dde",
+        "summary_json": "{}"
+      }
+    },
+    {
+      "name": "resume_counter_incremented",
+      "passed": true,
+      "detail": {
+        "run_id": "wr:63885d86824565a01d006dde",
+        "package_id": "CR.WORKFLOW.PKG.STAGE8.COMPARE.001",
+        "status": "completed",
+        "started_at": "2026-08-13T08:45:59.349Z",
+        "completed_at": "2026-08-13T08:46:00.172Z",
+        "resumed_count": 1,
+        "publication_status": "internal_research_ready",
+        "human_review_required": 0,
+        "output_directory": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-stage8-5mplnqvz\\outputs\\midea-vs-gree-2023\\wr-63885d86824565a01d006dde",
+        "summary_json": "{}"
+      }
+    },
+    {
+      "name": "all_required_tasks_complete",
+      "passed": true,
+      "detail": {
+        "scope_guard": "completed",
+        "entity_resolution": "completed",
+        "document_retrieval": "completed",
+        "fact_retrieval": "completed",
+        "model_execution": "completed",
+        "claim_composition": "completed",
+        "evidence_audit": "completed",
+        "skeptic_review": "completed",
+        "report_render": "completed",
+        "compliance_review": "completed"
+      }
+    },
+    {
+      "name": "human_review_task_absent",
+      "passed": true,
+      "detail": {
+        "scope_guard": "completed",
+        "entity_resolution": "completed",
+        "document_retrieval": "completed",
+        "fact_retrieval": "completed",
+        "model_execution": "completed",
+        "claim_composition": "completed",
+        "evidence_audit": "completed",
+        "skeptic_review": "completed",
+        "report_render": "completed",
+        "compliance_review": "completed"
+      }
+    },
+    {
+      "name": "five_required_artifacts_registered",
+      "passed": true,
+      "detail": [
+        "claim_graph",
+        "evidence_audit",
+        "execution_plan",
+        "research_report",
+        "runtime_audit"
+      ]
+    },
+    {
+      "name": "all_registered_artifacts_exist",
+      "passed": true,
+      "detail": {
+        "claim_graph": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-stage8-5mplnqvz\\outputs\\midea-vs-gree-2023\\wr-63885d86824565a01d006dde\\claim-graph.json",
+        "evidence_audit": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-stage8-5mplnqvz\\outputs\\midea-vs-gree-2023\\wr-63885d86824565a01d006dde\\evidence-audit.json",
+        "execution_plan": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-stage8-5mplnqvz\\outputs\\midea-vs-gree-2023\\wr-63885d86824565a01d006dde\\execution-plan.json",
+        "research_report": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-stage8-5mplnqvz\\outputs\\midea-vs-gree-2023\\wr-63885d86824565a01d006dde\\research-report.md",
+        "runtime_audit": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-stage8-5mplnqvz\\outputs\\midea-vs-gree-2023\\wr-63885d86824565a01d006dde\\runtime-audit.json"
+      }
+    },
+    {
+      "name": "both_comparison_entities_complete",
+      "passed": true,
+      "detail": {
+        "cr:legal_entity:midea": {
+          "display_name": "美的集团",
+          "status": "complete",
+          "revenue_2023": 372037280000.0,
+          "revenue_growth": 0.08176305790006388,
+          "gross_margin": 0.2649086860327545,
+          "net_margin": 0.09063590347719992,
+          "cfo_conversion": 1.71716259239527,
+          "evidence_ids": [
+            "ev:midea:ar2023:cashflow",
+            "ev:midea:ar2023:financials"
+          ],
+          "calculation_claim_ids": {
+            "revenue_growth": "wc:078b516c0f2c6d519389d8e3",
+            "gross_margin": "wc:3f51f2ad8d37df4cf4739340",
+            "net_margin": "wc:8c9e28fa58325c8bb70729ec",
+            "cfo_conversion": "wc:98779445777c33f81710658a"
+          }
+        },
+        "cr:legal_entity:gree": {
+          "display_name": "格力电器",
+          "status": "complete",
+          "revenue_2023": 203979266387.09,
+          "revenue_growth": 0.07932172055081632,
+          "gross_margin": 0.30568654228715475,
+          "net_margin": 0.14225655439467025,
+          "cfo_conversion": 1.9436079885442794,
+          "evidence_ids": [
+            "ev:gree:ar2023:cashflow",
+            "ev:gree:ar2023:financials"
+          ],
+          "calculation_claim_ids": {
+            "revenue_growth": "wc:7a6a0f2ba527b6dd42d7eb98",
+            "gross_margin": "wc:40a14fb545948e47f5f40424",
+            "net_margin": "wc:712b871db01030cd01ac025b",
+            "cfo_conversion": "wc:2ffb510d59a156300d4db930"
+          }
+        }
+      }
+    },
+    {
+      "name": "nineteen_claims_composed",
+      "passed": true,
+      "detail": 19
+    },
+    {
+      "name": "fact_claims_have_direct_evidence",
+      "passed": true,
+      "detail": [
+        "wc:42e6d2b19132167aa96bb5b0",
+        "wc:9db0b9d755c934fba8ae61f9",
+        "wc:33055c30df77dcf142d99549",
+        "wc:e59284a03927e64fae474aa7",
+        "wc:72f178ee5408d08befeb3f00",
+        "wc:1ea1d394ee44d5f1486b1f57",
+        "wc:94dfcefce0338462fb880ae2",
+        "wc:6212f79127541047d851544d",
+        "wc:9a04bd516e3d1097b695d3d9",
+        "wc:8c60ca2cf463d46ae100ae43"
+      ]
+    },
+    {
+      "name": "calculation_claims_have_formula_and_inputs",
+      "passed": true,
+      "detail": [
+        {
+          "claim_id": "wc:078b516c0f2c6d519389d8e3",
+          "module_id": "revenue_growth",
+          "text": "美的集团2023年营业收入同比增长8.18%。",
+          "content_label": "AGENT_CALCULATION",
+          "importance": "key",
+          "confidence": 0.96,
+          "as_of_date": "2023-12-31",
+          "formula": "revenue_2023 / revenue_2022 - 1",
+          "input_ids": [
+            "obs:midea:revenue:2023",
+            "obs:midea:revenue:2022"
+          ],
+          "status": "draft",
+          "evidence_relations": [
+            {
+              "evidence_id": "ev:midea:ar2023:financials",
+              "relation_type": "supporting"
+            },
+            {
+              "evidence_id": "ev:midea:ar2023:financials",
+              "relation_type": "supporting"
+            }
+          ]
+        },
+        {
+          "claim_id": "wc:3f51f2ad8d37df4cf4739340",
+          "module_id": "gross_margin",
+          "text": "美的集团2023年报表口径毛利率为26.49%。",
+          "content_label": "AGENT_CALCULATION",
+          "importance": "key",
+          "confidence": 0.96,
+          "as_of_date": "2023-12-31",
+          "formula": "1 - operating_cost_2023 / revenue_2023",
+          "input_ids": [
+            "obs:midea:cost:2023",
+            "obs:midea:revenue:2023"
+          ],
+          "status": "draft",
+          "evidence_relations": [
+            {
+              "evidence_id": "ev:midea:ar2023:financials",
+              "relation_type": "supporting"
+            },
+            {
+              "evidence_id": "ev:midea:ar2023:financials",
+              "relation_type": "supporting"
+            }
+          ]
+        },
+        {
+          "claim_id": "wc:8c9e28fa58325c8bb70729ec",
+          "module_id": "net_margin",
+          "text": "美的集团2023年归母净利率为9.06%。",
+          "content_label": "AGENT_CALCULATION",
+          "importance": "key",
+          "confidence": 0.96,
+          "as_of_date": "2023-12-31",
+          "formula": "parent_net_profit_2023 / revenue_2023",
+          "input_ids": [
+            "obs:midea:np:2023",
+            "obs:midea:revenue:2023"
+          ],
+          "status": "draft",
+          "evidence_relations": [
+            {
+              "evidence_id": "ev:midea:ar2023:financials",
+              "relation_type": "supporting"
+            },
+            {
+              "evidence_id": "ev:midea:ar2023:financials",
+              "relation_type": "supporting"
+            }
+          ]
+        },
+        {
+          "claim_id": "wc:98779445777c33f81710658a",
+          "module_id": "cfo_conversion",
+          "text": "美的集团2023年经营现金流/归母净利润为1.72倍。",
+          "content_label": "AGENT_CALCULATION",
+          "importance": "key",
+          "confidence": 0.96,
+          "as_of_date": "2023-12-31",
+          "formula": "cfo_net_2023 / parent_net_profit_2023",
+          "input_ids": [
+            "obs:midea:cfo:2023",
+            "obs:midea:np:2023"
+          ],
+          "status": "draft",
+          "evidence_relations": [
+            {
+              "evidence_id": "ev:midea:ar2023:cashflow",
+              "relation_type": "supporting"
+            },
+            {
+              "evidence_id": "ev:midea:ar2023:financials",
+              "relation_type": "supporting"
+            }
+          ]
+        },
+        {
+          "claim_id": "wc:7a6a0f2ba527b6dd42d7eb98",
+          "module_id": "revenue_growth",
+          "text": "格力电器2023年营业收入同比增长7.93%。",
+          "content_label": "AGENT_CALCULATION",
+          "importance": "key",
+          "confidence": 0.96,
+          "as_of_date": "2023-12-31",
+          "formula": "revenue_2023 / revenue_2022 - 1",
+          "input_ids": [
+            "obs:gree:revenue:2023",
+            "obs:gree:revenue:2022"
+          ],
+          "status": "draft",
+          "evidence_relations": [
+            {
+              "evidence_id": "ev:gree:ar2023:financials",
+              "relation_type": "supporting"
+            },
+            {
+              "evidence_id": "ev:gree:ar2023:financials",
+              "relation_type": "supporting"
+            }
+          ]
+        },
+        {
+          "claim_id": "wc:40a14fb545948e47f5f40424",
+          "module_id": "gross_margin",
+          "text": "格力电器2023年报表口径毛利率为30.57%。",
+          "content_label": "AGENT_CALCULATION",
+          "importance": "key",
+          "confidence": 0.96,
+          "as_of_date": "2023-12-31",
+          "formula": "1 - operating_cost_2023 / revenue_2023",
+          "input_ids": [
+            "obs:gree:cost:2023",
+            "obs:gree:revenue:2023"
+          ],
+          "status": "draft",
+          "evidence_relations": [
+            {
+              "evidence_id": "ev:gree:ar2023:financials",
+              "relation_type": "supporting"
+            },
+            {
+              "evidence_id": "ev:gree:ar2023:financials",
+              "relation_type": "supporting"
+            }
+          ]
+        },
+        {
+          "claim_id": "wc:712b871db01030cd01ac025b",
+          "module_id": "net_margin",
+          "text": "格力电器2023年归母净利率为14.23%。",
+          "content_label": "AGENT_CALCULATION",
+          "importance": "key",
+          "confidence": 0.96,
+          "as_of_date": "2023-12-31",
+          "formula": "parent_net_profit_2023 / revenue_2023",
+          "input_ids": [
+            "obs:gree:np:2023",
+            "obs:gree:revenue:2023"
+          ],
+          "status": "draft",
+          "evidence_relations": [
+            {
+              "evidence_id": "ev:gree:ar2023:financials",
+              "relation_type": "supporting"
+            },
+            {
+              "evidence_id": "ev:gree:ar2023:financials",
+              "relation_type": "supporting"
+            }
+          ]
+        },
+        {
+          "claim_id": "wc:2ffb510d59a156300d4db930",
+          "module_id": "cfo_conversion",
+          "text": "格力电器2023年经营现金流/归母净利润为1.94倍。",
+          "content_label": "AGENT_CALCULATION",
+          "importance": "key",
+          "confidence": 0.96,
+          "as_of_date": "2023-12-31",
+          "formula": "cfo_net_2023 / parent_net_profit_2023",
+          "input_ids": [
+            "obs:gree:cfo:2023",
+            "obs:gree:np:2023"
+          ],
+          "status": "draft",
+          "evidence_relations": [
+            {
+              "evidence_id": "ev:gree:ar2023:cashflow",
+              "relation_type": "supporting"
+            },
+            {
+              "evidence_id": "ev:gree:ar2023:financials",
+              "relation_type": "supporting"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "material_conclusion_has_counter_evidence",
+      "passed": true,
+      "detail": [
+        {
+          "claim_id": "wc:48667f5bf5da619ca13a2c1e",
+          "module_id": "limited_conclusion",
+          "text": "有限结论：美的集团收入规模领先、美的集团收入增速略高；格力电器毛利率更高、格力电器现金利润转换更强。在没有预设决策规则、估值与更长周期证据时，不给出单一优胜者。",
+          "content_label": "AGENT_INFERENCE",
+          "importance": "material",
+          "confidence": 0.78,
+          "as_of_date": "2023-12-31",
+          "formula": null,
+          "input_ids": [
+            "wc:078b516c0f2c6d519389d8e3",
+            "wc:3f51f2ad8d37df4cf4739340",
+            "wc:8c9e28fa58325c8bb70729ec",
+            "wc:98779445777c33f81710658a",
+            "wc:7a6a0f2ba527b6dd42d7eb98",
+            "wc:40a14fb545948e47f5f40424",
+            "wc:712b871db01030cd01ac025b",
+            "wc:2ffb510d59a156300d4db930"
+          ],
+          "status": "draft",
+          "evidence_relations": [
+            {
+              "evidence_id": "ev:midea:ar2023:cashflow",
+              "relation_type": "supporting"
+            },
+            {
+              "evidence_id": "ev:midea:ar2023:financials",
+              "relation_type": "supporting"
+            },
+            {
+              "evidence_id": "ev:gree:ar2023:cashflow",
+              "relation_type": "counter"
+            },
+            {
+              "evidence_id": "ev:gree:ar2023:financials",
+              "relation_type": "counter"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "timezone_safe_point_in_time_query",
+      "passed": true,
+      "detail": {
+        "display_name": "格力电器",
+        "status": "complete",
+        "revenue_2023": 203979266387.09,
+        "revenue_growth": 0.07932172055081632,
+        "gross_margin": 0.30568654228715475,
+        "net_margin": 0.14225655439467025,
+        "cfo_conversion": 1.9436079885442794,
+        "evidence_ids": [
+          "ev:gree:ar2023:cashflow",
+          "ev:gree:ar2023:financials"
+        ],
+        "calculation_claim_ids": {
+          "revenue_growth": "wc:7a6a0f2ba527b6dd42d7eb98",
+          "gross_margin": "wc:40a14fb545948e47f5f40424",
+          "net_margin": "wc:712b871db01030cd01ac025b",
+          "cfo_conversion": "wc:2ffb510d59a156300d4db930"
+        }
+      }
+    },
+    {
+      "name": "evidence_audit_passed",
+      "passed": true,
+      "detail": {
+        "status": "passed",
+        "cutoff_timestamp": "2024-04-30T16:00:00.000Z",
+        "claims_audited": 19,
+        "checks": [
+          {
+            "claim_id": "wc:42e6d2b19132167aa96bb5b0",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:9db0b9d755c934fba8ae61f9",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:33055c30df77dcf142d99549",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:e59284a03927e64fae474aa7",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:72f178ee5408d08befeb3f00",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:078b516c0f2c6d519389d8e3",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:3f51f2ad8d37df4cf4739340",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:8c9e28fa58325c8bb70729ec",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:98779445777c33f81710658a",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:1ea1d394ee44d5f1486b1f57",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:94dfcefce0338462fb880ae2",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:6212f79127541047d851544d",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:9a04bd516e3d1097b695d3d9",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:8c60ca2cf463d46ae100ae43",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:7a6a0f2ba527b6dd42d7eb98",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:40a14fb545948e47f5f40424",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:712b871db01030cd01ac025b",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:2ffb510d59a156300d4db930",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:48667f5bf5da619ca13a2c1e",
+            "result": "passed"
+          }
+        ],
+        "future_information_count": 0,
+        "fact_direct_evidence": "passed",
+        "calculation_lineage": "passed",
+        "material_counter_analysis": "passed"
+      }
+    },
+    {
+      "name": "no_future_information_detected",
+      "passed": true,
+      "detail": {
+        "status": "passed",
+        "cutoff_timestamp": "2024-04-30T16:00:00.000Z",
+        "claims_audited": 19,
+        "checks": [
+          {
+            "claim_id": "wc:42e6d2b19132167aa96bb5b0",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:9db0b9d755c934fba8ae61f9",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:33055c30df77dcf142d99549",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:e59284a03927e64fae474aa7",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:72f178ee5408d08befeb3f00",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:078b516c0f2c6d519389d8e3",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:3f51f2ad8d37df4cf4739340",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:8c9e28fa58325c8bb70729ec",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:98779445777c33f81710658a",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:1ea1d394ee44d5f1486b1f57",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:94dfcefce0338462fb880ae2",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:6212f79127541047d851544d",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:9a04bd516e3d1097b695d3d9",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:8c60ca2cf463d46ae100ae43",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:7a6a0f2ba527b6dd42d7eb98",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:40a14fb545948e47f5f40424",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:712b871db01030cd01ac025b",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:2ffb510d59a156300d4db930",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:48667f5bf5da619ca13a2c1e",
+            "result": "passed"
+          }
+        ],
+        "future_information_count": 0,
+        "fact_direct_evidence": "passed",
+        "calculation_lineage": "passed",
+        "material_counter_analysis": "passed"
+      }
+    },
+    {
+      "name": "calculation_lineage_audit_passed",
+      "passed": true,
+      "detail": {
+        "status": "passed",
+        "cutoff_timestamp": "2024-04-30T16:00:00.000Z",
+        "claims_audited": 19,
+        "checks": [
+          {
+            "claim_id": "wc:42e6d2b19132167aa96bb5b0",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:9db0b9d755c934fba8ae61f9",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:33055c30df77dcf142d99549",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:e59284a03927e64fae474aa7",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:72f178ee5408d08befeb3f00",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:078b516c0f2c6d519389d8e3",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:3f51f2ad8d37df4cf4739340",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:8c9e28fa58325c8bb70729ec",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:98779445777c33f81710658a",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:1ea1d394ee44d5f1486b1f57",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:94dfcefce0338462fb880ae2",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:6212f79127541047d851544d",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:9a04bd516e3d1097b695d3d9",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:8c60ca2cf463d46ae100ae43",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:7a6a0f2ba527b6dd42d7eb98",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:40a14fb545948e47f5f40424",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:712b871db01030cd01ac025b",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:2ffb510d59a156300d4db930",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:48667f5bf5da619ca13a2c1e",
+            "result": "passed"
+          }
+        ],
+        "future_information_count": 0,
+        "fact_direct_evidence": "passed",
+        "calculation_lineage": "passed",
+        "material_counter_analysis": "passed"
+      }
+    },
+    {
+      "name": "counter_analysis_audit_passed",
+      "passed": true,
+      "detail": {
+        "status": "passed",
+        "cutoff_timestamp": "2024-04-30T16:00:00.000Z",
+        "claims_audited": 19,
+        "checks": [
+          {
+            "claim_id": "wc:42e6d2b19132167aa96bb5b0",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:9db0b9d755c934fba8ae61f9",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:33055c30df77dcf142d99549",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:e59284a03927e64fae474aa7",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:72f178ee5408d08befeb3f00",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:078b516c0f2c6d519389d8e3",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:3f51f2ad8d37df4cf4739340",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:8c9e28fa58325c8bb70729ec",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:98779445777c33f81710658a",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:1ea1d394ee44d5f1486b1f57",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:94dfcefce0338462fb880ae2",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:6212f79127541047d851544d",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:9a04bd516e3d1097b695d3d9",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:8c60ca2cf463d46ae100ae43",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:7a6a0f2ba527b6dd42d7eb98",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:40a14fb545948e47f5f40424",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:712b871db01030cd01ac025b",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:2ffb510d59a156300d4db930",
+            "result": "passed"
+          },
+          {
+            "claim_id": "wc:48667f5bf5da619ca13a2c1e",
+            "result": "passed"
+          }
+        ],
+        "future_information_count": 0,
+        "fact_direct_evidence": "passed",
+        "calculation_lineage": "passed",
+        "material_counter_analysis": "passed"
+      }
+    },
+    {
+      "name": "fund_manager_report_structure_complete",
+      "passed": true,
+      "detail": [
+        "## 研究问题",
+        "## 执行摘要",
+        "## 比较口径与证据边界",
+        "## 核心指标同表比较",
+        "## 分公司观察",
+        "## 反方审查与不可下结论事项",
+        "## 有限结论与后续跟踪",
+        "## 证据索引",
+        "## 运行与审计附录"
+      ]
+    },
+    {
+      "name": "same_row_company_comparison_present",
+      "passed": true,
+      "detail": "# 消费行业公司比较研究报告（阶段八工作流产物）\n\n> 读者：公募基金经理  \n> 研究截止时间：2024-04-30T16:00:00.000Z  \n> 边界：本报告不使用、不请求且不推断任何基金持仓或仓位；不构成自动交易指令。  \n> 状态：**内部研究可用（系统质量门已通过）**\n\n## 研究问题\n\n比较美的集团与格力电器2023年度经营与财务质量，并给出有限结论、反方解释和下一步跟踪指标。\n\n## 执行摘要\n\n- 美的集团的2023年收入规模更大。\n- 美的集团的2023年收入增速略高，但差异很小。\n- 格力电器的报表口径毛利率更高，格力电器的现金利润转换更强。\n- 证据呈现维度分化；没有预设决策规则、估值和中期预测，因此不给出单一优胜者。\n\n## 比较口径与证据边界\n\n- 范围：白色家电公司年度经营与财务质量比较；会计口径为合并报表、CAS、CNY。\n- 本报告仅使用研究截止时间之前已可获得的阶段六事实库证据。\n- 当前证据以2022—2023年年度报告为主；未在本题中扩展宏观、渠道、月度销量、估值和市场预期数据。\n\n## 核心指标同表比较\n\n| 公司 | 2023收入（亿元） | 收入同比 | 毛利率 | 归母净利率 | CFO/归母净利润 |\n|---|---:|---:|---:|---:|---:|\n| 美的集团 | 3720.37 | 8.18% | 26.49% | 9.06% | 1.72x |\n| 格力电器 | 2039.79 | 7.93% | 30.57% | 14.23% | 1.94x |\n\n## 分公司观察\n\n### 格力电器\n\n- 收入规模：2039.79亿元\n- 收入同比：7.93%\n- 毛利率：30.57%\n- 归母净利率：14.23%\n- 现金利润转换：1.94倍\n### 美的集团\n\n- 收入规模：3720.37亿元\n- 收入同比：8.18%\n- 毛利率：26.49%\n- 归母净利率：9.06%\n- 现金利润转换：1.72倍\n\n## 反方审查与不可下结论事项\n\n### 替代解释\n\n- 两家公司品类结构和业务模式不同，横向毛利率差异不应被直接解释为经营能力差异。\n- 单一年份现金流可能受营运资本时点影响，需要更长周期验证。\n- 收入增速差异较小，舍入误差、并表范围及价格周期都可能影响排序。\n\n### 当前不可下结论\n\n- 当前证据不支持给出单一公司优胜结论。\n- 当前请求未提供估值、市场预期和中期预测，不支持形成交易指令。\n- 没有也不推断任何基金持仓或仓位信息。\n\n## 有限结论与后续跟踪\n\n横向证据显示收入规模、增速、利润率与现金转换并非由同一家公司全面领先。因研究请求没有预设决策规则，且未纳入估值、市场预期和中期预测，本工作流不输出单一优胜者，也不输出买卖建议。\n\n后续应跟踪：\n\n- 后续季度收入增速与年度排序反转\n- 连续四个季度毛利率趋势与2023年截面结论相反\n- 经营现金流/归母净利润回落至长期常态区间以下\n\n## 证据索引\n\n- `ev:gree:ar2023:cashflow`｜珠海格力电器股份有限公司｜珠海格力电器股份有限公司2023年年度报告｜PDF第117页合并现金流量表｜可用时间 2024-04-30T15:59:59.000Z｜https://static.cninfo.com.cn/finalpage/2024-04-30/1219928418.PDF\n- `ev:gree:ar2023:financials`｜珠海格力电器股份有限公司｜珠海格力电器股份有限公司2023年年度"
+    },
+    {
+      "name": "evidence_index_has_source_urls",
+      "passed": true,
+      "detail": "结论、反方解释和下一步跟踪指标。\n\n## 执行摘要\n\n- 美的集团的2023年收入规模更大。\n- 美的集团的2023年收入增速略高，但差异很小。\n- 格力电器的报表口径毛利率更高，格力电器的现金利润转换更强。\n- 证据呈现维度分化；没有预设决策规则、估值和中期预测，因此不给出单一优胜者。\n\n## 比较口径与证据边界\n\n- 范围：白色家电公司年度经营与财务质量比较；会计口径为合并报表、CAS、CNY。\n- 本报告仅使用研究截止时间之前已可获得的阶段六事实库证据。\n- 当前证据以2022—2023年年度报告为主；未在本题中扩展宏观、渠道、月度销量、估值和市场预期数据。\n\n## 核心指标同表比较\n\n| 公司 | 2023收入（亿元） | 收入同比 | 毛利率 | 归母净利率 | CFO/归母净利润 |\n|---|---:|---:|---:|---:|---:|\n| 美的集团 | 3720.37 | 8.18% | 26.49% | 9.06% | 1.72x |\n| 格力电器 | 2039.79 | 7.93% | 30.57% | 14.23% | 1.94x |\n\n## 分公司观察\n\n### 格力电器\n\n- 收入规模：2039.79亿元\n- 收入同比：7.93%\n- 毛利率：30.57%\n- 归母净利率：14.23%\n- 现金利润转换：1.94倍\n### 美的集团\n\n- 收入规模：3720.37亿元\n- 收入同比：8.18%\n- 毛利率：26.49%\n- 归母净利率：9.06%\n- 现金利润转换：1.72倍\n\n## 反方审查与不可下结论事项\n\n### 替代解释\n\n- 两家公司品类结构和业务模式不同，横向毛利率差异不应被直接解释为经营能力差异。\n- 单一年份现金流可能受营运资本时点影响，需要更长周期验证。\n- 收入增速差异较小，舍入误差、并表范围及价格周期都可能影响排序。\n\n### 当前不可下结论\n\n- 当前证据不支持给出单一公司优胜结论。\n- 当前请求未提供估值、市场预期和中期预测，不支持形成交易指令。\n- 没有也不推断任何基金持仓或仓位信息。\n\n## 有限结论与后续跟踪\n\n横向证据显示收入规模、增速、利润率与现金转换并非由同一家公司全面领先。因研究请求没有预设决策规则，且未纳入估值、市场预期和中期预测，本工作流不输出单一优胜者，也不输出买卖建议。\n\n后续应跟踪：\n\n- 后续季度收入增速与年度排序反转\n- 连续四个季度毛利率趋势与2023年截面结论相反\n- 经营现金流/归母净利润回落至长期常态区间以下\n\n## 证据索引\n\n- `ev:gree:ar2023:cashflow`｜珠海格力电器股份有限公司｜珠海格力电器股份有限公司2023年年度报告｜PDF第117页合并现金流量表｜可用时间 2024-04-30T15:59:59.000Z｜https://static.cninfo.com.cn/finalpage/2024-04-30/1219928418.PDF\n- `ev:gree:ar2023:financials`｜珠海格力电器股份有限公司｜珠海格力电器股份有限公司2023年年度报告｜PDF第7页主要财务指标；第116页合并利润表｜可用时间 2024-04-30T15:59:59.000Z｜https://static.cninfo.com.cn/finalpage/2024-04-30/1219928418.PDF\n- `ev:midea:ar2023:cashflow`｜美的集团股份有限公司｜美的集团股份有限公司2023年年度报告｜PDF第163页合并现金流量表｜可用时间 2024-03-28T15:59:59.000Z｜https://static.cninfo.com.cn/finalpage/2024-03-28/1219429374.PDF\n- `ev:midea:ar2023:financials`｜美的集团股份有限公司｜美的集团股份有限公司2023年年度报告｜PDF第10页主要财务指标；第161页合并利润表｜可用时间 2024-03-28T15:59:59.000Z｜https://static.cninfo.com.cn/finalpage/2024-03-28/1219429374.PDF\n\n## 运行与审计附录\n\n- 工作流：`CR.WORKFLOW.RESEARCH_ORCHESTRATION.001` / 引擎 `1.1.0`\n- 运行 ID：`wr:63885d86824565a01d006dde`\n- 数据截止：`2024-04-30T16:00:00.000Z`\n- 模型任务：已执行\n- 数据缺口：无本题必需指标缺口\n- 交付状态：系统质量门已通过后可供内部研究使用；不得自动对外发布。\n\n"
+    },
+    {
+      "name": "no_single_winner_without_rule",
+      "passed": true,
+      "detail": "# 消费行业公司比较研究报告（阶段八工作流产物）\n\n> 读者：公募基金经理  \n> 研究截止时间：2024-04-30T16:00:00.000Z  \n> 边界：本报告不使用、不请求且不推断任何基金持仓或仓位；不构成自动交易指令。  \n> 状态：**内部研究可用（系统质量门已通过）**\n\n## 研究问题\n\n比较美的集团与格力电器2023年度经营与财务质量，并给出有限结论、反方解释和下一步跟踪指标。\n\n## 执行摘要\n\n- 美的集团的2023年收入规模更大。\n- 美的集团的2023年收入增速略高，但差异很小。\n- 格力电器的报表口径毛利率更高，格力电器的现金利润转换更强。\n- 证据呈现维度分化；没有预设决策规则、估值和中期预测，因此不给出单一优胜者。\n\n## 比较口径与证据边界\n\n- 范围：白色家电公司年度经营与财务质量比较；会计口径为合并报表、CAS、CNY。\n- 本报告仅使用研究截止时间之前已可获得的阶段六事实库证据。\n- 当前证据以2022—2023年年度报告为主；未在本题中扩展宏观、渠道、月度销量、估值和市场预期数据。\n\n## 核心指标同表比较\n\n| 公司 | 2023收入（亿元） | 收入同比 | 毛利率 | 归母净利率 | CFO/归母净利润 |\n|---|---:|---:|---:|---:|---:|\n| 美的集团 | 3720.37 | 8.18% | 26.49% | 9.06% | 1.72x |\n| 格力电器 | 2039.79 | 7.93% | 30.57% | 14.23% | 1.94x |\n\n## 分公司观察\n\n### 格力电器\n\n- 收入规模：2039.79亿元\n- 收入同比：7.93%\n- 毛利率：30.57%\n- 归母净利率：14.23%\n- 现金利润转换：1.94倍\n### 美的集团\n\n- 收入规模：3720.37亿元\n- 收入同比：8.18%\n- 毛利率：26.49%\n- 归母净利率：9.06%\n- 现金利润转换：1.72倍\n\n## 反方审查与不可下结论事项\n\n### 替代解释\n\n- 两家公司品类结构和业务模式不同，横向毛利率差异不应被直接解释为经营能力差异。\n- 单一年份现金流可能受营运资本时点影响，需要更长周期验证。\n- 收入增速差异较小，舍入误差、并表范围及价格周期都可能影响排序。\n\n### 当前不可下结论\n\n- 当前证据不支持给出单一公司优胜结论。\n- 当前请求未提供估值、市场预期和中期预测，不支持形成交易指令。\n- 没有也不推断任何基金持仓或仓位信息。\n\n## 有限结论与后续跟踪\n\n横向证据显示收入规模、增速、利润率与现金转换并非由同一家公司全面领先。因研究请求没有预设决策规则，且未纳入估值、市场预期和中期预测，本工作流不输出单一优胜者，也不输出买卖建议。\n\n后续应跟踪：\n\n- 后续季度收入增速与年度排序反转\n- 连续四个季度毛利率趋势与2023年截面结论相反\n- 经营现金流/归母净利润回落至长期常态区间以下\n\n## 证据索引\n\n- `ev:gree:ar2023:cashflow`｜珠海格力电器股份有限公司｜珠海格力电器股份有限公司2023年年度报告｜PDF第117页合并现金流量表｜可用时间 2024-04-30T15:59:59.000Z｜https://static.cninfo.com.cn/finalpage/2024-04-30/1219928418.PDF\n- `ev:gree:ar2023:financials`｜珠海格力电器股份有限公司｜珠海格力电器股份有限公司2023年年度报告｜PDF第7页主要财务指标；第116页合并利润表｜可用时间 2024-04-30T15:59:59.000Z｜https://static.cninfo.com.cn/finalpage/2024-04-30/1219928418.PDF\n- `ev:midea:ar2023:cashflow`｜美的集团股份有限公司｜美的集团股份有限公司2023年年度报告｜PDF第163页合并现金流量表｜可用时间 2024-03-28T15:59:59.000Z｜https://static.cninfo.com.cn/finalpage/2024-03-28/1219429374.PDF\n- `ev:midea:ar2023:financials`｜美的集团股份有限公司｜美的集团股份有限公司2023年年度报告｜PDF第10页主要财务指标；第161页合并利润表｜可用时间 2024-03-28T15:59:59.000Z｜https://static.cninfo.com.cn/finalpage/2024-03-28/1219429374.PDF\n\n## 运行与审计附录\n\n- 工作流：`CR.WORKFLOW.RESEARCH_ORCHESTRATION.001` / 引擎 `1.1.0`\n- 运行 ID：`wr:63885d86824565a01d006dde`\n- 数据截止：`2024-04-30T16:00:00.000Z`\n- 模型任务：已执行\n- 数据缺口：无本题必需指标缺口\n- 交付状态：系统质量门已通过后可供内部研究使用；不得自动对外发布。\n\n"
+    },
+    {
+      "name": "no_automatic_buy_or_sell_instruction",
+      "passed": true,
+      "detail": "# 消费行业公司比较研究报告（阶段八工作流产物）\n\n> 读者：公募基金经理  \n> 研究截止时间：2024-04-30T16:00:00.000Z  \n> 边界：本报告不使用、不请求且不推断任何基金持仓或仓位；不构成自动交易指令。  \n> 状态：**内部研究可用（系统质量门已通过）**\n\n## 研究问题\n\n比较美的集团与格力电器2023年度经营与财务质量，并给出有限结论、反方解释和下一步跟踪指标。\n\n## 执行摘要\n\n- 美的集团的2023年收入规模更大。\n- 美的集团的2023年收入增速略高，但差异很小。\n- 格力电器的报表口径毛利率更高，格力电器的现金利润转换更强。\n- 证据呈现维度分化；没有预设决策规则、估值和中期预测，因此不给出单一优胜者。\n\n## 比较口径与证据边界\n\n- 范围：白色家电公司年度经营与财务质量比较；会计口径为合并报表、CAS、CNY。\n- 本报告仅使用研究截止时间之前已可获得的阶段六事实库证据。\n- 当前证据以2022—2023年年度报告为主；未在本题中扩展宏观、渠道、月度销量、估值和市场预期数据。\n\n## 核心指标同表比较\n\n| 公司 | 2023收入（亿元） | 收入同比 | 毛利率 | 归母净利率 | CFO/归母净利润 |\n|---|---:|---:|---:|---:|---:|\n| 美的集团 | 3720.37 | 8.18% | 26.49% | 9.06% | 1.72x |\n| 格力电器 | 2039.79 | 7.93% | 30.57% | 14.23% | 1.94x |\n\n## 分公司观察\n\n### 格力电器\n\n- 收入规模：2039.79亿元\n- 收入同比：7.93%\n- 毛利率：30.57%\n- 归母净利率：14.23%\n- 现金利润转换：1.94倍\n### 美的集团\n\n- 收入规模：3720.37亿元\n- 收入同比：8.18%\n- 毛利率：26.49%\n- 归母净利率：9.06%\n- 现金利润转换：1.72倍\n\n## 反方审查与不可下结论事项\n\n### 替代解释\n\n- 两家公司品类结构和业务模式不同，横向毛利率差异不应被直接解释为经营能力差异。\n- 单一年份现金流可能受营运资本时点影响，需要更长周期验证。\n- 收入增速差异较小，舍入误差、并表范围及价格周期都可能影响排序。\n\n### 当前不可下结论\n\n- 当前证据不支持给出单一公司优胜结论。\n- 当前请求未提供估值、市场预期和中期预测，不支持形成交易指令。\n- 没有也不推断任何基金持仓或仓位信息。\n\n## 有限结论与后续跟踪\n\n横向证据显示收入规模、增速、利润率与现金转换并非由同一家公司全面领先。因研究请求没有预设决策规则，且未纳入估值、市场预期和中期预测，本工作流不输出单一优胜者，也不输出买卖建议。\n\n后续应跟踪：\n\n- 后续季度收入增速与年度排序反转\n- 连续四个季度毛利率趋势与2023年截面结论相反\n- 经营现金流/归母净利润回落至长期常态区间以下\n\n## 证据索引\n\n- `ev:gree:ar2023:cashflow`｜珠海格力电器股份有限公司｜珠海格力电器股份有限公司2023年年度报告｜PDF第117页合并现金流量表｜可用时间 2024-04-30T15:59:59.000Z｜https://static.cninfo.com.cn/finalpage/2024-04-30/1219928418.PDF\n- `ev:gree:ar2023:financials`｜珠海格力电器股份有限公司｜珠海格力电器股份有限公司2023年年度报告｜PDF第7页主要财务指标；第116页合并利润表｜可用时间 2024-04-30T15:59:59.000Z｜https://static.cninfo.com.cn/finalpage/2024-04-30/1219928418.PDF\n- `ev:midea:ar2023:cashflow`｜美的集团股份有限公司｜美的集团股份有限公司2023年年度报告｜PDF第163页合并现金流量表｜可用时间 2024-03-28T15:59:59.000Z｜https://static.cninfo.com.cn/finalpage/2024-03-28/1219429374.PDF\n- `ev:midea:ar2023:financials`｜美的集团股份有限公司｜美的集团股份有限公司2023年年度报告｜PDF第10页主要财务指标；第161页合并利润表｜可用时间 2024-03-28T15:59:59.000Z｜https://static.cninfo.com.cn/finalpage/2024-03-28/1219429374.PDF\n\n## 运行与审计附录\n\n- 工作流：`CR.WORKFLOW.RESEARCH_ORCHESTRATION.001` / 引擎 `1.1.0`\n- 运行 ID：`wr:63885d86824565a01d006dde`\n- 数据截止：`2024-04-30T16:00:00.000Z`\n- 模型任务：已执行\n- 数据缺口：无本题必需指标缺口\n- 交付状态：系统质量门已通过后可供内部研究使用；不得自动对外发布。\n\n"
+    },
+    {
+      "name": "portfolio_boundary_disclosed",
+      "passed": true,
+      "detail": "# 消费行业公司比较研究报告（阶段八工作流产物）\n\n> 读者：公募基金经理  \n> 研究截止时间：2024-04-30T16:00:00.000Z  \n> 边界：本报告不使用、不请求且不推断任何基金持仓或仓位；不构成自动交易指令。  \n> 状态：**内部研究可用（系统质量门已通过）**\n\n## 研究问题\n\n比较美的集团与格力电器2023年度经营与财务质量，并给出有限结论、反方解释和下一步跟踪指标。\n\n## 执行摘要\n\n- 美的集团的2023年收入规模更大。\n- 美的集团的2023年收入增速略高，但差异很小。\n- 格力电器的报表口径毛利率更高，格力电器的现金利润转换更强。\n- 证据呈现维度分化；没有预设决策规则、估值和中期预测，因此不给出单一优胜者。\n\n## 比较口径与证据边界\n\n- 范围：白色家电公司年度经营与财务质量比较；会计口径为合并报表、CAS、CNY。\n- 本报告仅使用研究截止时间之前已可获得的阶段六事实库证据。\n- 当前证据以2022—2023年年度报告为主；未在本题中扩展宏观、渠道、月度销量、估值和市场预期数据。\n\n## 核心指标同表比较\n\n| 公司 | 2023收入（亿元"
+    },
+    {
+      "name": "report_is_immediately_internal_ready",
+      "passed": true,
+      "detail": "# 消费行业公司比较研究报告（阶段八工作流产物）\n\n> 读者：公募基金经理  \n> 研究截止时间：2024-04-30T16:00:00.000Z  \n> 边界：本报告不使用、不请求且不推断任何基金持仓或仓位；不构成自动交易指令。  \n> 状态：**内部研究可用（系统质量门已通过）**\n\n## 研究问题\n\n比较美的集团与格力电器2023年度经营与财务质量，并给出有限结论、反方解释和下一步跟踪指标。\n\n## 执行摘要\n\n- 美的集团的2023年收入规模更大。\n- 美的集团的2023年收入增速略高，但差异很小。\n- 格力电器的报表口径毛利率更高，格力电器的现金利润转换更强。\n- 证据呈现维度分化；没有预设决策规则、估值和中期预测，因此不给出单一优胜者。\n\n## 比较口径与证据边界\n\n- 范围：白色家电公司年度经营与财务质量比较；会计口径为合并报表、CAS、CNY。\n- 本报告仅使用研究截止时间之前已可获得的阶段六事实库证据。\n- 当前证据以2022—2023年年度报告为主；未在本题中扩展宏观、渠道、月度销量、估值和市场预期数据。\n\n## 核心指标同表比较\n\n| 公司 | 2023收入（亿元"
+    },
+    {
+      "name": "report_contains_no_human_review_wording",
+      "passed": true,
+      "detail": "# 消费行业公司比较研究报告（阶段八工作流产物）\n\n> 读者：公募基金经理  \n> 研究截止时间：2024-04-30T16:00:00.000Z  \n> 边界：本报告不使用、不请求且不推断任何基金持仓或仓位；不构成自动交易指令。  \n> 状态：**内部研究可用（系统质量门已通过）**\n\n## 研究问题\n\n比较美的集团与格力电器2023年度经营与财务质量，并给出有限结论、反方解释和下一步跟踪指标。\n\n## 执行摘要\n\n- 美的集团的2023年收入规模更大。\n- 美的集团的2023年收入增速略高，但差异很小。\n- 格力电器的报表口径毛利率更高，格力电器的现金利润转换更强。\n- 证据呈现维度分化；没有预设决策规则、估值和中期预测，因此不给出单一优胜者。\n\n## 比较口径与证据边界\n\n- 范围：白色家电公司年度经营与财务质量比较；会计口径为合并报表、CAS、CNY。\n- 本报告仅使用研究截止时间之前已可获得的阶段六事实库证据。\n- 当前证据以2022—2023年年度报告为主；未在本题中扩展宏观、渠道、月度销量、估值和市场预期数据。\n\n## 核心指标同表比较\n\n| 公司 | 2023收入（亿元"
+    },
+    {
+      "name": "completed_tasks_not_repeated_on_resume",
+      "passed": true,
+      "detail": {
+        "claim_composition": 1,
+        "compliance_review": 1,
+        "document_retrieval": 1,
+        "entity_resolution": 1,
+        "evidence_audit": 1,
+        "fact_retrieval": 1,
+        "model_execution": 1,
+        "report_render": 1,
+        "scope_guard": 1,
+        "skeptic_review": 1
+      }
+    },
+    {
+      "name": "claim_evidence_foreign_keys_intact",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "identical_package_is_idempotent",
+      "passed": true,
+      "detail": {
+        "run_id": "wr:63885d86824565a01d006dde",
+        "package_id": "CR.WORKFLOW.PKG.STAGE8.COMPARE.001",
+        "status": "completed",
+        "started_at": "2026-08-13T08:45:59.349Z",
+        "completed_at": "2026-08-13T08:46:00.172Z",
+        "resumed_count": 1,
+        "publication_status": "internal_research_ready",
+        "human_review_required": 0,
+        "output_directory": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-stage8-5mplnqvz\\outputs\\midea-vs-gree-2023\\wr-63885d86824565a01d006dde",
+        "summary_json": "{}"
+      }
+    },
+    {
+      "name": "package_id_hash_conflict_blocked",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "optional_model_failure_degrades_not_blocks",
+      "passed": true,
+      "detail": {
+        "scope_guard": "completed",
+        "entity_resolution": "completed",
+        "document_retrieval": "completed",
+        "fact_retrieval": "completed",
+        "model_execution": "degraded",
+        "claim_composition": "completed",
+        "evidence_audit": "completed",
+        "skeptic_review": "completed",
+        "report_render": "completed",
+        "compliance_review": "completed"
+      }
+    },
+    {
+      "name": "degraded_optional_lane_still_releases",
+      "passed": true,
+      "detail": {
+        "run_id": "wr:7a29eb68cd8083c1b638d710",
+        "package_id": "CR.WORKFLOW.PKG.STAGE8.OPTIONAL.MODEL.001",
+        "status": "completed",
+        "started_at": "2026-08-13T08:46:00.709Z",
+        "completed_at": "2026-08-13T08:46:01.229Z",
+        "resumed_count": 0,
+        "publication_status": "internal_research_ready",
+        "human_review_required": 0,
+        "output_directory": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-stage8-5mplnqvz\\outputs\\optional-model-degrade\\wr-7a29eb68cd8083c1b638d710",
+        "summary_json": "{}"
+      }
+    },
+    {
+      "name": "publication_status_is_internal_ready",
+      "passed": true,
+      "detail": {
+        "run_id": "wr:7a29eb68cd8083c1b638d710",
+        "package_id": "CR.WORKFLOW.PKG.STAGE8.OPTIONAL.MODEL.001",
+        "status": "completed",
+        "started_at": "2026-08-13T08:46:00.709Z",
+        "completed_at": "2026-08-13T08:46:01.229Z",
+        "resumed_count": 0,
+        "publication_status": "internal_research_ready",
+        "human_review_required": 0,
+        "output_directory": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-stage8-5mplnqvz\\outputs\\optional-model-degrade\\wr-7a29eb68cd8083c1b638d710",
+        "summary_json": "{}"
+      }
+    },
+    {
+      "name": "workflow_audit_schema_complete",
+      "passed": true,
+      "detail": [
+        "workflow_artifacts",
+        "workflow_claim_evidence",
+        "workflow_claims",
+        "workflow_definitions",
+        "workflow_events",
+        "workflow_packages",
+        "workflow_reviews",
+        "workflow_runs",
+        "workflow_tasks"
+      ]
+    },
+    {
+      "name": "no_human_review_records_created",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "direct_internal_release_audited",
+      "passed": true,
+      "detail": 1
+    }
+  ]
+}

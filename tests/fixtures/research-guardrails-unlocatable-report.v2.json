@@ -1,0 +1,12 @@
+{
+  "query": {"date_alignment_mode":"date_range","date_start":"2026-07-16","date_end":"2026-08-12"},
+  "market_observations": [], "normalized_observations": [], "risk_events": [],
+  "documents": [
+    {
+      "document_id":"bad:research:summary-only","source_type":"research_report","locator":"unknown",
+      "published_at":"2026-05-30T00:00:00+08:00","content_hash":"sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  ],
+  "claims": [{"claim_id":"claim:report:view","document_id":"bad:research:summary-only","importance":"enrichment","content_label":"THIRD_PARTY_VIEW"}],
+  "market_calculations": []
+}

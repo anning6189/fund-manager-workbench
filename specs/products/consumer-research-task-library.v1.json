@@ -1,0 +1,53 @@
+{
+  "spec_id": "CR.PRODUCT.TASK_LIBRARY.V1",
+  "version": "1.0.0",
+  "status": "internal_product_contract_ready",
+  "audience": ["public_fund_manager", "research_analyst", "research_operator", "research_reviewer"],
+  "scope": "full_consumer_research_without_fund_holdings",
+  "product_levels": {
+    "template": "10 reusable research methods",
+    "sector_product": "11 sector variants for every template",
+    "job": "a validated point-in-time submission by a named internal user",
+    "workflow_run": "stage-8 auditable execution ending in automatic internal release after required quality gates"
+  },
+  "templates": [
+    {"template_id":"P0_01_INDUSTRY_PANORAMA","name":"行业全景研究","category":"industry","description":"系统梳理产业链、市场规模、竞争格局、景气、公司和估值。","entity_requirement":"optional","parameter_fields":["cutoff_timestamp","research_question","markets","geographies"],"output_sections":["executive_summary","industry_map","cycle_and_demand","competition","company_map","valuation","risks_and_catalysts","evidence_index"],"default_priority":"normal","expected_minutes":20,"tags":["行业框架","产业链","全景"]},
+    {"template_id":"P0_02_PROSPERITY_TRACKING","name":"景气跟踪","category":"monitoring","description":"跟踪高频、宏观、行业和公司信号，识别景气方向和拐点。","entity_requirement":"optional","parameter_fields":["cutoff_timestamp","research_question","lookback_days","markets"],"output_sections":["signal_summary","high_frequency_data","trend_and_inflection","counter_signals","next_validation_points","evidence_index"],"default_priority":"high","expected_minutes":12,"tags":["景气","高频","拐点"]},
+    {"template_id":"P0_03_COMPANY_DEEP_DIVE","name":"公司深度研究","category":"company","description":"研究单一公司的业务、壁垒、财务质量、估值与风险。","entity_requirement":"one_or_more","parameter_fields":["cutoff_timestamp","research_question","entities","period_ends"],"output_sections":["investment_question","business_model","competitive_advantage","financial_quality","valuation_expectations","risks_and_catalysts","evidence_index"],"default_priority":"normal","expected_minutes":25,"tags":["公司深度","财务","壁垒"]},
+    {"template_id":"P0_04_COMPANY_COMPARISON","name":"公司横向比较","category":"company","description":"按统一口径比较两家及以上公司，不预设单一赢家。","entity_requirement":"two_or_more","parameter_fields":["cutoff_timestamp","research_question","entities","metric_queries","decision_rule"],"output_sections":["executive_summary","comparison_basis","comparison_table","company_observations","counter_analysis","limited_conclusion","evidence_index"],"default_priority":"normal","expected_minutes":18,"tags":["公司比较","同业","可比口径"]},
+    {"template_id":"P0_05_EARNINGS_REVIEW","name":"财报点评","category":"event","description":"分析最新财报的超预期、低预期、经营趋势和后续验证点。","entity_requirement":"one_or_more","parameter_fields":["cutoff_timestamp","research_question","entities","period_ends"],"output_sections":["earnings_snapshot","expectation_comparison","operating_bridge","cash_flow_quality","guidance_and_outlook","risks","evidence_index"],"default_priority":"high","expected_minutes":12,"tags":["财报","业绩","事件"]},
+    {"template_id":"P0_06_EVENT_POLICY_IMPACT","name":"事件与政策影响","category":"event","description":"分析事件或政策沿消费产业链的传导、受益受损与验证条件。","entity_requirement":"optional","parameter_fields":["cutoff_timestamp","research_question","event_id","entities"],"output_sections":["event_facts","policy_scope","transmission_chain","affected_sectors_and_companies","scenarios","validation_points","evidence_index"],"default_priority":"high","expected_minutes":10,"tags":["政策","事件","传导"]},
+    {"template_id":"P0_07_COMPETITION_LANDSCAPE","name":"竞争格局研究","category":"industry","description":"研究份额、集中度、竞争行为、进入壁垒和格局变化。","entity_requirement":"optional","parameter_fields":["cutoff_timestamp","research_question","entities","geographies"],"output_sections":["market_definition","participant_map","share_and_concentration","competitive_behavior","barriers","change_signals","evidence_index"],"default_priority":"normal","expected_minutes":18,"tags":["竞争格局","份额","集中度"]},
+    {"template_id":"P0_08_MARKET_SIZE","name":"市场规模测算","category":"model","description":"用量价、渗透率和场景法测算市场规模并披露假设。","entity_requirement":"optional","parameter_fields":["cutoff_timestamp","research_question","geographies","scenario_assumptions"],"output_sections":["definition_and_scope","methodology","historical_size","volume_price_bridge","scenarios","sensitivity","evidence_index"],"default_priority":"normal","expected_minutes":20,"tags":["市场规模","量价","测算"]},
+    {"template_id":"P0_09_VALUATION_EXPECTATIONS","name":"估值与预期差","category":"model","description":"分析当前估值、隐含预期、预测修订和关键敏感性。","entity_requirement":"one_or_more","parameter_fields":["cutoff_timestamp","research_question","entities","valuation_methods","scenario_assumptions"],"output_sections":["valuation_snapshot","historical_band","peer_comparison","implied_expectations","sensitivity","risks","evidence_index"],"default_priority":"normal","expected_minutes":18,"tags":["估值","预期差","敏感性"]},
+    {"template_id":"P0_10_RISK_CATALYST_MONITOR","name":"风险与催化监控","category":"monitoring","description":"持续跟踪风险、催化剂、阈值和证伪信号。","entity_requirement":"optional","parameter_fields":["cutoff_timestamp","research_question","entities","lookback_days","monitor_alert_id"],"output_sections":["open_signals","catalysts","risks","thresholds","falsification_signals","next_actions","evidence_index"],"default_priority":"high","expected_minutes":8,"tags":["风险","催化剂","监控"]}
+  ],
+  "roles": {
+    "public_fund_manager": ["view", "search", "favorite", "submit", "view_own_jobs"],
+    "research_analyst": ["view", "search", "favorite", "submit", "view_team_jobs"],
+    "research_operator": ["view", "search", "submit", "manage_queue", "manage_catalog"],
+    "research_reviewer": ["view", "search", "review_release"]
+  },
+  "saved_views": [
+    {"view_id":"CR.VIEW.ALL","name":"全部研究任务","filter":{}},
+    {"view_id":"CR.VIEW.DAILY","name":"每日景气与风险监控","filter":{"categories":["monitoring"]}},
+    {"view_id":"CR.VIEW.EVENTS","name":"财报、事件与政策","filter":{"categories":["event"]}},
+    {"view_id":"CR.VIEW.COMPANIES","name":"公司研究","filter":{"categories":["company"]}},
+    {"view_id":"CR.VIEW.MODELS","name":"规模、估值与模型","filter":{"categories":["model"]}}
+  ],
+  "job_states": ["queued", "validating", "running", "completed", "blocked", "failed", "cancelled"],
+  "release_policy": {
+    "bootstrap_products": "internal_active_from_accepted_module2_contract",
+    "new_or_changed_template": "named_human_research_reviewer_required",
+    "research_output": "stage8_automatic_internal_release_after_quality_gates",
+    "external_publication": false
+  },
+  "quality_gates": [
+    "all_10_templates_present", "all_110_sector_products_present", "parameter_schema_valid",
+    "search_and_facets_work", "role_permission_enforced", "named_submitter_required",
+    "idempotent_submission", "stage8_request_compiles", "job_events_auditable",
+    "data_readiness_explicit", "no_fund_holdings_or_position_inference",
+    "no_automatic_trade_instruction", "no_automatic_external_publication",
+    "automatic_internal_release_only_after_required_quality_gates"
+  ]
+}

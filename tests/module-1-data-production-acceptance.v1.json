@@ -1,0 +1,868 @@
+{
+  "module": 1,
+  "name": "数据生产化与全量回填",
+  "status": "passed",
+  "passed": 40,
+  "total": 40,
+  "checks": [
+    {
+      "name": "ten_dataset_contracts_loaded",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.0.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\production.db",
+        "dataset_contracts": 10,
+        "markets": [
+          "A_SHARE",
+          "HK_SHARE"
+        ],
+        "sector_packs": 11,
+        "source_licenses_initialized": 20
+      }
+    },
+    {
+      "name": "a_and_hk_markets_declared",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.0.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\production.db",
+        "dataset_contracts": 10,
+        "markets": [
+          "A_SHARE",
+          "HK_SHARE"
+        ],
+        "sector_packs": 11,
+        "source_licenses_initialized": 20
+      }
+    },
+    {
+      "name": "eleven_full_consumer_sector_packs_declared",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.0.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\production.db",
+        "dataset_contracts": 10,
+        "markets": [
+          "A_SHARE",
+          "HK_SHARE"
+        ],
+        "sector_packs": 11,
+        "source_licenses_initialized": 20
+      }
+    },
+    {
+      "name": "twenty_source_licence_decisions_initialized",
+      "passed": true,
+      "detail": {
+        "status": "ready",
+        "engine_version": "1.0.0",
+        "database": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\production.db",
+        "dataset_contracts": 10,
+        "markets": [
+          "A_SHARE",
+          "HK_SHARE"
+        ],
+        "sector_packs": 11,
+        "source_licenses_initialized": 20
+      }
+    },
+    {
+      "name": "execution_starts_with_master_data",
+      "passed": true,
+      "detail": [
+        "master_data",
+        "market_daily",
+        "financials",
+        "announcements",
+        "macro",
+        "official_industry_releases",
+        "official_policy_documents",
+        "research_metadata",
+        "news_leads",
+        "enterprise_risk"
+      ]
+    },
+    {
+      "name": "market_and_financial_history_start_2015",
+      "passed": true,
+      "detail": [
+        {
+          "stream_name": "master_data",
+          "description": "证券、法人、发行人、品牌和消费行业分类主数据",
+          "history_start": null,
+          "partition_strategy": "source+market+snapshot",
+          "dependencies": [],
+          "quality_gates": [
+            "unique_security",
+            "valid_market",
+            "classification_present",
+            "field_projection",
+            "license_gate",
+            "no_fund_holdings"
+          ],
+          "service_level": {
+            "schedule": "weekly_full_reconciliation_and_event_trigger",
+            "maximum_lag_hours": 168
+          }
+        },
+        {
+          "stream_name": "market_daily",
+          "description": "消费证券日行情、复权因子和估值快照",
+          "history_start": "2015-01-01",
+          "partition_strategy": "source+market+calendar_year",
+          "dependencies": [
+            "master_data"
+          ],
+          "quality_gates": [
+            "trading_calendar",
+            "ohlc_consistency",
+            "nonnegative_volume",
+            "corporate_action_alignment",
+            "license_gate"
+          ],
+          "service_level": {
+            "schedule": "trading_day_after_exchange_final",
+            "maximum_lag_hours": 12
+          }
+        },
+        {
+          "stream_name": "financials",
+          "description": "上市公司财务报表、财务指标及重述版本",
+          "history_start": "2015-01-01",
+          "partition_strategy": "source+market+fiscal_year",
+          "dependencies": [
+            "master_data"
+          ],
+          "quality_gates": [
+            "statement_scope",
+            "accounting_standard",
+            "currency_and_scale",
+            "revision_version",
+            "official_filing_cross_check"
+          ],
+          "service_level": {
+            "schedule": "daily_filing_scan_and_event_trigger",
+            "maximum_lag_hours": 24
+          }
+        },
+        {
+          "stream_name": "announcements",
+          "description": "法定公告、定期报告与监管问询原文",
+          "history_start": "2015-01-01",
+          "partition_strategy": "source+market+publication_year",
+          "dependencies": [
+            "master_data"
+          ],
+          "quality_gates": [
+            "issuer_match",
+            "published_at",
+            "available_at",
+            "content_hash",
+            "page_or_table_locator"
+          ],
+          "service_level": {
+            "schedule": "hourly_incremental",
+            "maximum_lag_hours": 6
+          }
+        },
+        {
+          "stream_name": "macro",
+          "description": "宏观消费、居民收入、社零、价格和信贷时序",
+          "history_start": "2010-01-01",
+          "partition_strategy": "source+calendar_year",
+          "dependencies": [],
+          "quality_gates": [
+            "indicator_identity",
+            "frequency",
+            "period",
+            "unit",
+            "release_date",
+            "revision_version"
+          ],
+          "service_level": {
+            "schedule": "daily_release_scan",
+            "maximum_lag_hours": 24
+          }
+        },
+        {
+          "stream_name": "official_industry_releases",
+          "description": "产量、销量、库存、进出口、旅游和行业经营统计",
+          "history_start": "2015-01-01",
+          "partition_strategy": "source+sector+calendar_year",
+          "dependencies": [],
+          "quality_gates": [
+            "sector_scope",
+            "period",
+            "unit",
+            "release_date",
+            "methodology",
+            "revision_version"
+          ],
+          "service_level": {
+            "schedule": "daily_incremental",
+            "maximum_lag_hours": 24
+          }
+        },
+        {
+          "stream_name": "official_policy_documents",
+          "description": "消费、产业、监管和促消费政策文件",
+          "history_start": "2015-01-01",
+          "partition_strategy": "source+sector+publication_year",
+          "dependencies": [],
+          "quality_gates": [
+            "issuing_authority",
+            "document_number",
+            "publication_time",
+            "effective_time",
+            "version_status",
+            "content_hash"
+          ],
+          "service_level": {
+            "schedule": "daily_incremental",
+            "maximum_lag_hours": 24
+          }
+        },
+        {
+          "stream_name": "research_metadata",
+          "description": "券商研报元数据、作者观点标签和有限许可摘要",
+          "history_start": "2021-01-01",
+          "partition_strategy": "source+sector+publication_year",
+          "dependencies": [
+            "master_data"
+          ],
+          "quality_gates": [
+            "report_identity",
+            "sector_filter",
+            "publication_date",
+            "copyright_excerpt_limit",
+            "view_label",
+            "license_gate"
+          ],
+          "service_level": {
+            "schedule": "daily_incremental",
+            "maximum_lag_hours": 24
+          }
+        },
+        {
+          "stream_name": "news_leads",
+          "description": "高时效资讯线索和待官方核验事件",
+          "history_start": "2021-01-01",
+          "partition_strategy": "source+sector+calendar_year",
+          "dependencies": [
+            "master_data"
+          ],
+          "quality_gates": [
+            "date_window",
+            "source_identity",
+            "deduplicate_event",
+            "signal_only",
+            "official_cross_check",
+            "license_gate"
+          ],
+          "service_level": {
+            "schedule": "hourly_incremental",
+            "maximum_lag_hours": 2
+          }
+        },
+        {
+          "stream_name": "enterprise_risk",
+          "description": "工商、司法、处罚、质押、担保和信用风险事件",
+          "history_start": "2021-01-01",
+          "partition_strategy": "source+market+calendar_year",
+          "dependencies": [
+            "master_data"
+          ],
+          "quality_gates": [
+            "legal_entity_match",
+            "observed_at",
+            "official_cross_check",
+            "personal_data_minimization",
+            "license_gate"
+          ],
+          "service_level": {
+            "schedule": "daily_incremental",
+            "maximum_lag_hours": 24
+          }
+        }
+      ]
+    },
+    {
+      "name": "macro_history_start_2010",
+      "passed": true,
+      "detail": [
+        {
+          "stream_name": "master_data",
+          "description": "证券、法人、发行人、品牌和消费行业分类主数据",
+          "history_start": null,
+          "partition_strategy": "source+market+snapshot",
+          "dependencies": [],
+          "quality_gates": [
+            "unique_security",
+            "valid_market",
+            "classification_present",
+            "field_projection",
+            "license_gate",
+            "no_fund_holdings"
+          ],
+          "service_level": {
+            "schedule": "weekly_full_reconciliation_and_event_trigger",
+            "maximum_lag_hours": 168
+          }
+        },
+        {
+          "stream_name": "market_daily",
+          "description": "消费证券日行情、复权因子和估值快照",
+          "history_start": "2015-01-01",
+          "partition_strategy": "source+market+calendar_year",
+          "dependencies": [
+            "master_data"
+          ],
+          "quality_gates": [
+            "trading_calendar",
+            "ohlc_consistency",
+            "nonnegative_volume",
+            "corporate_action_alignment",
+            "license_gate"
+          ],
+          "service_level": {
+            "schedule": "trading_day_after_exchange_final",
+            "maximum_lag_hours": 12
+          }
+        },
+        {
+          "stream_name": "financials",
+          "description": "上市公司财务报表、财务指标及重述版本",
+          "history_start": "2015-01-01",
+          "partition_strategy": "source+market+fiscal_year",
+          "dependencies": [
+            "master_data"
+          ],
+          "quality_gates": [
+            "statement_scope",
+            "accounting_standard",
+            "currency_and_scale",
+            "revision_version",
+            "official_filing_cross_check"
+          ],
+          "service_level": {
+            "schedule": "daily_filing_scan_and_event_trigger",
+            "maximum_lag_hours": 24
+          }
+        },
+        {
+          "stream_name": "announcements",
+          "description": "法定公告、定期报告与监管问询原文",
+          "history_start": "2015-01-01",
+          "partition_strategy": "source+market+publication_year",
+          "dependencies": [
+            "master_data"
+          ],
+          "quality_gates": [
+            "issuer_match",
+            "published_at",
+            "available_at",
+            "content_hash",
+            "page_or_table_locator"
+          ],
+          "service_level": {
+            "schedule": "hourly_incremental",
+            "maximum_lag_hours": 6
+          }
+        },
+        {
+          "stream_name": "macro",
+          "description": "宏观消费、居民收入、社零、价格和信贷时序",
+          "history_start": "2010-01-01",
+          "partition_strategy": "source+calendar_year",
+          "dependencies": [],
+          "quality_gates": [
+            "indicator_identity",
+            "frequency",
+            "period",
+            "unit",
+            "release_date",
+            "revision_version"
+          ],
+          "service_level": {
+            "schedule": "daily_release_scan",
+            "maximum_lag_hours": 24
+          }
+        },
+        {
+          "stream_name": "official_industry_releases",
+          "description": "产量、销量、库存、进出口、旅游和行业经营统计",
+          "history_start": "2015-01-01",
+          "partition_strategy": "source+sector+calendar_year",
+          "dependencies": [],
+          "quality_gates": [
+            "sector_scope",
+            "period",
+            "unit",
+            "release_date",
+            "methodology",
+            "revision_version"
+          ],
+          "service_level": {
+            "schedule": "daily_incremental",
+            "maximum_lag_hours": 24
+          }
+        },
+        {
+          "stream_name": "official_policy_documents",
+          "description": "消费、产业、监管和促消费政策文件",
+          "history_start": "2015-01-01",
+          "partition_strategy": "source+sector+publication_year",
+          "dependencies": [],
+          "quality_gates": [
+            "issuing_authority",
+            "document_number",
+            "publication_time",
+            "effective_time",
+            "version_status",
+            "content_hash"
+          ],
+          "service_level": {
+            "schedule": "daily_incremental",
+            "maximum_lag_hours": 24
+          }
+        },
+        {
+          "stream_name": "research_metadata",
+          "description": "券商研报元数据、作者观点标签和有限许可摘要",
+          "history_start": "2021-01-01",
+          "partition_strategy": "source+sector+publication_year",
+          "dependencies": [
+            "master_data"
+          ],
+          "quality_gates": [
+            "report_identity",
+            "sector_filter",
+            "publication_date",
+            "copyright_excerpt_limit",
+            "view_label",
+            "license_gate"
+          ],
+          "service_level": {
+            "schedule": "daily_incremental",
+            "maximum_lag_hours": 24
+          }
+        },
+        {
+          "stream_name": "news_leads",
+          "description": "高时效资讯线索和待官方核验事件",
+          "history_start": "2021-01-01",
+          "partition_strategy": "source+sector+calendar_year",
+          "dependencies": [
+            "master_data"
+          ],
+          "quality_gates": [
+            "date_window",
+            "source_identity",
+            "deduplicate_event",
+            "signal_only",
+            "official_cross_check",
+            "license_gate"
+          ],
+          "service_level": {
+            "schedule": "hourly_incremental",
+            "maximum_lag_hours": 2
+          }
+        },
+        {
+          "stream_name": "enterprise_risk",
+          "description": "工商、司法、处罚、质押、担保和信用风险事件",
+          "history_start": "2021-01-01",
+          "partition_strategy": "source+market+calendar_year",
+          "dependencies": [
+            "master_data"
+          ],
+          "quality_gates": [
+            "legal_entity_match",
+            "observed_at",
+            "official_cross_check",
+            "personal_data_minimization",
+            "license_gate"
+          ],
+          "service_level": {
+            "schedule": "daily_incremental",
+            "maximum_lag_hours": 24
+          }
+        }
+      ]
+    },
+    {
+      "name": "portfolio_fields_prohibited",
+      "passed": true,
+      "detail": [
+        "fund_holdings",
+        "fund_position",
+        "portfolio_holdings",
+        "portfolio_exposure",
+        "position_inference",
+        "trade_instruction"
+      ]
+    },
+    {
+      "name": "full_backfill_plan_has_1313_partitions",
+      "passed": true,
+      "detail": 1313
+    },
+    {
+      "name": "public_partitions_ready",
+      "passed": true,
+      "detail": {
+        "external_gate": 235,
+        "ready": 1078
+      }
+    },
+    {
+      "name": "commercial_partitions_external_gated",
+      "passed": true,
+      "detail": {
+        "external_gate": 235,
+        "ready": 1078
+      }
+    },
+    {
+      "name": "backfill_plan_artifact_written",
+      "passed": true,
+      "detail": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\backfill-plan.json"
+    },
+    {
+      "name": "plan_never_counts_ready_as_populated",
+      "passed": true,
+      "detail": "Production plan created. Only completed partitions count as populated; external_gate and ready do not."
+    },
+    {
+      "name": "real_a_share_snapshot_has_1159_securities",
+      "passed": true,
+      "detail": 1159
+    },
+    {
+      "name": "provider_and_projection_counts_match",
+      "passed": true,
+      "detail": {
+        "source_reported_count": 1159,
+        "projected_count": 1159
+      }
+    },
+    {
+      "name": "eleven_overretrieved_fields_discarded",
+      "passed": true,
+      "detail": [
+        "收盘价(元)<[日期]:20260812><[复权方式]:前复权>",
+        "涨跌幅(%)<[日期]:20260812><[复权方式]:前复权>",
+        "涨跌(元)<[日期]:20260812><[复权方式]:前复权>",
+        "最高价(元)<[日期]:20260812><[复权方式]:前复权>",
+        "最低价(元)<[日期]:20260812><[复权方式]:前复权>",
+        "换手率(%)<[日期]:20260812>",
+        "成交量(股)<[日期]:20260812>",
+        "成交额(元)<[日期]:20260812>",
+        "最新股息率(%)<[日期]:20260812>",
+        "总市值(亿元)<[日期]:20260812>",
+        "流通市值(元)<[日期]:20260812>"
+      ]
+    },
+    {
+      "name": "nine_vendor_industry_families_covered",
+      "passed": true,
+      "detail": [
+        "农林牧渔",
+        "商贸零售",
+        "家用电器",
+        "汽车",
+        "社会服务",
+        "纺织服饰",
+        "美容护理",
+        "轻工制造",
+        "食品饮料"
+      ]
+    },
+    {
+      "name": "all_security_ids_unique",
+      "passed": true,
+      "detail": 1159
+    },
+    {
+      "name": "no_unrequested_market_values_retained",
+      "passed": true,
+      "detail": [
+        "security_code",
+        "security_id",
+        "market_mic",
+        "security_name",
+        "trading_status",
+        "board",
+        "vendor_industry_l1",
+        "vendor_industry_l2",
+        "vendor_industry_l3"
+      ]
+    },
+    {
+      "name": "snapshot_confirms_no_fund_data",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "commercial_snapshot_nonpublishable",
+      "passed": true,
+      "detail": {
+        "target": "raw_license_gate",
+        "publication": false
+      }
+    },
+    {
+      "name": "real_snapshot_passes_schema_quality",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "real_snapshot_registered",
+      "passed": true,
+      "detail": {
+        "status": "registered",
+        "snapshot_id": "CR.BACKFILL.GILDATA.A_SHARE_CONSUMER.20260812",
+        "collection": "securities",
+        "record_count": 1159,
+        "source_reported_count": 1159,
+        "ingestion_target": "raw_license_gate",
+        "publication_allowed": false,
+        "partitions_attached": 1,
+        "content_hash": "sha256:e1ef22bd596fd6b259552a6364e6a06a5936634bd898567ceab2309f66f3457c"
+      }
+    },
+    {
+      "name": "one_master_partition_staged",
+      "passed": true,
+      "detail": {
+        "status": "registered",
+        "snapshot_id": "CR.BACKFILL.GILDATA.A_SHARE_CONSUMER.20260812",
+        "collection": "securities",
+        "record_count": 1159,
+        "source_reported_count": 1159,
+        "ingestion_target": "raw_license_gate",
+        "publication_allowed": false,
+        "partitions_attached": 1,
+        "content_hash": "sha256:e1ef22bd596fd6b259552a6364e6a06a5936634bd898567ceab2309f66f3457c"
+      }
+    },
+    {
+      "name": "snapshot_content_hash_recorded",
+      "passed": true,
+      "detail": "sha256:e1ef22bd596fd6b259552a6364e6a06a5936634bd898567ceab2309f66f3457c"
+    },
+    {
+      "name": "snapshot_registration_idempotent",
+      "passed": true,
+      "detail": {
+        "status": "registered",
+        "snapshot_id": "CR.BACKFILL.GILDATA.A_SHARE_CONSUMER.20260812",
+        "collection": "securities",
+        "record_count": 1159,
+        "source_reported_count": 1159,
+        "ingestion_target": "raw_license_gate",
+        "publication_allowed": false,
+        "partitions_attached": 1,
+        "content_hash": "sha256:e1ef22bd596fd6b259552a6364e6a06a5936634bd898567ceab2309f66f3457c"
+      }
+    },
+    {
+      "name": "unprojected_field_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "unprojected_fields_present",
+          "message": "Unrequested fields remain: ['closing_price']",
+          "path": "$.securities[0]"
+        }
+      ]
+    },
+    {
+      "name": "fund_holdings_field_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "portfolio_field_forbidden",
+          "message": "Fund holdings, positions, and trade instructions are forbidden",
+          "path": "$.fund_holdings"
+        }
+      ]
+    },
+    {
+      "name": "licence_gate_bypass_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "license_gate_bypass",
+          "message": "Pending commercial data must remain non-publishable in raw_license_gate",
+          "path": "$"
+        }
+      ]
+    },
+    {
+      "name": "pending_licence_blocks_promotion",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "agent_cannot_approve_commercial_licence",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "run_truthfully_partially_complete",
+      "passed": true,
+      "detail": {
+        "backfill_run_id": "bf:571eba0dbac387d4ce6a0d09",
+        "status": "partially_complete",
+        "partition_count": 1313,
+        "status_counts": {
+          "ready": 1078,
+          "external_gate": 234,
+          "staged_raw_license_gate": 1
+        },
+        "populated_partition_count": 0,
+        "license_staged_partition_count": 1,
+        "external_gate_partition_count": 234,
+        "unpopulated_public_partition_count": 1078,
+        "artifacts": {
+          "snapshot_registry": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\snapshot-registry.json",
+          "quality_report": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\quality-report.json",
+          "coverage_watermarks": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\coverage-watermarks.json",
+          "external_gates": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\external-gates.json"
+        },
+        "completion_interpretation": "Pipeline and audit controls are operational, but full data population is not complete."
+      }
+    },
+    {
+      "name": "staged_partition_not_counted_as_populated",
+      "passed": true,
+      "detail": {
+        "backfill_run_id": "bf:571eba0dbac387d4ce6a0d09",
+        "status": "partially_complete",
+        "partition_count": 1313,
+        "status_counts": {
+          "ready": 1078,
+          "external_gate": 234,
+          "staged_raw_license_gate": 1
+        },
+        "populated_partition_count": 0,
+        "license_staged_partition_count": 1,
+        "external_gate_partition_count": 234,
+        "unpopulated_public_partition_count": 1078,
+        "artifacts": {
+          "snapshot_registry": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\snapshot-registry.json",
+          "quality_report": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\quality-report.json",
+          "coverage_watermarks": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\coverage-watermarks.json",
+          "external_gates": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\external-gates.json"
+        },
+        "completion_interpretation": "Pipeline and audit controls are operational, but full data population is not complete."
+      }
+    },
+    {
+      "name": "1078_public_partitions_remain_unpopulated",
+      "passed": true,
+      "detail": {
+        "backfill_run_id": "bf:571eba0dbac387d4ce6a0d09",
+        "status": "partially_complete",
+        "partition_count": 1313,
+        "status_counts": {
+          "ready": 1078,
+          "external_gate": 234,
+          "staged_raw_license_gate": 1
+        },
+        "populated_partition_count": 0,
+        "license_staged_partition_count": 1,
+        "external_gate_partition_count": 234,
+        "unpopulated_public_partition_count": 1078,
+        "artifacts": {
+          "snapshot_registry": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\snapshot-registry.json",
+          "quality_report": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\quality-report.json",
+          "coverage_watermarks": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\coverage-watermarks.json",
+          "external_gates": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\external-gates.json"
+        },
+        "completion_interpretation": "Pipeline and audit controls are operational, but full data population is not complete."
+      }
+    },
+    {
+      "name": "234_other_commercial_partitions_remain_gated",
+      "passed": true,
+      "detail": {
+        "backfill_run_id": "bf:571eba0dbac387d4ce6a0d09",
+        "status": "partially_complete",
+        "partition_count": 1313,
+        "status_counts": {
+          "ready": 1078,
+          "external_gate": 234,
+          "staged_raw_license_gate": 1
+        },
+        "populated_partition_count": 0,
+        "license_staged_partition_count": 1,
+        "external_gate_partition_count": 234,
+        "unpopulated_public_partition_count": 1078,
+        "artifacts": {
+          "snapshot_registry": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\snapshot-registry.json",
+          "quality_report": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\quality-report.json",
+          "coverage_watermarks": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\coverage-watermarks.json",
+          "external_gates": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\external-gates.json"
+        },
+        "completion_interpretation": "Pipeline and audit controls are operational, but full data population is not complete."
+      }
+    },
+    {
+      "name": "four_audit_artifacts_written",
+      "passed": true,
+      "detail": {
+        "snapshot_registry": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\snapshot-registry.json",
+        "quality_report": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\quality-report.json",
+        "coverage_watermarks": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\coverage-watermarks.json",
+        "external_gates": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-production-4da1we7w\\output\\bf-571eba0dbac387d4ce6a0d09\\external-gates.json"
+      }
+    },
+    {
+      "name": "production_audit_schema_complete",
+      "passed": true,
+      "detail": [
+        "backfill_partitions",
+        "backfill_runs",
+        "production_coverage_watermarks",
+        "production_dataset_contracts",
+        "production_quality_results",
+        "production_snapshots",
+        "snapshot_promotion_events",
+        "source_license_decisions"
+      ]
+    },
+    {
+      "name": "schema_count_and_boundary_quality_passed",
+      "passed": true,
+      "detail": {
+        "schema_projection": "passed",
+        "record_count": "passed",
+        "no_fund_holdings": "passed",
+        "license_gate": "blocked"
+      }
+    },
+    {
+      "name": "licence_quality_is_blocked_not_failed",
+      "passed": true,
+      "detail": {
+        "schema_projection": "passed",
+        "record_count": "passed",
+        "no_fund_holdings": "passed",
+        "license_gate": "blocked"
+      }
+    },
+    {
+      "name": "gildata_allowed_target_raw_only",
+      "passed": true,
+      "detail": {
+        "decision": "pending",
+        "allowed_targets_json": "[\"raw_license_gate\"]"
+      }
+    }
+  ]
+}

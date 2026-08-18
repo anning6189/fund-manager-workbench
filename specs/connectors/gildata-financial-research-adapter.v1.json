@@ -1,0 +1,115 @@
+{
+  "adapter_id": "CR.CONNECTOR.GILDATA.FINANCIAL_RESEARCH",
+  "spec_version": "1.1.0",
+  "status": "production_contract_complete_live_binding_requires_authenticated_runtime",
+  "license_status": "contract_terms_pending_verification",
+  "mcp_server": "aidata-assistant-srv-tool",
+  "authentication": {
+    "method": "bearer_or_query_token_from_secret_store",
+    "credential_storage": "runtime_secret_only",
+    "forbidden": ["hardcoded_token", "token_in_logs", "token_in_evidence_object", "token_in_repository"]
+  },
+  "capabilities": {
+    "financial_query": "FinQuery",
+    "announcement_search": "AnnouncementData"
+  },
+  "query_partition_policy": {
+    "max_entities_per_request": 1,
+    "max_metrics_per_request": 6,
+    "max_periods_per_request": 2,
+    "partition_order": ["entity", "period", "metric_group"],
+    "retry_when": ["truncated", "raw_record_count_exceeds_expected_by_5x", "required_metric_missing"],
+    "retry_action": "split_into_smaller_partitions",
+    "unfiltered_fallback": "forbidden",
+    "max_retries": 1,
+    "same_query_retry": "forbidden",
+    "parallel_partitions": true
+  },
+  "canonical_query_contract": {
+    "required_fields": [
+      "cutoff_timestamp", "availability_mode", "allowed_entity_ids", "allowed_security_ids",
+      "allowed_metric_ids", "allowed_periods", "allowed_statement_scopes"
+    ],
+    "security_code_rule": "exchange_qualified_ticker_exact_match",
+    "period_rule": "period_start_and_period_end_exact_match",
+    "report_type_rule": "annual_quarterly_ttm_must_be_explicit",
+    "statement_scope_rule": "income_statement_cash_flow_statement_balance_sheet_notes_must_be_explicit"
+  },
+  "metric_bindings": [
+    {"source_labels":["营业收入"],"metric_id":"CR.CO.REVENUE","statement_scope":"income_statement"},
+    {"source_labels":["营业成本"],"metric_id":"CR.CO.OPERATING_COST","statement_scope":"income_statement"},
+    {"source_labels":["销售费用"],"metric_id":"CR.CO.SELLING_EXPENSE","statement_scope":"income_statement"},
+    {"source_labels":["经营活动产生的现金流量净额","经营活动现金流量净额"],"metric_id":"CR.CO.CFO_NET","statement_scope":"cash_flow_statement"},
+    {"source_labels":["归属于母公司股东的净利润","归属于上市公司股东的净利润"],"metric_id":"CR.CO.PARENT_NET_PROFIT","statement_scope":"income_statement"}
+  ],
+  "field_candidates": {
+    "company_name": ["公司名称", "证券名称", "股票简称"],
+    "security_code": ["证券代码", "股票代码"],
+    "source_metric_label": ["财务科目", "科目名称", "指标名称"],
+    "value": ["数值", "本期金额", "本期值"],
+    "unit": ["单位", "展示单位"],
+    "period_end": ["报告期", "截止日期", "报表日期"],
+    "published_at": ["实际披露日期", "公告日期", "发布日期"],
+    "document_title": ["公告标题", "报告名称"],
+    "source_address": ["source_address", "附件地址", "PDF地址"]
+  },
+  "field_resolution_rules": [
+    "候选字段只能在原始响应真实存在时映射，不得用模型猜测字段值",
+    "security_code必须与白名单完全匹配；仅公司简称相似不得通过",
+    "营业收入与营业总收入是不同指标，不得自动互换",
+    "年度比较优先采用本期年报列示的同期重述值，并标记restated",
+    "合并/母公司范围无法从原始表或文档确认时，不得默认为consolidated",
+    "原始值保留原币原单位，标准化值记录scale和转换过程"
+  ],
+  "value_integrity_guards": {
+    "required_lineage_fields": ["raw_value", "raw_unit", "normalization_factor", "normalized_value", "normalized_unit"],
+    "recompute_normalized_value": true,
+    "cross_source_material_difference_ratio": 0.2,
+    "power_of_ten_conflict_detection": true,
+    "official_primary_conflict_rule": "retain official primary and quarantine conflicting vendor record",
+    "unresolved_conflict_rule": "block material claim"
+  },
+  "market_date_guards": {
+    "exact_date_rule": "returned as_of_date must equal requested trading date",
+    "range_rule": "all accepted rows must be inside requested inclusive range",
+    "n_session_return_rule": "request N sessions plus the baseline close and recompute locally"
+  },
+  "announcement_evidence_rules": {
+    "annual_report_title_exact_match": true,
+    "language_preference": ["zh-CN", "original_filing_language", "translated_version"],
+    "published_and_available_time_required": true,
+    "locator_minimum": "table_name_or_page_or_announcement_record_id",
+    "metric_claim_without_locator": "blocked",
+    "content_hash_algorithm": "sha256",
+    "license_tag": "runtime_contract_license_tag_required",
+    "document_version_rule": "issuer_report_period_language_publication_date"
+  },
+  "deterministic_post_filter_order": [
+    "entity_or_security_whitelist",
+    "metric_whitelist",
+    "period_whitelist",
+    "statement_scope_whitelist",
+    "point_in_time_filter",
+    "evidence_completeness_filter",
+    "deduplicate_by_canonical_key"
+  ],
+  "deduplication_key": [
+    "entity_id", "security_id", "metric_id", "period_start", "period_end",
+    "statement_scope", "consolidation_scope", "restatement_status", "source_id"
+  ],
+  "hard_blocks": [
+    "future_information_leakage",
+    "truncated_response",
+    "entity_unresolved",
+    "metric_ambiguous",
+    "financial_statement_scope_unknown",
+    "requested_date_mismatch",
+    "unit_scale_conflict",
+    "evidence_locator_missing",
+    "license_unknown_for_required_use"
+  ],
+  "audit_log_fields": [
+    "query_id", "connector_name", "retrieved_at", "raw_record_count", "accepted_record_count",
+    "discarded_record_count", "discard_reason_counts", "truncated", "retry_count", "adapter_version"
+  ]
+}

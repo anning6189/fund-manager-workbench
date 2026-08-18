@@ -1,0 +1,5 @@
+{
+  "query": {"date_alignment_mode":"exact_date","requested_date":"2026-08-12"},
+  "market_observations": [{"observation_id":"bad:market:date","as_of_date":"2025-08-14"}],
+  "normalized_observations": [], "risk_events": [], "documents": [], "claims": [], "market_calculations": []
+}

@@ -1,0 +1,10 @@
+{
+  "package_id": "CR.SEED.STAGE6.CORE.001",
+  "issues": [
+    {
+      "code": "package_id_content_conflict",
+      "path": "$.package_id",
+      "message": "同一package_id对应了不同内容哈希"
+    }
+  ]
+}

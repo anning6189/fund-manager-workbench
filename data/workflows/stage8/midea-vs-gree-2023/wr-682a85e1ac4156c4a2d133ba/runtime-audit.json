@@ -1,0 +1,297 @@
+{
+  "engine_version": "1.1.0",
+  "run": {
+    "run_id": "wr:682a85e1ac4156c4a2d133ba",
+    "package_id": "CR.WORKFLOW.PKG.STAGE8.COMPARE.001",
+    "status": "blocked",
+    "started_at": "2026-08-13T05:56:16.146Z",
+    "completed_at": null,
+    "resumed_count": 0,
+    "publication_status": "blocked",
+    "human_review_required": 0,
+    "output_directory": "data\\workflows\\stage8\\midea-vs-gree-2023\\wr-682a85e1ac4156c4a2d133ba",
+    "summary_json": "{}"
+  },
+  "tasks": [
+    {
+      "task_id": "scope_guard",
+      "role_id": "research_director",
+      "lane": "control",
+      "wave_no": 0,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:56:16.208Z",
+      "completed_at": "2026-08-13T05:56:16.213Z",
+      "dependencies_json": "[]",
+      "error_json": null
+    },
+    {
+      "task_id": "entity_resolution",
+      "role_id": "entity_scope_agent",
+      "lane": "core",
+      "wave_no": 1,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:56:16.243Z",
+      "completed_at": "2026-08-13T05:56:16.258Z",
+      "dependencies_json": "[\"scope_guard\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "document_retrieval",
+      "role_id": "evidence_retrieval_agent",
+      "lane": "core",
+      "wave_no": 2,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:56:16.275Z",
+      "completed_at": "2026-08-13T05:56:16.315Z",
+      "dependencies_json": "[\"entity_resolution\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "fact_retrieval",
+      "role_id": "evidence_retrieval_agent",
+      "lane": "core",
+      "wave_no": 2,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:56:16.275Z",
+      "completed_at": "2026-08-13T05:56:16.318Z",
+      "dependencies_json": "[\"entity_resolution\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "model_execution",
+      "role_id": "model_agent",
+      "lane": "model",
+      "wave_no": 3,
+      "status": "completed",
+      "required": 0,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:56:16.344Z",
+      "completed_at": "2026-08-13T05:56:16.423Z",
+      "dependencies_json": "[\"fact_retrieval\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "claim_composition",
+      "role_id": "claim_agent",
+      "lane": "analysis",
+      "wave_no": 4,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:56:16.442Z",
+      "completed_at": "2026-08-13T05:56:16.447Z",
+      "dependencies_json": "[\"fact_retrieval\",\"document_retrieval\",\"model_execution\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "evidence_audit",
+      "role_id": "evidence_auditor",
+      "lane": "quality",
+      "wave_no": 5,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:56:16.514Z",
+      "completed_at": "2026-08-13T05:56:16.532Z",
+      "dependencies_json": "[\"claim_composition\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "skeptic_review",
+      "role_id": "skeptic_agent",
+      "lane": "quality",
+      "wave_no": 5,
+      "status": "completed",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:56:16.514Z",
+      "completed_at": "2026-08-13T05:56:16.563Z",
+      "dependencies_json": "[\"claim_composition\"]",
+      "error_json": null
+    },
+    {
+      "task_id": "report_render",
+      "role_id": "report_agent",
+      "lane": "delivery",
+      "wave_no": 6,
+      "status": "blocked",
+      "required": 1,
+      "attempt_count": 1,
+      "started_at": "2026-08-13T05:56:16.590Z",
+      "completed_at": "2026-08-13T05:56:16.642Z",
+      "dependencies_json": "[\"evidence_audit\",\"skeptic_review\"]",
+      "error_json": "{\"message\":\"'available_at'\",\"traceback\":\"Traceback (most recent call last):\\n  File \\\"C:\\\\Users\\\\chi\\\\Documents\\\\ChatGPT\\\\New project\\\\tools\\\\consumer_workflow_engine.py\\\", line 746, in execute_task\\n    return \\\"completed\\\", handler(ctx), None\\n                        ^^^^^^^^^^^^\\n  File \\\"C:\\\\Users\\\\chi\\\\Documents\\\\ChatGPT\\\\New project\\\\tools\\\\consumer_workflow_engine.py\\\", line 560, in task_report_render\\n    f\\\"可用时间 {trace['available_at']}｜{link}\\\"\\n                ~~~~~^^^^^^^^^^^^^^^^\\nKeyError: 'available_at'\\n\",\"type\":\"KeyError\"}"
+    },
+    {
+      "task_id": "compliance_review",
+      "role_id": "compliance_agent",
+      "lane": "quality",
+      "wave_no": 7,
+      "status": "pending",
+      "required": 1,
+      "attempt_count": 0,
+      "started_at": null,
+      "completed_at": null,
+      "dependencies_json": "[\"report_render\"]",
+      "error_json": null
+    }
+  ],
+  "events": [
+    {
+      "event_type": "run_planned",
+      "severity": "info",
+      "task_id": null,
+      "occurred_at": "2026-08-13T05:56:16.146Z",
+      "detail_json": "{\"package_hash\":\"sha256:67a5726605725e003b791f8a511f079ce8679b659be0c1823fd6e428a7fc5fa2\"}"
+    },
+    {
+      "event_type": "run_started",
+      "severity": "info",
+      "task_id": null,
+      "occurred_at": "2026-08-13T05:56:16.188Z",
+      "detail_json": "{}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "scope_guard",
+      "occurred_at": "2026-08-13T05:56:16.210Z",
+      "detail_json": "{\"wave_no\":0}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "scope_guard",
+      "occurred_at": "2026-08-13T05:56:16.225Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "entity_resolution",
+      "occurred_at": "2026-08-13T05:56:16.245Z",
+      "detail_json": "{\"wave_no\":1}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "entity_resolution",
+      "occurred_at": "2026-08-13T05:56:16.259Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "document_retrieval",
+      "occurred_at": "2026-08-13T05:56:16.277Z",
+      "detail_json": "{\"wave_no\":2}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "fact_retrieval",
+      "occurred_at": "2026-08-13T05:56:16.277Z",
+      "detail_json": "{\"wave_no\":2}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "document_retrieval",
+      "occurred_at": "2026-08-13T05:56:16.316Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "fact_retrieval",
+      "occurred_at": "2026-08-13T05:56:16.330Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "model_execution",
+      "occurred_at": "2026-08-13T05:56:16.346Z",
+      "detail_json": "{\"wave_no\":3}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "model_execution",
+      "occurred_at": "2026-08-13T05:56:16.425Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "claim_composition",
+      "occurred_at": "2026-08-13T05:56:16.444Z",
+      "detail_json": "{\"wave_no\":4}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "claim_composition",
+      "occurred_at": "2026-08-13T05:56:16.457Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "evidence_audit",
+      "occurred_at": "2026-08-13T05:56:16.516Z",
+      "detail_json": "{\"wave_no\":5}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "skeptic_review",
+      "occurred_at": "2026-08-13T05:56:16.516Z",
+      "detail_json": "{\"wave_no\":5}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "evidence_audit",
+      "occurred_at": "2026-08-13T05:56:16.534Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_completed",
+      "severity": "info",
+      "task_id": "skeptic_review",
+      "occurred_at": "2026-08-13T05:56:16.574Z",
+      "detail_json": "{\"error\":null,\"status\":\"completed\"}"
+    },
+    {
+      "event_type": "task_started",
+      "severity": "info",
+      "task_id": "report_render",
+      "occurred_at": "2026-08-13T05:56:16.591Z",
+      "detail_json": "{\"wave_no\":6}"
+    },
+    {
+      "event_type": "task_blocked",
+      "severity": "error",
+      "task_id": "report_render",
+      "occurred_at": "2026-08-13T05:56:16.644Z",
+      "detail_json": "{\"error\":{\"message\":\"'available_at'\",\"traceback\":\"Traceback (most recent call last):\\n  File \\\"C:\\\\Users\\\\chi\\\\Documents\\\\ChatGPT\\\\New project\\\\tools\\\\consumer_workflow_engine.py\\\", line 746, in execute_task\\n    return \\\"completed\\\", handler(ctx), None\\n                        ^^^^^^^^^^^^\\n  File \\\"C:\\\\Users\\\\chi\\\\Documents\\\\ChatGPT\\\\New project\\\\tools\\\\consumer_workflow_engine.py\\\", line 560, in task_report_render\\n    f\\\"可用时间 {trace['available_at']}｜{link}\\\"\\n                ~~~~~^^^^^^^^^^^^^^^^\\nKeyError: 'available_at'\\n\",\"type\":\"KeyError\"},\"status\":\"blocked\"}"
+    },
+    {
+      "event_type": "run_blocked",
+      "severity": "error",
+      "task_id": null,
+      "occurred_at": "2026-08-13T05:56:16.657Z",
+      "detail_json": "{\"wave_no\":6}"
+    }
+  ],
+  "reviews": []
+}

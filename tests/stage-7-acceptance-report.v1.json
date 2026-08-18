@@ -1,0 +1,1589 @@
+{
+  "suite_id": "CR.TEST.STAGE7.MODEL_ENGINE.001",
+  "run_at": "2026-08-13T08:46:10.432Z",
+  "passed": true,
+  "decision": "accept_stage7_research_model_engine",
+  "checks_passed": 40,
+  "checks_total": 40,
+  "checks": [
+    {
+      "name": "five_model_definitions_loaded",
+      "passed": true,
+      "detail": {
+        "status": "initialized",
+        "database": "tests\\tmp-stage7-review-removal.db",
+        "stage6": {
+          "status": "initialized",
+          "database": "tests\\tmp-stage7-review-removal.db",
+          "sources_loaded": 20,
+          "metrics_loaded": 99,
+          "taxonomy_nodes_loaded": 87
+        },
+        "models_loaded": 5,
+        "model_spec_id": "CR.SPEC.MODEL_ENGINE.001"
+      }
+    },
+    {
+      "name": "stage6_seed_available",
+      "passed": true,
+      "detail": {
+        "status": "success",
+        "package_id": "CR.SEED.STAGE6.CORE.001",
+        "run_id": "ingest:05a4e5b62ce22094daf5",
+        "inserted_records": 52,
+        "updated_records": 0
+      }
+    },
+    {
+      "name": "five_model_packages_present",
+      "passed": true,
+      "detail": [
+        "company-operating-bridge.v1.json",
+        "competition-concentration.v1.json",
+        "financial-forecast.v1.json",
+        "market-size-dual.v1.json",
+        "valuation-expectations.v1.json"
+      ]
+    },
+    {
+      "name": "all_model_packages_static_valid",
+      "passed": true,
+      "detail": {
+        "company-operating-bridge.v1.json": [],
+        "competition-concentration.v1.json": [],
+        "financial-forecast.v1.json": [],
+        "market-size-dual.v1.json": [],
+        "valuation-expectations.v1.json": []
+      }
+    },
+    {
+      "name": "all_five_model_types_execute",
+      "passed": true,
+      "detail": {
+        "company-operating-bridge.v1.json": "completed",
+        "competition-concentration.v1.json": "completed",
+        "financial-forecast.v1.json": "completed",
+        "market-size-dual.v1.json": "completed",
+        "valuation-expectations.v1.json": "completed"
+      }
+    },
+    {
+      "name": "demonstration_results_not_publishable",
+      "passed": true,
+      "detail": {
+        "company-operating-bridge.v1.json": "demonstration_only",
+        "competition-concentration.v1.json": "demonstration_only",
+        "financial-forecast.v1.json": "demonstration_only",
+        "market-size-dual.v1.json": "demonstration_only",
+        "valuation-expectations.v1.json": "demonstration_only"
+      }
+    },
+    {
+      "name": "market_size_dual_path_calculation",
+      "passed": true,
+      "detail": [
+        {
+          "output_id": "cross_check_gap",
+          "output_role": "cross_check_gap",
+          "value_numeric": 0.03468208092485549,
+          "unit": "ratio",
+          "formula": "abs(market_size_top_down - market_size_bottom_up) / market_size_midpoint",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"market_size_bottom_up\",\"market_size_midpoint\",\"market_size_top_down\"]}"
+        },
+        {
+          "output_id": "market_size_bottom_up",
+          "output_role": "market_size_bottom_up",
+          "value_numeric": 51000000000.0,
+          "unit": "CNY",
+          "formula": "addressable_outlets * annual_units_per_outlet * average_selling_price",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"addressable_outlets\",\"annual_units_per_outlet\",\"average_selling_price\"]}"
+        },
+        {
+          "output_id": "market_size_midpoint",
+          "output_role": "market_size_midpoint",
+          "value_numeric": 51900000000.0,
+          "unit": "CNY",
+          "formula": "(market_size_top_down + market_size_bottom_up) / 2",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"market_size_bottom_up\",\"market_size_top_down\"]}"
+        },
+        {
+          "output_id": "market_size_top_down",
+          "output_role": "market_size_top_down",
+          "value_numeric": 52800000000.0,
+          "unit": "CNY",
+          "formula": "target_population * penetration_rate * purchase_frequency * spend_per_purchase",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"penetration_rate\",\"purchase_frequency\",\"spend_per_purchase\",\"target_population\"]}"
+        }
+      ]
+    },
+    {
+      "name": "market_size_cross_method_reconciliation",
+      "passed": true,
+      "detail": [
+        {
+          "output_id": "cross_check_gap",
+          "output_role": "cross_check_gap",
+          "value_numeric": 0.03468208092485549,
+          "unit": "ratio",
+          "formula": "abs(market_size_top_down - market_size_bottom_up) / market_size_midpoint",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"market_size_bottom_up\",\"market_size_midpoint\",\"market_size_top_down\"]}"
+        },
+        {
+          "output_id": "market_size_bottom_up",
+          "output_role": "market_size_bottom_up",
+          "value_numeric": 51000000000.0,
+          "unit": "CNY",
+          "formula": "addressable_outlets * annual_units_per_outlet * average_selling_price",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"addressable_outlets\",\"annual_units_per_outlet\",\"average_selling_price\"]}"
+        },
+        {
+          "output_id": "market_size_midpoint",
+          "output_role": "market_size_midpoint",
+          "value_numeric": 51900000000.0,
+          "unit": "CNY",
+          "formula": "(market_size_top_down + market_size_bottom_up) / 2",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"market_size_bottom_up\",\"market_size_top_down\"]}"
+        },
+        {
+          "output_id": "market_size_top_down",
+          "output_role": "market_size_top_down",
+          "value_numeric": 52800000000.0,
+          "unit": "CNY",
+          "formula": "target_population * penetration_rate * purchase_frequency * spend_per_purchase",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"penetration_rate\",\"purchase_frequency\",\"spend_per_purchase\",\"target_population\"]}"
+        }
+      ]
+    },
+    {
+      "name": "market_size_bear_base_bull_order",
+      "passed": true,
+      "detail": [
+        27840000000.0,
+        51900000000.0,
+        91980000000.0
+      ]
+    },
+    {
+      "name": "market_size_sensitivity_3x3",
+      "passed": true,
+      "detail": [
+        {
+          "sensitivity_id": "penetration_x_spend",
+          "x_input_id": "penetration_rate",
+          "x_value": 0.12,
+          "y_input_id": "spend_per_purchase",
+          "y_value": 280.0,
+          "output_id": "market_size_top_down",
+          "output_value": 36960000000.0,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "penetration_x_spend",
+          "x_input_id": "penetration_rate",
+          "x_value": 0.12,
+          "y_input_id": "spend_per_purchase",
+          "y_value": 320.0,
+          "output_id": "market_size_top_down",
+          "output_value": 42240000000.0,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "penetration_x_spend",
+          "x_input_id": "penetration_rate",
+          "x_value": 0.12,
+          "y_input_id": "spend_per_purchase",
+          "y_value": 360.0,
+          "output_id": "market_size_top_down",
+          "output_value": 47520000000.0,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "penetration_x_spend",
+          "x_input_id": "penetration_rate",
+          "x_value": 0.15,
+          "y_input_id": "spend_per_purchase",
+          "y_value": 280.0,
+          "output_id": "market_size_top_down",
+          "output_value": 46200000000.0,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "penetration_x_spend",
+          "x_input_id": "penetration_rate",
+          "x_value": 0.15,
+          "y_input_id": "spend_per_purchase",
+          "y_value": 320.0,
+          "output_id": "market_size_top_down",
+          "output_value": 52800000000.0,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "penetration_x_spend",
+          "x_input_id": "penetration_rate",
+          "x_value": 0.15,
+          "y_input_id": "spend_per_purchase",
+          "y_value": 360.0,
+          "output_id": "market_size_top_down",
+          "output_value": 59400000000.0,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "penetration_x_spend",
+          "x_input_id": "penetration_rate",
+          "x_value": 0.18,
+          "y_input_id": "spend_per_purchase",
+          "y_value": 280.0,
+          "output_id": "market_size_top_down",
+          "output_value": 55440000000.0,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "penetration_x_spend",
+          "x_input_id": "penetration_rate",
+          "x_value": 0.18,
+          "y_input_id": "spend_per_purchase",
+          "y_value": 320.0,
+          "output_id": "market_size_top_down",
+          "output_value": 63360000000.0,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "penetration_x_spend",
+          "x_input_id": "penetration_rate",
+          "x_value": 0.18,
+          "y_input_id": "spend_per_purchase",
+          "y_value": 360.0,
+          "output_id": "market_size_top_down",
+          "output_value": 71280000000.0,
+          "unit": "CNY"
+        }
+      ]
+    },
+    {
+      "name": "competition_cr3_cr5",
+      "passed": true,
+      "detail": [
+        {
+          "output_id": "cr3",
+          "output_role": "cr3",
+          "value_numeric": 0.55,
+          "unit": "ratio",
+          "formula": "market_share_1 + market_share_2 + market_share_3",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"market_share_1\",\"market_share_2\",\"market_share_3\"]}"
+        },
+        {
+          "output_id": "cr5",
+          "output_role": "cr5",
+          "value_numeric": 0.7,
+          "unit": "ratio",
+          "formula": "cr3 + market_share_4 + market_share_5",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"cr3\",\"market_share_4\",\"market_share_5\"]}"
+        },
+        {
+          "output_id": "long_tail_share",
+          "output_role": "long_tail_share",
+          "value_numeric": 0.30000000000000004,
+          "unit": "ratio",
+          "formula": "1 - cr5",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"cr5\"]}"
+        },
+        {
+          "output_id": "market_share_1",
+          "output_role": "market_share_leader",
+          "value_numeric": 0.25,
+          "unit": "ratio",
+          "formula": "company_1_sales / market_sales",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"company_1_sales\",\"market_sales\"]}"
+        },
+        {
+          "output_id": "market_share_2",
+          "output_role": "market_share_second",
+          "value_numeric": 0.18,
+          "unit": "ratio",
+          "formula": "company_2_sales / market_sales",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"company_2_sales\",\"market_sales\"]}"
+        },
+        {
+          "output_id": "market_share_3",
+          "output_role": "market_share_third",
+          "value_numeric": 0.12,
+          "unit": "ratio",
+          "formula": "company_3_sales / market_sales",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"company_3_sales\",\"market_sales\"]}"
+        },
+        {
+          "output_id": "market_share_4",
+          "output_role": "market_share_fourth",
+          "value_numeric": 0.08,
+          "unit": "ratio",
+          "formula": "company_4_sales / market_sales",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"company_4_sales\",\"market_sales\"]}"
+        },
+        {
+          "output_id": "market_share_5",
+          "output_role": "market_share_fifth",
+          "value_numeric": 0.07,
+          "unit": "ratio",
+          "formula": "company_5_sales / market_sales",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"company_5_sales\",\"market_sales\"]}"
+        }
+      ]
+    },
+    {
+      "name": "competition_market_reconciles",
+      "passed": true,
+      "detail": [
+        {
+          "output_id": "cr3",
+          "output_role": "cr3",
+          "value_numeric": 0.55,
+          "unit": "ratio",
+          "formula": "market_share_1 + market_share_2 + market_share_3",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"market_share_1\",\"market_share_2\",\"market_share_3\"]}"
+        },
+        {
+          "output_id": "cr5",
+          "output_role": "cr5",
+          "value_numeric": 0.7,
+          "unit": "ratio",
+          "formula": "cr3 + market_share_4 + market_share_5",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"cr3\",\"market_share_4\",\"market_share_5\"]}"
+        },
+        {
+          "output_id": "long_tail_share",
+          "output_role": "long_tail_share",
+          "value_numeric": 0.30000000000000004,
+          "unit": "ratio",
+          "formula": "1 - cr5",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"cr5\"]}"
+        },
+        {
+          "output_id": "market_share_1",
+          "output_role": "market_share_leader",
+          "value_numeric": 0.25,
+          "unit": "ratio",
+          "formula": "company_1_sales / market_sales",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"company_1_sales\",\"market_sales\"]}"
+        },
+        {
+          "output_id": "market_share_2",
+          "output_role": "market_share_second",
+          "value_numeric": 0.18,
+          "unit": "ratio",
+          "formula": "company_2_sales / market_sales",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"company_2_sales\",\"market_sales\"]}"
+        },
+        {
+          "output_id": "market_share_3",
+          "output_role": "market_share_third",
+          "value_numeric": 0.12,
+          "unit": "ratio",
+          "formula": "company_3_sales / market_sales",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"company_3_sales\",\"market_sales\"]}"
+        },
+        {
+          "output_id": "market_share_4",
+          "output_role": "market_share_fourth",
+          "value_numeric": 0.08,
+          "unit": "ratio",
+          "formula": "company_4_sales / market_sales",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"company_4_sales\",\"market_sales\"]}"
+        },
+        {
+          "output_id": "market_share_5",
+          "output_role": "market_share_fifth",
+          "value_numeric": 0.07,
+          "unit": "ratio",
+          "formula": "company_5_sales / market_sales",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"company_5_sales\",\"market_sales\"]}"
+        }
+      ]
+    },
+    {
+      "name": "operating_bridge_uses_stage6_actuals",
+      "passed": true,
+      "detail": [
+        {
+          "output_id": "actual_revenue_growth",
+          "output_role": "actual_revenue_growth",
+          "value_numeric": 0.08176305790006388,
+          "unit": "ratio",
+          "formula": "revenue_current / revenue_previous - 1",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"revenue_current\",\"revenue_previous\"]}"
+        },
+        {
+          "output_id": "bridge_residual",
+          "output_role": "bridge_residual",
+          "value_numeric": 3.469446951953614e-17,
+          "unit": "ratio",
+          "formula": "actual_revenue_growth - volume_contribution - price_mix_contribution - interaction_contribution",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_revenue_growth\",\"interaction_contribution\",\"price_mix_contribution\",\"volume_contribution\"]}"
+        },
+        {
+          "output_id": "interaction_contribution",
+          "output_role": "interaction_contribution",
+          "value_numeric": 0.0016062714576947634,
+          "unit": "ratio",
+          "formula": "volume_contribution * price_mix_contribution",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"price_mix_contribution\",\"volume_contribution\"]}"
+        },
+        {
+          "output_id": "price_mix_contribution",
+          "output_role": "price_mix_contribution",
+          "value_numeric": 0.040156786442369086,
+          "unit": "ratio",
+          "formula": "(1 + actual_revenue_growth) / (1 + volume_contribution) - 1",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_revenue_growth\",\"volume_contribution\"]}"
+        },
+        {
+          "output_id": "volume_contribution",
+          "output_role": "volume_contribution",
+          "value_numeric": 0.04,
+          "unit": "ratio",
+          "formula": "volume_growth_assumption",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"volume_growth_assumption\"]}"
+        }
+      ]
+    },
+    {
+      "name": "operating_bridge_reconciles",
+      "passed": true,
+      "detail": [
+        {
+          "output_id": "actual_revenue_growth",
+          "output_role": "actual_revenue_growth",
+          "value_numeric": 0.08176305790006388,
+          "unit": "ratio",
+          "formula": "revenue_current / revenue_previous - 1",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"revenue_current\",\"revenue_previous\"]}"
+        },
+        {
+          "output_id": "bridge_residual",
+          "output_role": "bridge_residual",
+          "value_numeric": 3.469446951953614e-17,
+          "unit": "ratio",
+          "formula": "actual_revenue_growth - volume_contribution - price_mix_contribution - interaction_contribution",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_revenue_growth\",\"interaction_contribution\",\"price_mix_contribution\",\"volume_contribution\"]}"
+        },
+        {
+          "output_id": "interaction_contribution",
+          "output_role": "interaction_contribution",
+          "value_numeric": 0.0016062714576947634,
+          "unit": "ratio",
+          "formula": "volume_contribution * price_mix_contribution",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"price_mix_contribution\",\"volume_contribution\"]}"
+        },
+        {
+          "output_id": "price_mix_contribution",
+          "output_role": "price_mix_contribution",
+          "value_numeric": 0.040156786442369086,
+          "unit": "ratio",
+          "formula": "(1 + actual_revenue_growth) / (1 + volume_contribution) - 1",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_revenue_growth\",\"volume_contribution\"]}"
+        },
+        {
+          "output_id": "volume_contribution",
+          "output_role": "volume_contribution",
+          "value_numeric": 0.04,
+          "unit": "ratio",
+          "formula": "volume_growth_assumption",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"volume_growth_assumption\"]}"
+        }
+      ]
+    },
+    {
+      "name": "financial_forecast_formula_accuracy",
+      "passed": true,
+      "detail": [
+        {
+          "output_id": "forecast_capex",
+          "output_role": "forecast_capex",
+          "value_numeric": 12054007872.0,
+          "unit": "CNY",
+          "formula": "forecast_revenue * capex_ratio",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"capex_ratio\",\"forecast_revenue\"]}"
+        },
+        {
+          "output_id": "forecast_cfo",
+          "output_role": "forecast_cfo",
+          "value_numeric": 50771481156.86399,
+          "unit": "CNY",
+          "formula": "forecast_net_profit * cfo_conversion",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"cfo_conversion\",\"forecast_net_profit\"]}"
+        },
+        {
+          "output_id": "forecast_fcf",
+          "output_role": "forecast_fcf",
+          "value_numeric": 38717473284.86399,
+          "unit": "CNY",
+          "formula": "forecast_cfo - forecast_capex",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_capex\",\"forecast_cfo\"]}"
+        },
+        {
+          "output_id": "forecast_gross_profit",
+          "output_role": "forecast_gross_profit",
+          "value_numeric": 108486070848.0,
+          "unit": "CNY",
+          "formula": "forecast_revenue * gross_margin",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_revenue\",\"gross_margin\"]}"
+        },
+        {
+          "output_id": "forecast_net_profit",
+          "output_role": "forecast_net_profit",
+          "value_numeric": 42309567630.71999,
+          "unit": "CNY",
+          "formula": "forecast_operating_profit * (1 - effective_tax_rate)",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"effective_tax_rate\",\"forecast_operating_profit\"]}"
+        },
+        {
+          "output_id": "forecast_operating_expense",
+          "output_role": "forecast_operating_expense",
+          "value_numeric": 56252036736.00001,
+          "unit": "CNY",
+          "formula": "forecast_revenue * operating_expense_ratio",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_revenue\",\"operating_expense_ratio\"]}"
+        },
+        {
+          "output_id": "forecast_operating_profit",
+          "output_role": "forecast_operating_profit",
+          "value_numeric": 52234034111.99999,
+          "unit": "CNY",
+          "formula": "forecast_gross_profit - forecast_operating_expense",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_gross_profit\",\"forecast_operating_expense\"]}"
+        },
+        {
+          "output_id": "forecast_revenue",
+          "output_role": "forecast_revenue",
+          "value_numeric": 401800262400.0,
+          "unit": "CNY",
+          "formula": "actual_revenue * (1 + revenue_growth)",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_revenue\",\"revenue_growth\"]}"
+        },
+        {
+          "output_id": "historical_cfo_conversion",
+          "output_role": "historical_cfo_conversion",
+          "value_numeric": 1.71716259239527,
+          "unit": "multiple",
+          "formula": "actual_cfo / actual_net_profit",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_cfo\",\"actual_net_profit\"]}"
+        },
+        {
+          "output_id": "historical_gross_margin",
+          "output_role": "historical_gross_margin",
+          "value_numeric": 0.2649086860327545,
+          "unit": "ratio",
+          "formula": "1 - actual_cost / actual_revenue",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_cost\",\"actual_revenue\"]}"
+        },
+        {
+          "output_id": "historical_selling_ratio",
+          "output_role": "historical_selling_ratio",
+          "value_numeric": 0.09375639720836579,
+          "unit": "ratio",
+          "formula": "actual_selling_expense / actual_revenue",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_revenue\",\"actual_selling_expense\"]}"
+        }
+      ]
+    },
+    {
+      "name": "financial_forecast_bear_base_bull_order",
+      "passed": true,
+      "detail": [
+        32501176780.800007,
+        42309567630.71999,
+        52960250882.560005
+      ]
+    },
+    {
+      "name": "financial_cash_flow_reconciliation",
+      "passed": true,
+      "detail": [
+        {
+          "output_id": "forecast_capex",
+          "output_role": "forecast_capex",
+          "value_numeric": 12054007872.0,
+          "unit": "CNY",
+          "formula": "forecast_revenue * capex_ratio",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"capex_ratio\",\"forecast_revenue\"]}"
+        },
+        {
+          "output_id": "forecast_cfo",
+          "output_role": "forecast_cfo",
+          "value_numeric": 50771481156.86399,
+          "unit": "CNY",
+          "formula": "forecast_net_profit * cfo_conversion",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"cfo_conversion\",\"forecast_net_profit\"]}"
+        },
+        {
+          "output_id": "forecast_fcf",
+          "output_role": "forecast_fcf",
+          "value_numeric": 38717473284.86399,
+          "unit": "CNY",
+          "formula": "forecast_cfo - forecast_capex",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_capex\",\"forecast_cfo\"]}"
+        },
+        {
+          "output_id": "forecast_gross_profit",
+          "output_role": "forecast_gross_profit",
+          "value_numeric": 108486070848.0,
+          "unit": "CNY",
+          "formula": "forecast_revenue * gross_margin",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_revenue\",\"gross_margin\"]}"
+        },
+        {
+          "output_id": "forecast_net_profit",
+          "output_role": "forecast_net_profit",
+          "value_numeric": 42309567630.71999,
+          "unit": "CNY",
+          "formula": "forecast_operating_profit * (1 - effective_tax_rate)",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"effective_tax_rate\",\"forecast_operating_profit\"]}"
+        },
+        {
+          "output_id": "forecast_operating_expense",
+          "output_role": "forecast_operating_expense",
+          "value_numeric": 56252036736.00001,
+          "unit": "CNY",
+          "formula": "forecast_revenue * operating_expense_ratio",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_revenue\",\"operating_expense_ratio\"]}"
+        },
+        {
+          "output_id": "forecast_operating_profit",
+          "output_role": "forecast_operating_profit",
+          "value_numeric": 52234034111.99999,
+          "unit": "CNY",
+          "formula": "forecast_gross_profit - forecast_operating_expense",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_gross_profit\",\"forecast_operating_expense\"]}"
+        },
+        {
+          "output_id": "forecast_revenue",
+          "output_role": "forecast_revenue",
+          "value_numeric": 401800262400.0,
+          "unit": "CNY",
+          "formula": "actual_revenue * (1 + revenue_growth)",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_revenue\",\"revenue_growth\"]}"
+        },
+        {
+          "output_id": "historical_cfo_conversion",
+          "output_role": "historical_cfo_conversion",
+          "value_numeric": 1.71716259239527,
+          "unit": "multiple",
+          "formula": "actual_cfo / actual_net_profit",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_cfo\",\"actual_net_profit\"]}"
+        },
+        {
+          "output_id": "historical_gross_margin",
+          "output_role": "historical_gross_margin",
+          "value_numeric": 0.2649086860327545,
+          "unit": "ratio",
+          "formula": "1 - actual_cost / actual_revenue",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_cost\",\"actual_revenue\"]}"
+        },
+        {
+          "output_id": "historical_selling_ratio",
+          "output_role": "historical_selling_ratio",
+          "value_numeric": 0.09375639720836579,
+          "unit": "ratio",
+          "formula": "actual_selling_expense / actual_revenue",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_revenue\",\"actual_selling_expense\"]}"
+        }
+      ]
+    },
+    {
+      "name": "financial_sensitivity_3x3",
+      "passed": true,
+      "detail": [
+        {
+          "sensitivity_id": "growth_x_margin",
+          "x_input_id": "revenue_growth",
+          "x_value": 0.04,
+          "y_input_id": "gross_margin",
+          "y_value": 0.25,
+          "output_id": "forecast_net_profit",
+          "output_value": 34474462513.92,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_margin",
+          "x_input_id": "revenue_growth",
+          "x_value": 0.04,
+          "y_input_id": "gross_margin",
+          "y_value": 0.27,
+          "output_id": "forecast_net_profit",
+          "output_value": 40742546607.35999,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_margin",
+          "x_input_id": "revenue_growth",
+          "x_value": 0.04,
+          "y_input_id": "gross_margin",
+          "y_value": 0.29,
+          "output_id": "forecast_net_profit",
+          "output_value": 47010630700.79999,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_margin",
+          "x_input_id": "revenue_growth",
+          "x_value": 0.08,
+          "y_input_id": "gross_margin",
+          "y_value": 0.25,
+          "output_id": "forecast_net_profit",
+          "output_value": 35800403379.84,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_margin",
+          "x_input_id": "revenue_growth",
+          "x_value": 0.08,
+          "y_input_id": "gross_margin",
+          "y_value": 0.27,
+          "output_id": "forecast_net_profit",
+          "output_value": 42309567630.71999,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_margin",
+          "x_input_id": "revenue_growth",
+          "x_value": 0.08,
+          "y_input_id": "gross_margin",
+          "y_value": 0.29,
+          "output_id": "forecast_net_profit",
+          "output_value": 48818731881.59998,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_margin",
+          "x_input_id": "revenue_growth",
+          "x_value": 0.12,
+          "y_input_id": "gross_margin",
+          "y_value": 0.25,
+          "output_id": "forecast_net_profit",
+          "output_value": 37126344245.76,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_margin",
+          "x_input_id": "revenue_growth",
+          "x_value": 0.12,
+          "y_input_id": "gross_margin",
+          "y_value": 0.27,
+          "output_id": "forecast_net_profit",
+          "output_value": 43876588654.08002,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_margin",
+          "x_input_id": "revenue_growth",
+          "x_value": 0.12,
+          "y_input_id": "gross_margin",
+          "y_value": 0.29,
+          "output_id": "forecast_net_profit",
+          "output_value": 50626833062.4,
+          "unit": "CNY"
+        }
+      ]
+    },
+    {
+      "name": "historical_financial_ratios_calculated",
+      "passed": true,
+      "detail": [
+        {
+          "output_id": "forecast_capex",
+          "output_role": "forecast_capex",
+          "value_numeric": 12054007872.0,
+          "unit": "CNY",
+          "formula": "forecast_revenue * capex_ratio",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"capex_ratio\",\"forecast_revenue\"]}"
+        },
+        {
+          "output_id": "forecast_cfo",
+          "output_role": "forecast_cfo",
+          "value_numeric": 50771481156.86399,
+          "unit": "CNY",
+          "formula": "forecast_net_profit * cfo_conversion",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"cfo_conversion\",\"forecast_net_profit\"]}"
+        },
+        {
+          "output_id": "forecast_fcf",
+          "output_role": "forecast_fcf",
+          "value_numeric": 38717473284.86399,
+          "unit": "CNY",
+          "formula": "forecast_cfo - forecast_capex",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_capex\",\"forecast_cfo\"]}"
+        },
+        {
+          "output_id": "forecast_gross_profit",
+          "output_role": "forecast_gross_profit",
+          "value_numeric": 108486070848.0,
+          "unit": "CNY",
+          "formula": "forecast_revenue * gross_margin",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_revenue\",\"gross_margin\"]}"
+        },
+        {
+          "output_id": "forecast_net_profit",
+          "output_role": "forecast_net_profit",
+          "value_numeric": 42309567630.71999,
+          "unit": "CNY",
+          "formula": "forecast_operating_profit * (1 - effective_tax_rate)",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"effective_tax_rate\",\"forecast_operating_profit\"]}"
+        },
+        {
+          "output_id": "forecast_operating_expense",
+          "output_role": "forecast_operating_expense",
+          "value_numeric": 56252036736.00001,
+          "unit": "CNY",
+          "formula": "forecast_revenue * operating_expense_ratio",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_revenue\",\"operating_expense_ratio\"]}"
+        },
+        {
+          "output_id": "forecast_operating_profit",
+          "output_role": "forecast_operating_profit",
+          "value_numeric": 52234034111.99999,
+          "unit": "CNY",
+          "formula": "forecast_gross_profit - forecast_operating_expense",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_gross_profit\",\"forecast_operating_expense\"]}"
+        },
+        {
+          "output_id": "forecast_revenue",
+          "output_role": "forecast_revenue",
+          "value_numeric": 401800262400.0,
+          "unit": "CNY",
+          "formula": "actual_revenue * (1 + revenue_growth)",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_revenue\",\"revenue_growth\"]}"
+        },
+        {
+          "output_id": "historical_cfo_conversion",
+          "output_role": "historical_cfo_conversion",
+          "value_numeric": 1.71716259239527,
+          "unit": "multiple",
+          "formula": "actual_cfo / actual_net_profit",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_cfo\",\"actual_net_profit\"]}"
+        },
+        {
+          "output_id": "historical_gross_margin",
+          "output_role": "historical_gross_margin",
+          "value_numeric": 0.2649086860327545,
+          "unit": "ratio",
+          "formula": "1 - actual_cost / actual_revenue",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_cost\",\"actual_revenue\"]}"
+        },
+        {
+          "output_id": "historical_selling_ratio",
+          "output_role": "historical_selling_ratio",
+          "value_numeric": 0.09375639720836579,
+          "unit": "ratio",
+          "formula": "actual_selling_expense / actual_revenue",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_revenue\",\"actual_selling_expense\"]}"
+        }
+      ]
+    },
+    {
+      "name": "valuation_forward_pe_accuracy",
+      "passed": true,
+      "detail": [
+        {
+          "output_id": "expectation_gap",
+          "output_role": "expectation_gap",
+          "value_numeric": 0.22515763833333335,
+          "unit": "ratio",
+          "formula": "forecast_net_profit / reverse_implied_earnings - 1",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_net_profit\",\"reverse_implied_earnings\"]}"
+        },
+        {
+          "output_id": "forecast_net_profit",
+          "output_role": "forecast_net_profit",
+          "value_numeric": 36754729150.0,
+          "unit": "CNY",
+          "formula": "actual_net_profit * (1 + earnings_growth)",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_net_profit\",\"earnings_growth\"]}"
+        },
+        {
+          "output_id": "forecast_vs_consensus",
+          "output_role": "forecast_vs_consensus",
+          "value_numeric": -0.006628941891891893,
+          "unit": "ratio",
+          "formula": "forecast_net_profit / consensus_net_profit - 1",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"consensus_net_profit\",\"forecast_net_profit\"]}"
+        },
+        {
+          "output_id": "forward_pe",
+          "output_role": "forward_pe",
+          "value_numeric": 11.427100939471893,
+          "unit": "multiple",
+          "formula": "current_market_cap / forecast_net_profit",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"current_market_cap\",\"forecast_net_profit\"]}"
+        },
+        {
+          "output_id": "implied_market_cap",
+          "output_role": "implied_market_cap",
+          "value_numeric": 514566208100.0,
+          "unit": "CNY",
+          "formula": "forecast_net_profit * target_pe",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_net_profit\",\"target_pe\"]}"
+        },
+        {
+          "output_id": "reverse_implied_earnings",
+          "output_role": "reverse_implied_earnings",
+          "value_numeric": 30000000000.0,
+          "unit": "CNY",
+          "formula": "current_market_cap / target_pe",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"current_market_cap\",\"target_pe\"]}"
+        }
+      ]
+    },
+    {
+      "name": "reverse_valuation_accuracy",
+      "passed": true,
+      "detail": [
+        {
+          "output_id": "expectation_gap",
+          "output_role": "expectation_gap",
+          "value_numeric": 0.22515763833333335,
+          "unit": "ratio",
+          "formula": "forecast_net_profit / reverse_implied_earnings - 1",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_net_profit\",\"reverse_implied_earnings\"]}"
+        },
+        {
+          "output_id": "forecast_net_profit",
+          "output_role": "forecast_net_profit",
+          "value_numeric": 36754729150.0,
+          "unit": "CNY",
+          "formula": "actual_net_profit * (1 + earnings_growth)",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_net_profit\",\"earnings_growth\"]}"
+        },
+        {
+          "output_id": "forecast_vs_consensus",
+          "output_role": "forecast_vs_consensus",
+          "value_numeric": -0.006628941891891893,
+          "unit": "ratio",
+          "formula": "forecast_net_profit / consensus_net_profit - 1",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"consensus_net_profit\",\"forecast_net_profit\"]}"
+        },
+        {
+          "output_id": "forward_pe",
+          "output_role": "forward_pe",
+          "value_numeric": 11.427100939471893,
+          "unit": "multiple",
+          "formula": "current_market_cap / forecast_net_profit",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"current_market_cap\",\"forecast_net_profit\"]}"
+        },
+        {
+          "output_id": "implied_market_cap",
+          "output_role": "implied_market_cap",
+          "value_numeric": 514566208100.0,
+          "unit": "CNY",
+          "formula": "forecast_net_profit * target_pe",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_net_profit\",\"target_pe\"]}"
+        },
+        {
+          "output_id": "reverse_implied_earnings",
+          "output_role": "reverse_implied_earnings",
+          "value_numeric": 30000000000.0,
+          "unit": "CNY",
+          "formula": "current_market_cap / target_pe",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"current_market_cap\",\"target_pe\"]}"
+        }
+      ]
+    },
+    {
+      "name": "valuation_expectation_gap_present",
+      "passed": true,
+      "detail": [
+        {
+          "output_id": "expectation_gap",
+          "output_role": "expectation_gap",
+          "value_numeric": 0.22515763833333335,
+          "unit": "ratio",
+          "formula": "forecast_net_profit / reverse_implied_earnings - 1",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_net_profit\",\"reverse_implied_earnings\"]}"
+        },
+        {
+          "output_id": "forecast_net_profit",
+          "output_role": "forecast_net_profit",
+          "value_numeric": 36754729150.0,
+          "unit": "CNY",
+          "formula": "actual_net_profit * (1 + earnings_growth)",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"actual_net_profit\",\"earnings_growth\"]}"
+        },
+        {
+          "output_id": "forecast_vs_consensus",
+          "output_role": "forecast_vs_consensus",
+          "value_numeric": -0.006628941891891893,
+          "unit": "ratio",
+          "formula": "forecast_net_profit / consensus_net_profit - 1",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"consensus_net_profit\",\"forecast_net_profit\"]}"
+        },
+        {
+          "output_id": "forward_pe",
+          "output_role": "forward_pe",
+          "value_numeric": 11.427100939471893,
+          "unit": "multiple",
+          "formula": "current_market_cap / forecast_net_profit",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"current_market_cap\",\"forecast_net_profit\"]}"
+        },
+        {
+          "output_id": "implied_market_cap",
+          "output_role": "implied_market_cap",
+          "value_numeric": 514566208100.0,
+          "unit": "CNY",
+          "formula": "forecast_net_profit * target_pe",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"forecast_net_profit\",\"target_pe\"]}"
+        },
+        {
+          "output_id": "reverse_implied_earnings",
+          "output_role": "reverse_implied_earnings",
+          "value_numeric": 30000000000.0,
+          "unit": "CNY",
+          "formula": "current_market_cap / target_pe",
+          "content_label": "AGENT_CALCULATION",
+          "quality_status": "validated",
+          "lineage_json": "{\"direct_dependencies\":[\"current_market_cap\",\"target_pe\"]}"
+        }
+      ]
+    },
+    {
+      "name": "valuation_bear_base_bull_order",
+      "passed": true,
+      "detail": [
+        385756056400.0,
+        514566208100.0,
+        653492340300.0001
+      ]
+    },
+    {
+      "name": "valuation_sensitivity_3x3",
+      "passed": true,
+      "detail": [
+        {
+          "sensitivity_id": "growth_x_target_pe",
+          "x_input_id": "earnings_growth",
+          "x_value": 0.04,
+          "y_input_id": "target_pe",
+          "y_value": 11.0,
+          "output_id": "implied_market_cap",
+          "output_value": 385756056400.0,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_target_pe",
+          "x_input_id": "earnings_growth",
+          "x_value": 0.04,
+          "y_input_id": "target_pe",
+          "y_value": 14.0,
+          "output_id": "implied_market_cap",
+          "output_value": 490962253600.0,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_target_pe",
+          "x_input_id": "earnings_growth",
+          "x_value": 0.04,
+          "y_input_id": "target_pe",
+          "y_value": 17.0,
+          "output_id": "implied_market_cap",
+          "output_value": 596168450800.0,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_target_pe",
+          "x_input_id": "earnings_growth",
+          "x_value": 0.09,
+          "y_input_id": "target_pe",
+          "y_value": 11.0,
+          "output_id": "implied_market_cap",
+          "output_value": 404302020650.0,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_target_pe",
+          "x_input_id": "earnings_growth",
+          "x_value": 0.09,
+          "y_input_id": "target_pe",
+          "y_value": 14.0,
+          "output_id": "implied_market_cap",
+          "output_value": 514566208100.0,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_target_pe",
+          "x_input_id": "earnings_growth",
+          "x_value": 0.09,
+          "y_input_id": "target_pe",
+          "y_value": 17.0,
+          "output_id": "implied_market_cap",
+          "output_value": 624830395550.0,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_target_pe",
+          "x_input_id": "earnings_growth",
+          "x_value": 0.14,
+          "y_input_id": "target_pe",
+          "y_value": 11.0,
+          "output_id": "implied_market_cap",
+          "output_value": 422847984900.00006,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_target_pe",
+          "x_input_id": "earnings_growth",
+          "x_value": 0.14,
+          "y_input_id": "target_pe",
+          "y_value": 14.0,
+          "output_id": "implied_market_cap",
+          "output_value": 538170162600.0001,
+          "unit": "CNY"
+        },
+        {
+          "sensitivity_id": "growth_x_target_pe",
+          "x_input_id": "earnings_growth",
+          "x_value": 0.14,
+          "y_input_id": "target_pe",
+          "y_value": 17.0,
+          "output_id": "implied_market_cap",
+          "output_value": 653492340300.0001,
+          "unit": "CNY"
+        }
+      ]
+    },
+    {
+      "name": "model_audit_tables_populated",
+      "passed": true,
+      "detail": {
+        "model_definitions": 5,
+        "model_packages": 5,
+        "model_runs": 11,
+        "model_inputs": 78,
+        "model_outputs": 76,
+        "model_sensitivity_results": 27,
+        "model_validation_events": 0
+      }
+    },
+    {
+      "name": "fact_inputs_have_observation_and_evidence",
+      "passed": true,
+      "detail": {
+        "total": 20,
+        "traced": 20
+      }
+    },
+    {
+      "name": "fact_assumption_calculation_labels_separated",
+      "passed": true,
+      "detail": {
+        "fact": 0,
+        "assumption": 0,
+        "output": 0
+      }
+    },
+    {
+      "name": "forecast_valuation_no_human_review_gate",
+      "passed": true,
+      "detail": 6
+    },
+    {
+      "name": "all_outputs_reproducible_from_stored_inputs",
+      "passed": true,
+      "detail": {
+        "mr:128dfaa1fef071e657612060": true,
+        "mr:982e0a1e5f633adfdbbc39e4": true,
+        "mr:f2fb0ced30b36d65d6de560c": true,
+        "mr:c8eb5f83e8eb34e8b81c4ff5": true,
+        "mr:107e74a45dbd2fb283bc74b6": true,
+        "mr:8fd32159d541939aa39de509": true,
+        "mr:97d0c5bdb386749551cc5fe1": true,
+        "mr:5d2ca7f32f028ecd233762ed": true,
+        "mr:aa69b631af2e2842b4b90136": true,
+        "mr:c8426fae0240ddeb8c7dba7c": true,
+        "mr:817ad7a65f892a17d721572f": true
+      }
+    },
+    {
+      "name": "unsafe_formula_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "unsafe_formula",
+          "message": "formula function is not in the whitelist",
+          "path": "$.calculations[0].formula"
+        }
+      ]
+    },
+    {
+      "name": "future_assumption_leakage_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "future_assumption_leakage",
+          "message": "Assumption was not available at the model cutoff",
+          "path": "$.scenarios[0].assumptions[0].available_at"
+        }
+      ]
+    },
+    {
+      "name": "assumption_cannot_masquerade_as_fact",
+      "passed": true,
+      "detail": [
+        {
+          "code": "assumption_label_invalid",
+          "message": "Scenario values must use SCENARIO_ASSUMPTION",
+          "path": "$.scenarios[0].assumptions[0].content_label"
+        }
+      ]
+    },
+    {
+      "name": "market_denominator_scope_mismatch_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "scope_mismatch",
+          "message": "Market model inputs must share scope.scope_key",
+          "path": "$.scenarios[0].assumptions[0].scope_key"
+        }
+      ]
+    },
+    {
+      "name": "valuation_forecast_timestamp_mismatch_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "valuation_timestamp_mismatch",
+          "message": "Valuation and forecast snapshot timestamps must match",
+          "path": "$.controls"
+        }
+      ]
+    },
+    {
+      "name": "fund_holdings_boundary_enforced",
+      "passed": true,
+      "detail": [
+        {
+          "code": "research_boundary_violation",
+          "message": "Forbidden decision/holdings fields: ['$.fund_holdings']",
+          "path": "$"
+        }
+      ]
+    },
+    {
+      "name": "point_in_time_fact_future_leakage_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "fact_unavailable_at_cutoff",
+          "message": "No eligible fact for revenue_previous at 2024-03-27T15:59:59.000Z",
+          "path": "$.fact_inputs[0]"
+        },
+        {
+          "code": "fact_unavailable_at_cutoff",
+          "message": "No eligible fact for revenue_current at 2024-03-27T15:59:59.000Z",
+          "path": "$.fact_inputs[1]"
+        }
+      ]
+    },
+    {
+      "name": "model_package_id_hash_conflict_blocked",
+      "passed": true,
+      "detail": [
+        {
+          "code": "package_id_content_conflict",
+          "message": "package_id already exists with different content",
+          "path": "$"
+        }
+      ]
+    },
+    {
+      "name": "model_run_idempotency",
+      "passed": true,
+      "detail": {
+        "before": {
+          "model_definitions": 5,
+          "model_packages": 5,
+          "model_runs": 11,
+          "model_inputs": 78,
+          "model_outputs": 76,
+          "model_sensitivity_results": 27,
+          "model_validation_events": 0
+        },
+        "after": {
+          "model_definitions": 5,
+          "model_packages": 5,
+          "model_runs": 11,
+          "model_inputs": 78,
+          "model_outputs": 76,
+          "model_sensitivity_results": 27,
+          "model_validation_events": 0
+        }
+      }
+    },
+    {
+      "name": "assumptions_do_not_pollute_fact_store",
+      "passed": true,
+      "detail": {
+        "before": 12,
+        "after": 12
+      }
+    },
+    {
+      "name": "sqlite_integrity_and_foreign_keys",
+      "passed": true,
+      "detail": {
+        "database": "tests\\tmp-stage7-review-removal.db",
+        "counts": {
+          "model_definitions": 5,
+          "model_packages": 5,
+          "model_runs": 11,
+          "model_inputs": 78,
+          "model_outputs": 76,
+          "model_sensitivity_results": 27,
+          "model_validation_events": 0
+        },
+        "model_types": [
+          {
+            "model_type": "company_operating_bridge",
+            "packages": 1,
+            "runs": 1
+          },
+          {
+            "model_type": "competition_concentration",
+            "packages": 1,
+            "runs": 1
+          },
+          {
+            "model_type": "financial_forecast",
+            "packages": 1,
+            "runs": 3
+          },
+          {
+            "model_type": "market_size_dual",
+            "packages": 1,
+            "runs": 3
+          },
+          {
+            "model_type": "valuation_expectations",
+            "packages": 1,
+            "runs": 3
+          }
+        ],
+        "integrity_check": "ok",
+        "foreign_key_violations": []
+      }
+    }
+  ],
+  "engine_status": {
+    "database": "tests\\tmp-stage7-review-removal.db",
+    "counts": {
+      "model_definitions": 5,
+      "model_packages": 5,
+      "model_runs": 11,
+      "model_inputs": 78,
+      "model_outputs": 76,
+      "model_sensitivity_results": 27,
+      "model_validation_events": 0
+    },
+    "model_types": [
+      {
+        "model_type": "company_operating_bridge",
+        "packages": 1,
+        "runs": 1
+      },
+      {
+        "model_type": "competition_concentration",
+        "packages": 1,
+        "runs": 1
+      },
+      {
+        "model_type": "financial_forecast",
+        "packages": 1,
+        "runs": 3
+      },
+      {
+        "model_type": "market_size_dual",
+        "packages": 1,
+        "runs": 3
+      },
+      {
+        "model_type": "valuation_expectations",
+        "packages": 1,
+        "runs": 3
+      }
+    ],
+    "integrity_check": "ok",
+    "foreign_key_violations": []
+  },
+  "declared_boundaries": [
+    "演示模型的市场、市值、一致预期和预测参数均为 SCENARIO_ASSUMPTION，不是实时事实或投资意见。",
+    "正式研究需把阶段五数据源持续写入阶段六事实仓，再按同一模型合同运行。",
+    "财务预测和估值结果通过全部必需系统质量门后直接进入内部研究输出。",
+    "系统不接收基金持仓，不推断基金仓位，不自动发出买卖指令。"
+  ],
+  "failures": []
+}

@@ -1,0 +1,96 @@
+{
+  "spec_id": "CR.KB.WAREHOUSE.V1",
+  "spec_version": "1.0.0",
+  "status": "reference_implementation_ready_population_incremental",
+  "scope": "full_consumer_research_without_fund_holdings",
+  "purpose": "将阶段三至五的分类、指标、来源和证据规范落为支持历史时点查询的消费研究知识库与时序仓库",
+  "reference_runtime": {
+    "engine": "SQLite 3 with FTS5",
+    "database_path": "data/curated/consumer-research.db",
+    "object_store_path": "data/raw/documents",
+    "quarantine_path": "data/quarantine",
+    "production_substitution": ["PostgreSQL", "object_storage", "licensed_vector_index"]
+  },
+  "layers": {
+    "raw": "不可变来源响应、文档和摄取包；保留来源与许可元数据",
+    "normalized": "实体、关系、文档、切片、证据和指标的统一交换包",
+    "curated": "通过许可、历史时点、实体、指标、证据和质量门的可查询记录",
+    "quarantine": "未通过准入的记录及逐条原因"
+  },
+  "storage_domains": {
+    "master_data": ["entities", "entity_aliases", "external_identifiers", "relationships", "classifications"],
+    "document_knowledge": ["documents", "document_entities", "document_chunks", "evidence"],
+    "time_series": ["observations", "observation_versions"],
+    "operations": ["ingestion_runs", "ingestion_errors", "source_cursors", "freshness_state", "quality_events"]
+  },
+  "temporal_model": {
+    "business_time": ["valid_from", "valid_to", "period_start", "period_end", "as_of_date"],
+    "knowledge_time": ["published_at", "available_at", "observed_at", "ingested_at", "superseded_at"],
+    "historical_query_rule": "available_at <= cutoff_timestamp and valid-time interval contains requested business date",
+    "revision_rule": "修订值新增版本，不覆盖原始值；current标记仅表示最新已知版本"
+  },
+  "document_pipeline": [
+    "register_source_record",
+    "verify_license_and_access",
+    "verify_content_hash",
+    "extract_text_and_tables",
+    "split_by_page_section_and_table",
+    "bind_entities_and_classifications",
+    "create_locator_and_evidence",
+    "index_fts5",
+    "optional_external_embedding_after_license_approval"
+  ],
+  "retrieval": {
+    "modes": ["exact_entity", "alias_and_identifier", "classification", "structured_metric", "point_in_time", "full_text_bm25", "document_and_evidence_locator"],
+    "hybrid_policy": "先执行实体、许可和历史时点过滤，再合并结构化结果与FTS5结果；向量检索不得绕过过滤门",
+    "citation_rule": "进入研究答案的文档切片必须能够回到document_id、chunk_id、locator和evidence_id"
+  },
+  "ingestion_contract": {
+    "format": "JSON object",
+    "required_top_level": ["package_id", "source_id", "retrieved_at", "license_tag"],
+    "optional_collections": ["entities", "aliases", "identifiers", "relationships", "classifications", "documents", "chunks", "evidence", "observations", "source_cursor"],
+    "idempotency": "package_id and record primary keys",
+    "transaction": "单个摄取包原子提交；任何阻断错误导致整个包回滚并记录隔离报告"
+  },
+  "quality_gates": [
+    "source_registered",
+    "license_allowed_for_curated_use",
+    "fund_holdings_fields_forbidden",
+    "entity_type_and_id_valid",
+    "relationship_predicate_valid",
+    "metric_id_registered",
+    "document_hash_and_locator_present",
+    "evidence_reference_resolves",
+    "observation_period_and_available_at_valid",
+    "company_financial_scope_complete",
+    "duplicate_and_revision_policy",
+    "cutoff_timestamp_enforced"
+  ],
+  "refresh_classes": {
+    "market_daily": {"schedule": "trading_day_after_exchange_final", "maximum_lag_hours": 12},
+    "announcements": {"schedule": "hourly_incremental", "maximum_lag_hours": 6},
+    "news_leads": {"schedule": "hourly_incremental", "maximum_lag_hours": 2},
+    "macro": {"schedule": "daily_release_scan", "maximum_lag_hours": 24},
+    "financials": {"schedule": "daily_filing_scan_and_event_trigger", "maximum_lag_hours": 24},
+    "research_metadata": {"schedule": "daily_incremental", "maximum_lag_hours": 24},
+    "enterprise_risk": {"schedule": "daily_incremental", "maximum_lag_hours": 24},
+    "master_data": {"schedule": "weekly_full_reconciliation_and_event_trigger", "maximum_lag_hours": 168},
+    "official_policy_documents": {"schedule": "daily_incremental", "maximum_lag_hours": 24},
+    "official_industry_releases": {"schedule": "daily_incremental", "maximum_lag_hours": 24}
+  },
+  "acceptance_requirements": {
+    "schema_tables_minimum": 18,
+    "taxonomy_nodes_loaded": 87,
+    "metric_definitions_loaded": 99,
+    "seed_entities_minimum": 10,
+    "seed_documents_minimum": 2,
+    "seed_observations_minimum": 12,
+    "tests": ["idempotent_ingestion", "point_in_time_exclusion", "full_text_retrieval", "entity_alias_resolution", "evidence_trace", "revision_preservation", "quarantine_on_invalid_package", "freshness_report", "all_registered_source_refresh_plan"]
+  },
+  "declared_boundaries": [
+    "全市场公司、品牌、产品和SKU仍需按数据许可持续回填与人工审核",
+    "商业渠道、消费者面板和另类数据未采购前不进入curated层",
+    "本地FTS5提供词法检索；外部向量化须在许可、隐私和模型服务审批后启用",
+    "Gildata合同未确认前只允许其记录处于许可闸门后的内部技术验证状态"
+  ]
+}
