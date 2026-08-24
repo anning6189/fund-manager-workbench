@@ -36,6 +36,7 @@ if str(TOOLS_ROOT) not in sys.path:
 
 import consumer_task_library as task_library  # noqa: E402
 import consumer_workflow_engine as workflow  # noqa: E402
+import agent_self_calibration as self_calibration  # noqa: E402
 
 
 SHANGHAI = ZoneInfo("Asia/Shanghai")
@@ -730,6 +731,163 @@ class WorkbenchService:
             "truth_boundary": "ready 表示研究结构可用，不代表所需数据已经完成生产回填。",
         }
 
+    def ops_status(self) -> dict[str, Any]:
+        """正式交付状态卡：自动同步、数据日期一致性、最近日志。"""
+        today = datetime.now(SHANGHAI).date().isoformat()
+        next_sync = datetime.combine(datetime.now(SHANGHAI).date(), time(8, 40), SHANGHAI)
+        if datetime.now(SHANGHAI) >= next_sync:
+            next_sync = next_sync + timedelta(days=1)
+        while next_sync.weekday() >= 5:
+            next_sync = next_sync + timedelta(days=1)
+        log_candidates = [
+            PROJECT_ROOT / "data" / "monitoring" / "module3-realtime-research" / "server-daily-sync.log",
+            self.data_root.parent.parent / "monitoring" / "module3-realtime-research" / "server-daily-sync.log",
+        ]
+        log_path = next((p for p in log_candidates if p.is_file()), log_candidates[0])
+        log_tail: list[str] = []
+        last_success_at = None
+        last_failure = None
+        if log_path.is_file():
+            try:
+                lines = log_path.read_text(encoding="utf-8", errors="ignore").splitlines()[-80:]
+                log_tail = lines[-12:]
+                for line in reversed(lines):
+                    m = re.search(r"\[(.*?)\]", line)
+                    if "每日晨报同步结束" in line and m:
+                        last_success_at = m.group(1)
+                        break
+                for line in reversed(lines):
+                    if any(k in line for k in ("失败", "Error", "Exception", "Traceback")):
+                        last_failure = line[-220:]
+                        break
+            except Exception as exc:
+                last_failure = f"日志读取失败：{exc}"
+        with self.connect() as connection:
+            stock_date = connection.execute(
+                "SELECT MAX(rating_date) AS rating_date FROM daily_stock_ratings"
+            ).fetchone()
+            latest_rating_date = stock_date["rating_date"] if stock_date else None
+            stock = connection.execute(
+                """SELECT ? AS rating_date, MAX(quote_trade_date) AS market_date, COUNT(*) AS rows
+                   FROM daily_stock_ratings WHERE rating_date=?""",
+                (latest_rating_date, latest_rating_date),
+            ).fetchone() if latest_rating_date else None
+            brief = connection.execute("SELECT MAX(brief_date) AS brief_date FROM daily_brief_sections").fetchone()
+            quote = connection.execute("SELECT MAX(trade_date) AS quote_date, COUNT(*) AS rows FROM stock_daily_quotes").fetchone()
+            source_rows = [dict(row) for row in connection.execute(
+                """SELECT s.source_id,s.name,MAX(c.last_success_at) AS last_sync
+                   FROM source_catalog s LEFT JOIN source_cursors c ON c.source_id=s.source_id
+                   GROUP BY s.source_id,s.name ORDER BY last_sync DESC LIMIT 8"""
+            ).fetchall()]
+        rating_date = stock["rating_date"] if stock else None
+        market_date = stock["market_date"] if stock else None
+        brief_date = brief["brief_date"] if brief else None
+        quote_date = quote["quote_date"] if quote else None
+        mismatches = []
+        if rating_date and market_date and rating_date != market_date:
+            mismatches.append(f"股票评级日期 {rating_date} 与行情实际交易日 {market_date} 不一致")
+        if brief_date and rating_date and brief_date != rating_date:
+            mismatches.append(f"晨报日期 {brief_date} 与股票评级日期 {rating_date} 不一致")
+        stale = rating_date != today
+        daily_sync_ok = not stale
+        daily_sync_detail = last_success_at or ("今日数据已更新（未发现 systemd 完成日志，可能为手动同步）" if daily_sync_ok else "尚未发现同步完成日志")
+        healthy = daily_sync_ok and not mismatches and not last_failure
+        if stale:
+            mismatches.insert(0, f"今日 {today} 尚未生成最新股票评级，当前最新为 {rating_date or '无'}")
+        return {
+            "status": "ok" if healthy else ("warn" if rating_date else "error"),
+            "today": today,
+            "last_success_at": last_success_at,
+            "next_sync_at": next_sync.isoformat(timespec="minutes"),
+            "dates": {
+                "brief_date": brief_date,
+                "rating_date": rating_date,
+                "market_date": market_date,
+                "quote_date": quote_date,
+                "stock_rows": stock["rows"] if stock else 0,
+                "quote_rows": quote["rows"] if quote else 0,
+            },
+            "checks": [
+                {"key": "daily_sync", "label": "自动同步", "ok": daily_sync_ok, "detail": daily_sync_detail},
+                {"key": "date_consistency", "label": "日期一致性", "ok": not mismatches, "detail": "一致" if not mismatches else "；".join(mismatches)},
+                {"key": "service_data", "label": "股票看板", "ok": bool(rating_date and stock and stock["rows"]), "detail": f"{rating_date or '无'} · {stock['rows'] if stock else 0} 条评级"},
+            ],
+            "last_failure": last_failure,
+            "sources": source_rows,
+            "log_tail": log_tail,
+        }
+
+    def self_calibration_status(self) -> dict[str, Any]:
+        """Agent 自校准：自检、自动修复、快照/后验、影子规则与自动回滚事件。"""
+        def parse_json(value: Any, fallback: Any) -> Any:
+            if not value:
+                return fallback
+            try:
+                return json.loads(value)
+            except Exception:
+                return fallback
+
+        with self.connect() as connection:
+            connection.executescript(self_calibration.DDL)
+            audit = connection.execute(
+                """SELECT * FROM agent_self_audit_runs
+                   ORDER BY created_at DESC LIMIT 1"""
+            ).fetchone()
+            active_rule = connection.execute(
+                """SELECT * FROM agent_rule_versions
+                   WHERE status='active' ORDER BY activated_at DESC,created_at DESC LIMIT 1"""
+            ).fetchone()
+            shadow_rule = connection.execute(
+                """SELECT * FROM agent_rule_versions
+                   WHERE status='shadow' ORDER BY created_at DESC LIMIT 1"""
+            ).fetchone()
+            events = [dict(row) for row in connection.execute(
+                """SELECT event_type,from_version,to_version,reason,metrics_json,created_at
+                   FROM agent_rule_events ORDER BY created_at DESC LIMIT 8"""
+            ).fetchall()]
+            snapshot_summary = connection.execute(
+                """SELECT COUNT(*) AS rows,
+                          COUNT(DISTINCT snapshot_date) AS days,
+                          MAX(snapshot_date) AS latest_date,
+                          SUM(CASE WHEN is_main_push=1 THEN 1 ELSE 0 END) AS main_rows
+                   FROM agent_recommendation_snapshots"""
+            ).fetchone()
+            outcome_rows = [dict(row) for row in connection.execute(
+                """SELECT horizon,COUNT(*) AS samples,AVG(absolute_return) AS avg_return
+                   FROM agent_recommendation_outcomes
+                   WHERE absolute_return IS NOT NULL
+                   GROUP BY horizon ORDER BY horizon"""
+            ).fetchall()]
+        audit_dict = dict(audit) if audit else {}
+        checks = parse_json(audit_dict.get("checks_json"), [])
+        issues = parse_json(audit_dict.get("issues_json"), [])
+        fixes = parse_json(audit_dict.get("auto_fixes_json"), [])
+        return {
+            "status": audit_dict.get("status") or "unknown",
+            "run_date": audit_dict.get("run_date"),
+            "created_at": audit_dict.get("created_at"),
+            "checks": checks,
+            "issues": issues,
+            "auto_fixes": fixes,
+            "active_rule": dict(active_rule) if active_rule else None,
+            "shadow_rule": dict(shadow_rule) if shadow_rule else None,
+            "events": [
+                {**event, "metrics": parse_json(event.get("metrics_json"), {})}
+                for event in events
+            ],
+            "snapshots": dict(snapshot_summary) if snapshot_summary else {},
+            "outcomes": [
+                {**row, "avg_return": round(float(row["avg_return"]), 2) if row.get("avg_return") is not None else None}
+                for row in outcome_rows
+            ],
+            "guardrails": [
+                "无人工批准：自动自检、自动修复、自动灰度、自动回滚",
+                "无效价格不得参与评分、图表和收益计算",
+                "暂缓买入/暂不推荐不得进入主推",
+                "规则变更必须有版本、事件和可回滚记录",
+            ],
+        }
+
     def morning_brief(self, brief_date: str | None = None) -> dict[str, Any]:
         """每日消费行研晨报：五模块倒金字塔结构，全部由研究底座真实内容装配。
         brief_date 指定时返回该日撰写文案（晨报历史档案）。"""
@@ -960,9 +1118,19 @@ class WorkbenchService:
         }
 
     def stock_focus(self, rating_date: str | None = None) -> dict[str, Any]:
-        """今日股票关注：全消费 A 股数据驱动评级（120 只 + 回避名单）。
+        """今日股票关注：全自动主推清单 + 消费股票池看板。
         rating_date 指定时返回不晚于该日的最近评级批次（晨报历史联动）。"""
         with self.connect() as connection:
+            rating_columns = {row[1] for row in connection.execute("PRAGMA table_info(daily_stock_ratings)").fetchall()}
+            for column, ddl in {
+                "invest_score": "ALTER TABLE daily_stock_ratings ADD COLUMN invest_score REAL",
+                "stability_score": "ALTER TABLE daily_stock_ratings ADD COLUMN stability_score REAL",
+                "board_status": "ALTER TABLE daily_stock_ratings ADD COLUMN board_status TEXT",
+                "holding_label": "ALTER TABLE daily_stock_ratings ADD COLUMN holding_label TEXT",
+                "state_reason": "ALTER TABLE daily_stock_ratings ADD COLUMN state_reason TEXT",
+            }.items():
+                if column not in rating_columns:
+                    connection.execute(ddl)
             if rating_date and re.fullmatch(r"\d{4}-\d{2}-\d{2}", rating_date):
                 latest = connection.execute(
                     "SELECT MAX(rating_date) FROM daily_stock_ratings WHERE rating_date <= ?",
@@ -976,14 +1144,199 @@ class WorkbenchService:
             rows = [dict(row) for row in connection.execute(
                 """SELECT r.security_id,r.security_name,r.sector_code,r.close_price,r.change_pct,r.pe_ttm,
                           r.turnover_rate,r.volume_ratio,r.market_cap_yi,r.event_hits,r.total_score,
-                          r.tier,r.rationale,r.quote_trade_date,p.sector_name
+                          r.tier,r.rationale,r.quote_trade_date,
+                          r.invest_score,r.stability_score,r.board_status,r.holding_label,r.state_reason,
+                          p.sector_name
                    FROM daily_stock_ratings r LEFT JOIN research_sector_packs p ON p.sector_code=r.sector_code
                    WHERE r.rating_date=? ORDER BY r.total_score DESC""",
                 (latest,),
             ).fetchall()]
+            recent_dates = [row[0] for row in connection.execute(
+                """SELECT DISTINCT rating_date FROM daily_stock_ratings
+                   WHERE rating_date <= ? ORDER BY rating_date DESC LIMIT 20""",
+                (latest,),
+            ).fetchall()]
+            history_rows: list[dict[str, Any]] = []
+            if recent_dates:
+                placeholders = ",".join("?" for _ in recent_dates)
+                history_rows = [dict(row) for row in connection.execute(
+                    f"""SELECT r.security_id,r.security_name,r.sector_code,r.close_price,r.change_pct,r.pe_ttm,
+                              r.turnover_rate,r.volume_ratio,r.market_cap_yi,r.event_hits,r.total_score,
+                              r.tier,r.rationale,r.quote_trade_date,r.rating_date,
+                              r.invest_score,r.stability_score,r.board_status,r.holding_label,r.state_reason,
+                              p.sector_name
+                       FROM daily_stock_ratings r LEFT JOIN research_sector_packs p ON p.sector_code=r.sector_code
+                       WHERE r.rating_date IN ({placeholders}) ORDER BY r.rating_date DESC,r.total_score DESC""",
+                    tuple(recent_dates),
+                ).fetchall()]
         tiers: dict[str, list[dict[str, Any]]] = {}
         for row in rows:
             tiers.setdefault(row["tier"], []).append(row)
+
+        def tier_rank(row: dict[str, Any]) -> int:
+            return {"重点关注": 0, "增持观察": 1, "中性": 2, "回避": 3}.get(row.get("tier"), 9)
+
+        def is_risk_name(row: dict[str, Any]) -> bool:
+            name = str(row.get("security_name") or "").upper()
+            return "ST" in name or "退" in name
+
+        def infer_holding_label(row: dict[str, Any]) -> str:
+            if row.get("holding_label"):
+                return str(row["holding_label"])
+            score = float(row.get("total_score") or 0)
+            pe = row.get("pe_ttm")
+            hits = int(row.get("event_hits") or 0)
+            if score >= 82 and hits >= 1 and (pe is None or pe <= 35):
+                return "中长期·中期可建仓"
+            if score >= 78 and hits >= 1:
+                return "中期"
+            if score >= 76:
+                return "中长期"
+            return "中长期·暂不建仓"
+
+        def action_for(row: dict[str, Any], index: int) -> str:
+            if index == 0:
+                return "建仓"
+            if index <= 2:
+                return "小仓位观察"
+            return "暂缓买入"
+
+        def data_quality(row: dict[str, Any]) -> list[str]:
+            flags = ["agent_auto_generated"]
+            flags.append("P2_local_rating")
+            if row.get("quote_trade_date") == latest:
+                flags.append("quote_same_day")
+            elif row.get("quote_trade_date"):
+                flags.append(f"quote_as_of:{row.get('quote_trade_date')}")
+            if row.get("pe_ttm") is None or (row.get("pe_ttm") or 0) <= 0:
+                flags.append("valuation_missing")
+            return flags
+
+        def decision_basis(row: dict[str, Any]) -> str:
+            bits = [
+                f"投资分 {float(row.get('invest_score') or row.get('total_score') or 0):.1f}",
+                f"稳定分 {float(row.get('stability_score') or 0):.1f}",
+                f"模型层级 {row.get('board_status') or row.get('tier') or '—'}",
+            ]
+            if row.get("event_hits"):
+                bits.append(f"事件催化 {row.get('event_hits')} 条")
+            if row.get("pe_ttm") and row.get("pe_ttm") > 0:
+                bits.append(f"PE-TTM {float(row.get('pe_ttm')):.1f}")
+            return "；".join(bits)
+
+        def not_main_reason(row: dict[str, Any], board_status: str) -> str:
+            if board_status == "核心·时机满足":
+                return "未进入主推：等待组合层 Gate、P0 数据核验或子行业分散度排序"
+            if board_status == "跟踪·等信号":
+                return "差一个信号：催化强度、估值位置或财务质量仍需验证"
+            if board_status == "长期·好公司":
+                return "长期逻辑保留，但当前买入时机不足"
+            if board_status == "扫描·全覆盖":
+                return "行业覆盖项，暂未满足主推或核心候选标准"
+            return "风险项，不进入主推"
+
+        def downgrade_condition(row: dict[str, Any]) -> str:
+            if row.get("sector_name") and "白酒" in str(row.get("sector_name")):
+                return "批价/动销连续 2 周转弱"
+            if row.get("change_pct") is not None and row.get("change_pct") < -3:
+                return "相对行业连续走弱或单日跌幅扩大需复核"
+            return "核心指标或事件催化连续 2 周转弱"
+
+        def enrich(row: dict[str, Any], board_status: str, index: int | None = None) -> dict[str, Any]:
+            out = dict(row)
+            score = float(out.get("invest_score") or out.get("total_score") or 0)
+            out["board_status"] = board_status
+            out["timing_score"] = round(min(100.0, max(0.0, score)), 1)
+            out["model_score"] = round(score, 1)
+            out["decision_basis"] = decision_basis(out)
+            out["data_quality_flags"] = [*data_quality(out), *(out.get("data_quality_flags_extra") or [])]
+            out["not_main_reason"] = not_main_reason(out, board_status)
+            if out.get("state_reason"):
+                out["not_main_reason"] = str(out["state_reason"])
+            if board_status == "长期·好公司" and out.get("stability_basis"):
+                out["not_main_reason"] = f"长期池稳定保留：{out['stability_basis']}"
+            out["downgrade_condition"] = downgrade_condition(out)
+            if index is not None:
+                out["holding_label"] = infer_holding_label(out)
+                out["recommendation_action"] = action_for(out, index)
+                out["core_logic"] = (out.get("state_reason") or out.get("rationale") or "AutoInvest 投资价值分进入主推候选")[:32]
+                out["audit_log_id"] = stable_id("audit", latest, out.get("security_id") or "", str(index))
+            return out
+
+        main_candidates = sorted([r for r in rows if (r.get("board_status") or "") == "核心候选" and not is_risk_name(r)], key=lambda r: (-(r.get("invest_score") or r.get("total_score") or 0), str(r.get("sector_code") or "")))
+        # 主推清单只放“有明确动作”的标的；暂缓买入的标的不再放入主推，
+        # 而是留在“可考虑买入/等待买点”等看板中继续观察。
+        main_push: list[dict[str, Any]] = []
+        main_push_limit = 3
+        used_sectors: set[str] = set()
+        for row in main_candidates:
+            sector = row.get("sector_code") or row.get("sector_name") or "unknown"
+            if len(main_push) < 3 and sector in used_sectors and len({r.get("sector_code") for r in main_candidates}) >= 3:
+                continue
+            main_push.append(enrich(row, "主推", len(main_push)))
+            used_sectors.add(sector)
+            if len(main_push) >= main_push_limit:
+                break
+        if len(main_push) < main_push_limit:
+            selected = {r.get("security_id") for r in main_push}
+            for row in main_candidates:
+                if row.get("security_id") in selected:
+                    continue
+                main_push.append(enrich(row, "主推", len(main_push)))
+                if len(main_push) >= main_push_limit:
+                    break
+
+        main_ids = {r.get("security_id") for r in main_push}
+        risk_rows = [r for r in rows if is_risk_name(r)]
+        risk_ids = {r.get("security_id") for r in risk_rows}
+        current_ids = {row.get("security_id") for row in rows}
+        latest_by_security: dict[str, dict[str, Any]] = {}
+        stats_by_security: dict[str, dict[str, Any]] = {}
+        for hist in history_rows:
+            sid = hist.get("security_id")
+            if not sid or is_risk_name(hist):
+                continue
+            latest_by_security.setdefault(sid, hist)
+            stat = stats_by_security.setdefault(sid, {"seen": 0, "long_days": 0, "avoid_days": 0, "scores": []})
+            stat["seen"] += 1
+            stat["scores"].append(float(hist.get("total_score") or 0))
+            if hist.get("tier") == "中性":
+                stat["long_days"] += 1
+            if hist.get("tier") == "回避":
+                stat["avoid_days"] += 1
+
+        stable_long_rows: list[dict[str, Any]] = []
+        has_model_board_status = any(row.get("board_status") for row in rows)
+        excluded_ids = {r.get("security_id") for r in [*main_push, *main_candidates, *[x for x in rows if (x.get("board_status") or "") == "重点跟踪"]]}
+        if not has_model_board_status:
+            for sid, stat in stats_by_security.items():
+                if sid in excluded_ids or sid in risk_ids:
+                    continue
+                avg_score = sum(stat["scores"]) / max(1, len(stat["scores"]))
+                last = latest_by_security.get(sid)
+                if not last:
+                    continue
+                if stat["avoid_days"] > 0:
+                    continue
+                if stat["long_days"] >= 1 or (50 <= avg_score <= 70 and stat["seen"] >= 2):
+                    row = dict(last)
+                    row["stability_basis"] = f"近{stat['seen']}个评级日保留观察；长期池命中{stat['long_days']}日；均分{avg_score:.1f}"
+                    if sid not in current_ids:
+                        row["data_quality_flags_extra"] = [f"carried_from:{row.get('rating_date')}"]
+                    stable_long_rows.append(row)
+
+        current_neutral_ids = {r.get("security_id") for r in tiers.get("中性", [])}
+        stable_additions = [r for r in stable_long_rows if r.get("security_id") not in current_neutral_ids]
+        scan_rows = [r for r in rows if (r.get("board_status") or "") == "行业扫描"]
+        scan_ids = {r.get("security_id") for r in scan_rows}
+        extra_risk_rows = [r for r in risk_rows if r.get("security_id") not in scan_ids]
+        board = {
+            "核心候选": [enrich(r, "核心·时机满足") for r in rows if (r.get("board_status") or "") == "核心候选" and r.get("security_id") not in main_ids and r.get("security_id") not in risk_ids],
+            "重点跟踪": [enrich(r, "跟踪·等信号") for r in rows if (r.get("board_status") or "") == "重点跟踪"],
+            "长期好公司": [enrich(r, "长期·好公司") for r in [*[r for r in rows if (r.get("board_status") or "") == "长期好公司"], *stable_additions]],
+            "行业扫描": [enrich(r, "扫描·全覆盖") for r in [*scan_rows, *extra_risk_rows]],
+        }
+        board_counts = {k: len(v) for k, v in board.items()}
         return {
             "date": latest,
             "market_date": next((row.get("quote_trade_date") for row in rows if row.get("quote_trade_date")), None),
@@ -991,8 +1344,150 @@ class WorkbenchService:
             "carryover": bool(rating_date and latest and latest < rating_date),
             "counts": {t: len(v) for t, v in tiers.items()},
             "tiers": tiers,
-            "universe_note": "数据驱动评级（动量40%/估值30%/事件催化30%），覆盖全消费A股研究池；为研究候选，非交易指令。",
+            "main_push": main_push,
+            "board": board,
+            "board_counts": board_counts,
+            "automation": {
+                "mode": "fully_automatic",
+                "owner": "agent",
+                "source_level": "P2_local_rating",
+                "rule_version": "AutoInvest V2.1 / Stock Framework V1.5",
+                "audit_note": "Agent 自动生成主推与看板；主推只放明确建仓/小仓位观察标的，暂缓买入留在看板继续观察。",
+            },
+            "universe_note": "全自动荐股 Agent 输出：主推清单≤3只且必须有明确动作；看板为覆盖/跟踪池。当前版本按中期/中长期持有价值生成投资分、稳定分、看板状态与审计依据；短期涨跌只作为买点参考，不再主导推荐。",
         }
+
+    def stock_trend(self, security_id: str, period: str = "1m") -> dict[str, Any]:
+        """单只股票走势：基于已同步的本地行情快照，不额外联网。"""
+        security_id = security_id.strip().upper()
+        if not re.fullmatch(r"[0-9A-Z.]{6,12}", security_id):
+            raise ValueError("证券代码格式不正确")
+        period = period if period in {"1w", "1m", "3m", "6m", "1y"} else "1m"
+        period_limits = {"1w": 5, "1m": 32, "3m": 75, "6m": 140, "1y": 260}
+        with self.connect() as connection:
+            meta = connection.execute(
+                """SELECT r.security_id,r.security_name,r.sector_code,p.sector_name,
+                          r.close_price,r.change_pct,r.pe_ttm,r.total_score,r.tier,r.rationale,
+                          r.rating_date,r.quote_trade_date,r.invest_score,r.stability_score,
+                          r.board_status,r.holding_label,r.state_reason
+                   FROM daily_stock_ratings r
+                   LEFT JOIN research_sector_packs p ON p.sector_code=r.sector_code
+                   WHERE r.security_id=?
+                   ORDER BY r.rating_date DESC LIMIT 1""",
+                (security_id,),
+            ).fetchone()
+            if not meta:
+                meta = connection.execute(
+                    """SELECT m.security_id,m.security_name,m.sector_code,p.sector_name
+                       FROM research_universe_members m
+                       LEFT JOIN research_sector_packs p ON p.sector_code=m.sector_code
+                       WHERE m.security_id=? LIMIT 1""",
+                    (security_id,),
+                ).fetchone()
+            if not meta:
+                raise LookupError("未找到该股票")
+            rows = [dict(row) for row in connection.execute(
+                """SELECT trade_date,close_price,change_pct
+                   FROM stock_daily_quotes
+                   WHERE security_id=? AND close_price IS NOT NULL AND close_price > 0
+                   ORDER BY trade_date DESC LIMIT ?""",
+                (security_id, period_limits[period]),
+            ).fetchall()]
+            rating_history = [dict(row) for row in connection.execute(
+                """SELECT rating_date,quote_trade_date,tier,total_score,invest_score,stability_score,
+                          board_status,holding_label,state_reason,rationale
+                   FROM daily_stock_ratings
+                   WHERE security_id=? AND rating_date >= date((SELECT MAX(rating_date) FROM daily_stock_ratings), '-32 days')
+                   ORDER BY rating_date ASC""",
+                (security_id,),
+            ).fetchall()]
+            meta_dict = dict(meta)
+            name_hint = meta_dict.get("security_name") or security_id
+            recent_events = [dict(row) for row in connection.execute(
+                """SELECT event_time,available_at,event_type,title,summary,materiality_score,locator,source_url
+                   FROM monitor_events
+                   WHERE status='accepted' AND (title LIKE ? OR summary LIKE ?)
+                   ORDER BY available_at DESC LIMIT 6""",
+                (f"%{name_hint}%", f"%{name_hint}%"),
+            ).fetchall()]
+        rows.reverse()
+        rows = self._filter_isolated_quote_outliers(rows)
+        points = []
+        first_close = next((row["close_price"] for row in rows if row["close_price"]), None)
+        prev_close = None
+        for row in rows:
+            close = row.get("close_price")
+            ret = ((close / first_close - 1) * 100) if first_close and close else None
+            points.append({
+                "date": row["trade_date"],
+                "close": close,
+                "change_pct": row.get("change_pct"),
+                "return_pct": round(ret, 2) if ret is not None else None,
+                "day_change": round(((close / prev_close - 1) * 100), 2) if prev_close and close else row.get("change_pct"),
+            })
+            if close:
+                prev_close = close
+        closes = [p["close"] for p in points if p["close"] is not None and p["close"] > 0]
+        return {
+            "security": meta_dict,
+            "period": period,
+            "points": points,
+            "rating_history": rating_history,
+            "evidence_chain": {
+                "decision": meta_dict.get("state_reason") or meta_dict.get("rationale") or "暂无明确模型说明",
+                "data_quality": [
+                    "P2_local_rating",
+                    f"rating_date:{meta_dict.get('rating_date') or 'unknown'}",
+                    f"market_date:{meta_dict.get('quote_trade_date') or 'unknown'}",
+                    "valuation_missing" if not meta_dict.get("pe_ttm") else "valuation_available",
+                ],
+                "risk_flags": [
+                    flag for flag in [
+                        "名称含 ST/退市风险" if any(x in str(meta_dict.get("security_name") or "").upper() for x in ("ST", "退")) else None,
+                        "行情日期与评级日期不一致" if meta_dict.get("rating_date") and meta_dict.get("quote_trade_date") and meta_dict.get("rating_date") != meta_dict.get("quote_trade_date") else None,
+                        "估值字段缺失" if not meta_dict.get("pe_ttm") else None,
+                    ] if flag
+                ],
+                "recent_events": recent_events,
+            },
+            "summary": {
+                "point_count": len(points),
+                "start_date": points[0]["date"] if points else None,
+                "end_date": points[-1]["date"] if points else None,
+                "start_close": closes[0] if closes else None,
+                "end_close": closes[-1] if closes else None,
+                "period_return_pct": round((closes[-1] / closes[0] - 1) * 100, 2) if len(closes) >= 2 and closes[0] else None,
+                "high": max(closes) if closes else None,
+                "low": min(closes) if closes else None,
+            },
+            "note": "走势来自本地已同步的 stock_daily_quotes 行情快照；系统会自动剔除空值或 0 价等无效行情点，评价等级轨迹来自 daily_stock_ratings 近一个月已有评级批次。仅用于研究观察，不构成交易指令。",
+        }
+
+    @staticmethod
+    def _filter_isolated_quote_outliers(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """Remove one-day quote spikes/dips caused by vendor/parser glitches."""
+        if len(rows) < 3:
+            return rows
+        filtered: list[dict[str, Any]] = []
+        for idx, row in enumerate(rows):
+            if idx == 0 or idx == len(rows) - 1:
+                filtered.append(row)
+                continue
+            try:
+                prev_close = float(rows[idx - 1].get("close_price") or 0)
+                close = float(row.get("close_price") or 0)
+                next_close = float(rows[idx + 1].get("close_price") or 0)
+            except (TypeError, ValueError):
+                continue
+            if prev_close <= 0 or close <= 0 or next_close <= 0:
+                continue
+            neighbours_close = abs(next_close / prev_close - 1) <= 0.35
+            middle_far_from_prev = abs(close / prev_close - 1) >= 0.45
+            middle_far_from_next = abs(next_close / close - 1) >= 0.45
+            if neighbours_close and middle_far_from_prev and middle_far_from_next:
+                continue
+            filtered.append(row)
+        return filtered
 
     def token_usage(self) -> dict[str, Any]:
         """Token 用量监控：读取 cc-switch 本地代理请求日志（只读）。"""
@@ -1698,18 +2193,23 @@ body{{margin:0;background:#f7f6f4;color:#171717;font-family:"Segoe UI","Microsof
                 self.serve_research_report_page(event_id)
             elif parsed.path == "/api/data-status":
                 self.json_response(self.app.data_status())
+            elif parsed.path == "/api/ops-status":
+                self.json_response(self.app.ops_status())
+            elif parsed.path == "/api/self-calibration":
+                self.json_response(self.app.self_calibration_status())
             elif parsed.path == "/api/briefing-content":
                 self.json_response(self.app.briefing_content())
             elif parsed.path == "/api/morning-brief":
                 self.json_response(self.app.morning_brief(query.get("date", [None])[0] or None))
             elif parsed.path == "/api/stock-focus":
                 self.json_response(self.app.stock_focus(query.get("date", [None])[0] or None))
+            elif parsed.path.startswith("/api/stocks/") and parsed.path.endswith("/trend"):
+                security_id = unquote(parsed.path.removeprefix("/api/stocks/").removesuffix("/trend"))
+                self.json_response(self.app.stock_trend(security_id, query.get("period", ["1m"])[0]))
             elif parsed.path == "/api/research-library":
                 self.json_response(self.app.research_library(query.get("date", [None])[0] or None))
             elif parsed.path == "/api/sector-heatmap":
                 self.json_response(self.app.sector_heatmap(query.get("period", ["day"])[0]))
-            elif parsed.path == "/api/token-usage":
-                self.json_response(self.app.token_usage())
             elif parsed.path == "/api/data-sources":
                 self.json_response(self.app.data_sources())
             elif parsed.path == "/api/model-forecasts":

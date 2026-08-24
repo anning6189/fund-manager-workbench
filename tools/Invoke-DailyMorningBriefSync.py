@@ -7,6 +7,7 @@
 """
 import json
 import html
+import os
 import re
 import sqlite3
 import ssl
@@ -25,7 +26,9 @@ DB = PROJECT_ROOT / "data" / "curated" / "consumer-research.db"
 LOG_DIR = PROJECT_ROOT / "data" / "monitoring" / "module3-realtime-research"
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 LOG = LOG_DIR / "daily-sync.log"
-MCP_URL = "https://api.gildata.com/mcp-servers/aidata-assistant-srv-tool?token=ed82c6584c824d9ba18aeee99d852317"
+MCP_URL = os.environ.get("GILDATA_MCP_URL") or (
+    f"https://api.gildata.com/mcp-servers/aidata-assistant-srv-tool?token={os.environ.get('GILDATA_MCP_TOKEN', '')}"
+)
 LIC = "approved_internal_research_use"
 BJ = timezone(timedelta(hours=8))
 
@@ -33,6 +36,7 @@ sys.path.insert(0, str(PROJECT_ROOT / "tools"))
 import consumer_realtime_monitor as mon  # noqa: E402
 import consumer_stock_focus as stock_focus  # noqa: E402
 import consumer_brief_writer as brief_writer  # noqa: E402
+import agent_self_calibration as self_calibration  # noqa: E402
 
 
 def log(msg: str) -> None:
@@ -682,6 +686,12 @@ def main() -> int:
             log(f"8b) 股票评级失败（断点已保留）: {type(e).__name__} {e}")
         finally:
             executor.shutdown(wait=True)
+
+    try:
+        result = self_calibration.run(DB, today)
+        log(f"8c) Agent 自校准完成: {result['status']}，快照 {result['snapshot_count']}，后验 {result['outcome_count']}，自动修复 {len(result['auto_fixes'])} 项")
+    except Exception as e:
+        log(f"8c) Agent 自校准失败: {type(e).__name__} {e}")
 
     # 9) 轻量化：30 天滚动清理（晨报各模块档案含研报库，超出窗口的每日删除）
     try:

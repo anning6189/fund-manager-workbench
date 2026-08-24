@@ -167,18 +167,15 @@ def security_mappings(security: dict[str, Any], coverage_spec: dict[str, Any]) -
     if not matches:
         return []
 
-    # 研究池采用“一个证券、一个主板块”。名称只用于解决宽口径行业规则的冲突，
-    # 不再让同一证券同时进入多个板块并在热力图中重复计数。
     name = security.get("security_name", "")
     overrides = (
         (r"酒店|宾馆|旅馆|旅游|景区|中免", "CR.V.TL"),
-        (r"餐饮|咖啡|茶饮|酒家|饭店", "CR.V.FS"),
+        (r"餐饮|咖啡|茶饮|酒家|快餐|卤味", "CR.V.FS"),
         (r"宠物|孩子王|爱婴|泡泡玛特|布鲁可|创源", "CR.S.PT"),
-        (r"食品|饮料|酒业|乳业|调味", "CR.S.FB"),
     )
     for pattern, sector_code in overrides:
-        if sector_code in matches and re.search(pattern, name, flags=re.IGNORECASE):
-            return [(sector_code, max(matches[sector_code], 0.95))]
+        if re.search(pattern, name, flags=re.IGNORECASE):
+            return [(sector_code, 0.95)]
 
     # 更具体的供应商行业规则具有更高置信度；置信度相同时使用固定顺序保证幂等。
     priority = {code: index for index, code in enumerate((

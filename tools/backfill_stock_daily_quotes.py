@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""一次性回填：全消费 A 股研究池近 1 个月每日收盘价/涨跌幅到 stock_daily_quotes。
-供板块热力图（日/周/月）使用；15 只一批查询聚源，幂等，中断重跑自动续传。
+"""一次性回填：全消费 A 股研究池历史每日收盘价/涨跌幅到 stock_daily_quotes。
+供板块热力图与单只股票走势图使用；15 只一批查询聚源，幂等，中断重跑自动续传。
 此后每个交易日由 consumer_stock_focus 追加当日快照。
 """
 import argparse
@@ -53,7 +53,7 @@ def parse_hist(text: str) -> list[tuple[str, str, float, float]]:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--start", default="2026-07-15")
+    ap.add_argument("--start", default="2025-08-21")
     ap.add_argument("--end", default=datetime.now(BJ).strftime("%Y-%m-%d"))
     ap.add_argument("--batch-size", type=int, default=15)
     args = ap.parse_args()
@@ -64,7 +64,11 @@ def main() -> int:
     universe = load_universe(db)
     code_to_id = {s["security_code"]: s["security_id"] for s in universe}
     done = {r[0] for r in db.execute(
-        "SELECT DISTINCT security_id FROM stock_daily_quotes WHERE trade_date >= ?", (args.start,))}
+        """SELECT security_id FROM stock_daily_quotes
+           GROUP BY security_id
+           HAVING MIN(trade_date) <= ? AND MAX(trade_date) >= ?""",
+        (args.start, args.end),
+    )}
     todo = [s for s in universe if s["security_id"] not in done]
     log(f"研究池 {len(universe)} 只，已覆盖 {len(done)} 只，待回填 {len(todo)} 只（{args.start}~{args.end}）")
 
@@ -86,6 +90,8 @@ def main() -> int:
         for code, trade_date, close, chg in rows:
             sid = code_to_id.get(code)
             if not sid:
+                continue
+            if close is None or float(close) <= 0:
                 continue
             inserted += db.execute(
                 "INSERT OR IGNORE INTO stock_daily_quotes(security_id, trade_date, close_price, change_pct) VALUES(?,?,?,?)",

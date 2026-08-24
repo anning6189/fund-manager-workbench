@@ -5,6 +5,8 @@
 行情类内容自动标注"最近交易日"口径。
 """
 import json
+import argparse
+import os
 import re
 import sqlite3
 import urllib.request
@@ -13,8 +15,10 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DB = PROJECT_ROOT / "data" / "curated" / "consumer-research.db"
-MCP_URL = "https://api.gildata.com/mcp-servers/aidata-assistant-srv-tool?token=ed82c6584c824d9ba18aeee99d852317"
-LLM_URL = "http://127.0.0.1:15721/v1/chat/completions"
+MCP_URL = os.environ.get("GILDATA_MCP_URL") or (
+    f"https://api.gildata.com/mcp-servers/aidata-assistant-srv-tool?token={os.environ.get('GILDATA_MCP_TOKEN', '')}"
+)
+LLM_URL = os.environ.get("LOCAL_LLM_URL", "http://127.0.0.1:15721/v1/chat/completions")
 BJ = timezone(timedelta(hours=8))
 
 DDL = """
@@ -340,7 +344,8 @@ def fallback_library(db: sqlite3.Connection, now: datetime) -> list[dict]:
 def fallback_brief_content(db: sqlite3.Connection, now: datetime) -> dict:
     """用当日行情、评级和事件生成无编造的晨报核心栏目。"""
     db.row_factory = sqlite3.Row
-    quote_date = db.execute("SELECT MAX(trade_date) FROM stock_daily_quotes").fetchone()[0]
+    today = now.strftime("%Y-%m-%d")
+    quote_date = db.execute("SELECT MAX(trade_date) FROM stock_daily_quotes WHERE trade_date <= ?", (today,)).fetchone()[0]
     sector_rows = []
     if quote_date:
         sector_rows = db.execute(
@@ -366,7 +371,7 @@ def fallback_brief_content(db: sqlite3.Connection, now: datetime) -> dict:
     strongest = sector_rows[:3]
     weakest = list(reversed(sector_rows[-3:])) if sector_rows else []
 
-    rating_date = db.execute("SELECT MAX(rating_date) FROM daily_stock_ratings").fetchone()[0]
+    rating_date = db.execute("SELECT MAX(rating_date) FROM daily_stock_ratings WHERE rating_date <= ?", (today,)).fetchone()[0]
     ratings = db.execute(
         """SELECT security_name,total_score,tier FROM daily_stock_ratings
            WHERE rating_date=? ORDER BY total_score DESC LIMIT 5""",
@@ -494,8 +499,10 @@ def parse_sections(text: str) -> dict:
     }
 
 
-def run() -> dict:
+def run(target_date: str | None = None) -> dict:
     now = datetime.now(BJ)
+    if target_date:
+        now = datetime.fromisoformat(f"{target_date}T08:00:00+08:00")
     today = now.strftime("%Y-%m-%d")
     is_trading_day = now.weekday() < 5
     db = sqlite3.connect(DB)
@@ -530,4 +537,7 @@ def run() -> dict:
 
 
 if __name__ == "__main__":
-    run()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--date", default=None, help="补跑指定日期 YYYY-MM-DD")
+    args = ap.parse_args()
+    run(args.date)

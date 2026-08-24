@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-"""全消费 A 股每日股票评级引擎（数据驱动）。
+"""全消费 A 股每日股票评级引擎（AutoInvest Agent）。
 
-评分 = 动量 40%（日涨跌幅/量比/换手）+ 估值 30%（PE TTM 分档）+ 事件催化 30%（近 3 日新闻公告命中）。
-四档：重点关注（前 10）、增持观察（次 15）、中性、回避（负面事件或末 15）。
+核心目标是中期 / 中长期持有推荐，不是每日短线排行榜。
+当日动量只是买入时点因子；长期好公司和核心候选必须具备跨日状态记忆。
 结果写入 daily_stock_ratings（按 rating_date+security_id 幂等）。
 """
 import argparse
 import json
+import os
 import re
 import sqlite3
 import time
@@ -18,7 +19,9 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DB = PROJECT_ROOT / "data" / "curated" / "consumer-research.db"
-MCP_URL = "https://api.gildata.com/mcp-servers/aidata-assistant-srv-tool?token=ed82c6584c824d9ba18aeee99d852317"
+MCP_URL = os.environ.get("GILDATA_MCP_URL") or (
+    f"https://api.gildata.com/mcp-servers/aidata-assistant-srv-tool?token={os.environ.get('GILDATA_MCP_TOKEN', '')}"
+)
 BJ = timezone(timedelta(hours=8))
 
 DDL = """
@@ -32,6 +35,11 @@ CREATE TABLE IF NOT EXISTS daily_stock_ratings (
   event_hits INTEGER, event_score REAL,
   momentum_score REAL, valuation_score REAL,
   total_score REAL, tier TEXT NOT NULL, rationale TEXT,
+  invest_score REAL,
+  stability_score REAL,
+  board_status TEXT,
+  holding_label TEXT,
+  state_reason TEXT,
   quote_trade_date TEXT,
   components_json TEXT NOT NULL DEFAULT '{}',
   created_at TEXT NOT NULL,
@@ -118,9 +126,12 @@ def parse_realtime(text: str) -> dict[str, dict]:
             if len(cells) < 20 or not re.fullmatch(r"\d{6}", cells[1] or ""):
                 continue
             try:
+                price = float(cells[4])
+                if price <= 0:
+                    continue
                 out[cells[1]] = {
                     "quote_time": cells[2],
-                    "price": float(cells[4]),
+                    "price": price,
                     "change_pct": float(cells[7]),
                     "turnover": float(cells[16]),
                     "volratio": float(cells[17]),
@@ -130,6 +141,31 @@ def parse_realtime(text: str) -> dict[str, dict]:
             except (ValueError, IndexError):
                 continue
     return out
+
+
+def valid_quote(q: dict | None) -> bool:
+    if not q:
+        return False
+    try:
+        return float(q.get("price") or 0) > 0
+    except (TypeError, ValueError):
+        return False
+
+
+def quote_move_is_reasonable(db: sqlite3.Connection, security_id: str, price: float, trade_date: str, max_move: float = 0.35) -> bool:
+    previous = db.execute(
+        """SELECT close_price
+           FROM stock_daily_quotes
+           WHERE security_id=? AND trade_date < ? AND close_price IS NOT NULL AND close_price > 0
+           ORDER BY trade_date DESC LIMIT 1""",
+        (security_id, trade_date),
+    ).fetchone()
+    if not previous or not previous[0]:
+        return True
+    prev = float(previous[0])
+    if prev <= 0:
+        return True
+    return abs(float(price) / prev - 1) <= max_move
 
 
 def fetch_quotes(names: list[str], retries: int = 3) -> dict[str, dict]:
@@ -151,11 +187,13 @@ def fetch_quotes(names: list[str], retries: int = 3) -> dict[str, dict]:
     return {}
 
 
-def fetch_event_hits(db: sqlite3.Connection, names: list[str], days: int = 3) -> dict[str, int]:
+def fetch_event_hits(db: sqlite3.Connection, names: list[str], days: int = 3, now: datetime | None = None) -> dict[str, int]:
     """近 N 天事件库中按股票名命中计数（正 +1 / 负 -2）。"""
-    since = (datetime.now(BJ) - timedelta(days=days)).isoformat()
+    now = now or datetime.now(BJ)
+    since = (now - timedelta(days=days)).isoformat()
+    until = now.isoformat()
     rows = db.execute(
-        "SELECT title, summary FROM monitor_events WHERE available_at >= ?", (since,)
+        "SELECT title, summary FROM monitor_events WHERE available_at >= ? AND available_at <= ?", (since, until)
     ).fetchall()
     hits: dict[str, int] = {}
     for title, summary in rows:
@@ -201,6 +239,38 @@ def score_events(net_hits: int) -> float:
     return clamp(50 + net_hits * 20)
 
 
+def is_risk_name(name: str | None) -> bool:
+    value = str(name or "").upper()
+    return "ST" in value or "退" in value
+
+
+def score_stability(history: dict | None, valuation_score: float) -> float:
+    """跨日稳定分：长期池不能每天跟着行情排名消失。"""
+    if not history:
+        return round(max(45.0, min(75.0, valuation_score)), 1)
+    seen = max(1, int(history.get("seen") or 1))
+    avg_score = float(history.get("avg_invest_score") or history.get("avg_total_score") or valuation_score)
+    long_days = int(history.get("long_days") or 0)
+    risk_days = int(history.get("risk_days") or 0)
+    continuity = min(20.0, long_days / seen * 25.0)
+    penalty = min(35.0, risk_days * 12.0)
+    return round(clamp(avg_score * 0.75 + continuity - penalty), 1)
+
+
+def build_state_reason(r: dict, history: dict | None) -> str:
+    parts = []
+    if history:
+        parts.append(f"近{int(history.get('seen') or 0)}个评级日有状态记忆")
+        if history.get("long_days"):
+            parts.append(f"长期池命中{int(history['long_days'])}日")
+    parts.append(f"投资分{r['invest_score']:.1f}")
+    if r.get("event_hits"):
+        parts.append(f"事件{r['event_hits']}条")
+    if r.get("pe_ttm") and r["pe_ttm"] > 0:
+        parts.append(f"PE {r['pe_ttm']:.0f}倍")
+    return "；".join(parts)
+
+
 def build_rationale(q: dict, pe: float | None, hits: int, tier: str) -> str:
     parts = []
     if q["change_pct"] >= 1:
@@ -220,8 +290,10 @@ def build_rationale(q: dict, pe: float | None, hits: int, tier: str) -> str:
     return "、".join(parts) if parts else "量价平稳，无显著催化"
 
 
-def run(limit: int = 0, batch_size: int = 30, workers: int = 2) -> dict:
+def run(limit: int = 0, batch_size: int = 30, workers: int = 2, target_date: str | None = None, historical_local: bool = False) -> dict:
     now_bj = datetime.now(BJ)
+    if target_date:
+        now_bj = datetime.fromisoformat(f"{target_date}T16:30:00+08:00")
     today = now_bj.strftime("%Y-%m-%d")
     now_utc = datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
     db = sqlite3.connect(DB)
@@ -231,6 +303,15 @@ def run(limit: int = 0, batch_size: int = 30, workers: int = 2) -> dict:
     rating_columns = {row[1] for row in db.execute("PRAGMA table_info(daily_stock_ratings)").fetchall()}
     if "quote_trade_date" not in rating_columns:
         db.execute("ALTER TABLE daily_stock_ratings ADD COLUMN quote_trade_date TEXT")
+    for column, ddl in {
+        "invest_score": "ALTER TABLE daily_stock_ratings ADD COLUMN invest_score REAL",
+        "stability_score": "ALTER TABLE daily_stock_ratings ADD COLUMN stability_score REAL",
+        "board_status": "ALTER TABLE daily_stock_ratings ADD COLUMN board_status TEXT",
+        "holding_label": "ALTER TABLE daily_stock_ratings ADD COLUMN holding_label TEXT",
+        "state_reason": "ALTER TABLE daily_stock_ratings ADD COLUMN state_reason TEXT",
+    }.items():
+        if column not in rating_columns:
+            db.execute(ddl)
     universe = load_universe(db, limit)
     phase = "morning" if (now_bj.hour, now_bj.minute) < (9, 30) else "close" if (now_bj.hour, now_bj.minute) >= (15, 5) else "intraday"
     run_key = f"{today}:{phase}"
@@ -250,16 +331,50 @@ def run(limit: int = 0, batch_size: int = 30, workers: int = 2) -> dict:
         if last_close and re.match(r"\d{4}-\d{2}-\d{2}", str(last_close[0] or "")):
             quote_trade_date = str(last_close[0])[:10]
 
-    quotes: dict[str, dict] = {
+    quotes: dict[str, dict] = {}
+    if historical_local:
+        fallback_rows = db.execute(
+            """SELECT p.*
+               FROM stock_quote_sync_progress p
+               JOIN (
+                   SELECT security_id, MAX(updated_at) AS updated_at
+                   FROM stock_quote_sync_progress
+                   GROUP BY security_id
+               ) latest ON latest.security_id=p.security_id AND latest.updated_at=p.updated_at"""
+        ).fetchall()
+        fallback_by_sid = {row["security_id"]: dict(row) for row in fallback_rows}
+        local_rows = db.execute(
+            """SELECT q.security_id,q.close_price,q.change_pct
+               FROM stock_daily_quotes q
+               WHERE q.trade_date=?""",
+            (today,),
+        ).fetchall()
+        id_to_code = {s["security_id"]: s["security_code"] for s in universe}
+        quotes = {
+            id_to_code[row["security_id"]]: {
+                "quote_time": f"{today} 15:00:00",
+                "price": row["close_price"],
+                "change_pct": row["change_pct"],
+                "turnover": (fallback_by_sid.get(row["security_id"]) or {}).get("turnover_rate") or 0.0,
+                "volratio": (fallback_by_sid.get(row["security_id"]) or {}).get("volume_ratio") or 1.0,
+                "market_cap": (fallback_by_sid.get(row["security_id"]) or {}).get("market_cap_yi"),
+                "pe_ttm": (fallback_by_sid.get(row["security_id"]) or {}).get("pe_ttm"),
+            }
+            for row in local_rows
+            if row["security_id"] in id_to_code and row["close_price"] is not None and row["close_price"] > 0
+        }
+        log(f"  历史补跑: 从本地 stock_daily_quotes 读取 {len(quotes)} 只 {today} 行情，补充估值 {sum(1 for q in quotes.values() if q.get('pe_ttm'))} 只")
+    if not quotes:
+        quotes = {
         row["security_code"]: {
             "quote_time": row["quote_time"], "price": row["close_price"],
             "change_pct": row["change_pct"], "turnover": row["turnover_rate"],
             "volratio": row["volume_ratio"], "market_cap": row["market_cap_yi"],
             "pe_ttm": row["pe_ttm"],
         }
-        for row in db.execute("SELECT * FROM stock_quote_sync_progress WHERE run_key=?", (run_key,)).fetchall()
-    }
-    pending = [s for s in universe if s["security_code"] not in quotes]
+        for row in db.execute("SELECT * FROM stock_quote_sync_progress WHERE run_key=? AND close_price > 0", (run_key,)).fetchall()
+        }
+    pending = [] if historical_local else [s for s in universe if s["security_code"] not in quotes]
     if quotes:
         log(f"  断点恢复: 已有 {len(quotes)} 只，仅请求剩余 {len(pending)} 只")
     batches = [pending[i:i + batch_size] for i in range(0, len(pending), batch_size)]
@@ -281,13 +396,21 @@ def run(limit: int = 0, batch_size: int = 30, workers: int = 2) -> dict:
         for future in as_completed(future_batches):
             batch = future_batches[future]
             got = future.result()
-            quotes.update(got)
             completed += 1
             batch_by_code = {s["security_code"]: s for s in batch}
+            clean_got: dict[str, dict] = {}
+            skipped_bad = 0
             for code, q in got.items():
+                if not valid_quote(q):
+                    skipped_bad += 1
+                    continue
                 security = batch_by_code.get(code)
                 if not security:
                     continue
+                if not quote_move_is_reasonable(db, security["security_id"], float(q.get("price")), quote_trade_date):
+                    skipped_bad += 1
+                    continue
+                clean_got[code] = q
                 db.execute(
                     """INSERT OR REPLACE INTO stock_quote_sync_progress(
                            run_key,security_id,security_code,quote_time,close_price,change_pct,
@@ -297,6 +420,7 @@ def run(limit: int = 0, batch_size: int = 30, workers: int = 2) -> dict:
                      q.get("change_pct"), q.get("turnover"), q.get("volratio"),
                      q.get("market_cap"), q.get("pe_ttm"), now_utc),
                 )
+            quotes.update(clean_got)
             db.commit()
             log(f"  行情批次 {completed}/{len(batches)}: 返回 {len(got)}/{len(batch)}，断点已保存")
 
@@ -310,7 +434,7 @@ def run(limit: int = 0, batch_size: int = 30, workers: int = 2) -> dict:
     if (now_bj.hour, now_bj.minute) >= (9, 30) and vendor_trade_date and vendor_trade_date <= today:
         quote_trade_date = vendor_trade_date
 
-    name_hits = fetch_event_hits(db, [s["security_name"] for s in universe])
+    name_hits = fetch_event_hits(db, [s["security_name"] for s in universe], now=now_bj)
     log(f"行情覆盖 {len(quotes)}/{len(universe)}；事件命中股票 {len(name_hits)} 只")
     minimum_coverage = max(1, int(len(universe) * 0.80))
     if len(quotes) < minimum_coverage:
@@ -321,14 +445,42 @@ def run(limit: int = 0, batch_size: int = 30, workers: int = 2) -> dict:
     db.execute(QUOTES_DDL)
     code_to_id = {s["security_code"]: s["security_id"] for s in universe}
     for code, q in quotes.items():
+        if not valid_quote(q):
+            continue
         sid = code_to_id.get(code)
         if sid:
+            if not quote_move_is_reasonable(db, sid, float(q.get("price")), quote_trade_date):
+                continue
             db.execute(
                 "INSERT OR REPLACE INTO stock_daily_quotes(security_id, trade_date, close_price, change_pct) VALUES(?,?,?,?)",
                 (sid, quote_trade_date, q["price"], q["change_pct"]),
             )
     db.commit()
     log(f"行情快照实际交易日: {quote_trade_date}")
+
+    history_rows = db.execute(
+        """SELECT security_id,tier,total_score,invest_score,board_status,rating_date
+           FROM daily_stock_ratings
+           WHERE rating_date < ?
+           ORDER BY rating_date DESC""",
+        (today,),
+    ).fetchall()
+    history: dict[str, dict] = {}
+    for row in history_rows:
+        sid = row["security_id"]
+        stat = history.setdefault(sid, {"seen": 0, "long_days": 0, "risk_days": 0, "scores": []})
+        if stat["seen"] >= 20:
+            continue
+        stat["seen"] += 1
+        score_value = row["invest_score"] if row["invest_score"] is not None else row["total_score"]
+        if score_value is not None:
+            stat["scores"].append(float(score_value))
+        if row["board_status"] in ("长期好公司", "核心候选", "主推") or row["tier"] in ("中性", "增持观察", "重点关注"):
+            stat["long_days"] += 1
+        if row["board_status"] == "行业扫描" or row["tier"] == "回避":
+            stat["risk_days"] += 1
+    for stat in history.values():
+        stat["avg_invest_score"] = sum(stat["scores"]) / len(stat["scores"]) if stat["scores"] else 50.0
 
     records = []
     for s in universe:
@@ -338,38 +490,57 @@ def run(limit: int = 0, batch_size: int = 30, workers: int = 2) -> dict:
             continue
         pe = q.get("pe_ttm")
         hits = name_hits.get(s["security_name"], 0)
-        m = score_momentum(q)
-        v = score_valuation(pe)
-        ev = score_events(hits)
-        total = round(m * 0.4 + v * 0.3 + ev * 0.3, 1)
+        timing = score_momentum(q)
+        valuation = score_valuation(pe)
+        catalyst = score_events(hits)
+        hist = history.get(s["security_id"])
+        stable = score_stability(hist, valuation)
+        risk_penalty = 35 if is_risk_name(s["security_name"]) else 20 if hits <= -2 else 0
+        invest = round(clamp(valuation * 0.42 + stable * 0.33 + catalyst * 0.18 + timing * 0.07 - risk_penalty), 1)
         records.append({
             "security_id": s["security_id"], "security_name": s["security_name"],
             "sector_code": s["sector_code"], "close_price": q["price"], "change_pct": q["change_pct"],
             "pe_ttm": pe, "turnover_rate": q["turnover"], "volume_ratio": q["volratio"],
-            "market_cap_yi": q.get("market_cap"), "event_hits": hits, "event_score": ev,
-            "momentum_score": m, "valuation_score": v, "total_score": total,
+            "market_cap_yi": q.get("market_cap"), "event_hits": hits, "event_score": catalyst,
+            "momentum_score": timing, "valuation_score": valuation, "total_score": invest,
+            "invest_score": invest, "stability_score": stable,
             "rationale": build_rationale(q, pe, hits, ""),
             "quote_trade_date": quote_trade_date,
-            "components_json": json.dumps({"momentum": m, "valuation": v, "event": ev,
+            "components_json": json.dumps({"timing": timing, "valuation": valuation, "catalyst": catalyst,
+                                             "stability": stable, "invest": invest,
                                              "quote_trade_date": quote_trade_date}, ensure_ascii=False),
         })
 
-    records.sort(key=lambda r: r["total_score"], reverse=True)
-    display: list[dict] = []
-    for idx, r in enumerate(records):
-        if r["event_hits"] <= -2 or idx >= len(records) - 15:
+    for r in records:
+        hist = history.get(r["security_id"])
+        if is_risk_name(r["security_name"]) or r["event_hits"] <= -2 or r["invest_score"] < 35:
             r["tier"] = "回避"
-            display.append(r)
-        elif idx < 20:
+            r["board_status"] = "行业扫描"
+            r["holding_label"] = ""
+        elif r["invest_score"] >= 76 and r["stability_score"] >= 58:
             r["tier"] = "重点关注"
-            display.append(r)
-        elif idx < 60:
+            r["board_status"] = "核心候选"
+            r["holding_label"] = "中长期" if r["event_hits"] <= 0 else "中长期·中期可建仓"
+        elif r["invest_score"] >= 66:
             r["tier"] = "增持观察"
-            display.append(r)
-        elif idx < 120:
+            r["board_status"] = "重点跟踪"
+            r["holding_label"] = "中期" if r["event_hits"] > 0 else ""
+        elif r["invest_score"] >= 50 or (hist and int(hist.get("long_days") or 0) > 0 and r["invest_score"] >= 42):
             r["tier"] = "中性"
-            display.append(r)
-        # 120 名以外不入库展示
+            r["board_status"] = "长期好公司"
+            r["holding_label"] = "中长期·暂不建仓"
+        else:
+            r["tier"] = "回避"
+            r["board_status"] = "行业扫描"
+            r["holding_label"] = ""
+        r["state_reason"] = build_state_reason(r, hist)
+
+    status_limits = {"核心候选": 30, "重点跟踪": 45, "长期好公司": 80, "行业扫描": 40}
+    display = []
+    for status, limit_n in status_limits.items():
+        bucket = [r for r in records if r["board_status"] == status]
+        bucket.sort(key=lambda r: (r["invest_score"], r["stability_score"], r["valuation_score"]), reverse=True)
+        display.extend(bucket[:limit_n])
 
     db.execute("DELETE FROM daily_stock_ratings WHERE rating_date=?", (today,))
     records = display
@@ -378,12 +549,15 @@ def run(limit: int = 0, batch_size: int = 30, workers: int = 2) -> dict:
             """INSERT OR REPLACE INTO daily_stock_ratings(
                    rating_date,security_id,security_name,sector_code,close_price,change_pct,pe_ttm,
                    turnover_rate,volume_ratio,market_cap_yi,event_hits,event_score,momentum_score,
-                   valuation_score,total_score,tier,rationale,quote_trade_date,components_json,created_at
-               ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                   valuation_score,total_score,tier,rationale,invest_score,stability_score,board_status,
+                   holding_label,state_reason,quote_trade_date,components_json,created_at
+               ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             (today, r["security_id"], r["security_name"], r["sector_code"], r["close_price"],
              r["change_pct"], r["pe_ttm"], r["turnover_rate"], r["volume_ratio"], r["market_cap_yi"],
              r["event_hits"], r["event_score"], r["momentum_score"], r["valuation_score"],
-             r["total_score"], r["tier"], r["rationale"], r["quote_trade_date"], r["components_json"], now_utc),
+             r["total_score"], r["tier"], r["rationale"], r["invest_score"], r["stability_score"],
+             r["board_status"], r["holding_label"], r["state_reason"], r["quote_trade_date"],
+             r["components_json"], now_utc),
         )
     db.commit()
     tiers = {}
@@ -399,5 +573,7 @@ if __name__ == "__main__":
     ap.add_argument("--limit", type=int, default=0, help="只评前 N 只（测试用）")
     ap.add_argument("--batch-size", type=int, default=30)
     ap.add_argument("--workers", type=int, default=2, choices=(1, 2))
+    ap.add_argument("--date", default=None, help="补跑指定日期 YYYY-MM-DD")
+    ap.add_argument("--historical-local", action="store_true", help="历史补跑：使用本地 stock_daily_quotes，不联网拉实时行情")
     args = ap.parse_args()
-    run(limit=args.limit, batch_size=args.batch_size, workers=args.workers)
+    run(limit=args.limit, batch_size=args.batch_size, workers=args.workers, target_date=args.date, historical_local=args.historical_local)

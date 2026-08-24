@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Consumer Research Workbench Daily Data Sync
+
+[Timer]
+OnCalendar=Mon..Fri 08:40:00
+Persistent=true
+Unit=consumer-research-daily-sync.service
+
+[Install]
+WantedBy=timers.target

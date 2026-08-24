@@ -5,6 +5,7 @@
 一致预期（分年度净利/EPS/ROE/目标价）。按 15 只/批全池刷新。
 基本面表按报告期幂等；一致预期按 估计日期+年度 幂等。"""
 import json
+import os
 import re
 import sqlite3
 import urllib.request
@@ -13,7 +14,9 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DB = PROJECT_ROOT / "data" / "curated" / "consumer-research.db"
-MCP_URL = "https://api.gildata.com/mcp-servers/aidata-assistant-srv-tool?token=ed82c6584c824d9ba18aeee99d852317"
+MCP_URL = os.environ.get("GILDATA_MCP_URL") or (
+    f"https://api.gildata.com/mcp-servers/aidata-assistant-srv-tool?token={os.environ.get('GILDATA_MCP_TOKEN', '')}"
+)
 BJ = timezone(timedelta(hours=8))
 
 DDL = """

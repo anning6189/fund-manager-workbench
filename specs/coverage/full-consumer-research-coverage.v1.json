@@ -94,14 +94,23 @@
       "thesis": "同店、翻台/交易笔数、客单、门店回收期和闭店率决定连锁扩张质量。",
       "cycle_drivers": ["客流", "餐饮收入", "节假日", "食品成本", "租金人工"],
       "value_chain": ["食材供应", "中央厨房", "品牌门店", "外卖平台", "消费者"],
-      "vendor_rules": [{"l1":"社会服务","l2":"酒店餐饮"},{"security_name_regex":"餐饮|咖啡|茶饮|酒家|饭店"}],
+      "vendor_rules": [
+        {"l1":"社会服务","l2":"酒店餐饮","l3":"餐饮"},
+        {"l1":"社会服务","l2":"酒店餐饮","l3":"餐饮保健"},
+        {"l1":"食品饮料","l2_in":["食品加工","休闲食品"],"l3":"熟食"},
+        {"security_name_regex":"餐饮|咖啡|茶饮|酒家|快餐|卤味"}
+      ],
       "macro_metric_ids": ["CR.MAC.SOCIAL_RETAIL_TOTAL_YOY", "CR.MAC.CPI_YOY"]
     },
     "CR.V.TL": {
       "thesis": "出游人次、人均支出、入住率、ADR、RevPAR和景区客单共同刻画旅游休闲景气。",
       "cycle_drivers": ["居民收入", "假期", "交通运力", "签证政策", "天气", "商旅需求"],
       "value_chain": ["交通", "OTA/旅行社", "酒店", "景区与休闲", "游客"],
-      "vendor_rules": [{"l1":"社会服务","l2_in":["旅游及景区","酒店餐饮"]},{"l1":"商贸零售","l2":"旅游零售Ⅱ"}],
+      "vendor_rules": [
+        {"l1":"社会服务","l2":"酒店餐饮","l3":"酒店"},
+        {"l1":"社会服务","l2_in":["旅游及景区"]},
+        {"l1":"商贸零售","l2":"旅游零售Ⅱ"}
+      ],
       "macro_metric_ids": ["CR.MAC.DISPOSABLE_INCOME_PC", "CR.MAC.CONSUMPTION_EXPENDITURE_PC"]
     },
     "CR.V.CE": {

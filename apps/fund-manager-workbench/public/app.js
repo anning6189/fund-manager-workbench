@@ -5,21 +5,21 @@ const root = document.getElementById("app");
 const toastNode = document.getElementById("toast");
 
 const state = {
-  view: ["today", "ask", "library", "models", "usage", "reports", "data"].includes(location.hash.replace("#", "")) ? location.hash.replace("#", "") : "today",
+  view: ["today", "ask", "library", "models", "reports", "data"].includes(location.hash.replace("#", "")) ? location.hash.replace("#", "") : "today",
   bootstrap: null,
   alerts: [],
   jobs: [],
   reports: [],
   dataStatus: null,
+  opsStatus: null,
   activeReport: null,
   reportTab: "report",
 };
 
 const nav = [
-  ["today", "晨报"],
+  ["today", "首页"],
   ["ask", "AI研究员"],
   ["library", "研报库"],
-  ["usage", "Token用量"],
   ["data", "数据来源"],
 ];
 
@@ -104,7 +104,7 @@ function hero(eyebrow, title, description, actions = "") {
 }
 
 async function loadCore() {
-  const [bootstrap, alerts, reports, content, brief, focus, heatmap] = await Promise.all([api("/api/bootstrap"), api("/api/alerts?limit=80"), api("/api/reports"), api("/api/briefing-content"), api(`/api/morning-brief${state.briefDate ? `?date=${state.briefDate}` : ""}`), api(`/api/stock-focus${state.briefDate ? `?date=${state.briefDate}` : ""}`), api(`/api/sector-heatmap?period=${state.heatPeriod || "day"}`)]);
+  const [bootstrap, alerts, reports, content, brief, focus, heatmap, ops, calibration] = await Promise.all([api("/api/bootstrap"), api("/api/alerts?limit=80"), api("/api/reports"), api("/api/briefing-content"), api(`/api/morning-brief${state.briefDate ? `?date=${state.briefDate}` : ""}`), api(`/api/stock-focus${state.briefDate ? `?date=${state.briefDate}` : ""}`), api(`/api/sector-heatmap?period=${state.heatPeriod || "day"}`), api("/api/ops-status"), api("/api/self-calibration")]);
   state.bootstrap = bootstrap;
   state.alerts = alerts.alerts;
   state.reports = reports.reports;
@@ -112,6 +112,8 @@ async function loadCore() {
   state.morningBrief = brief;
   state.stockFocus = focus;
   state.sectorHeatmap = heatmap;
+  state.opsStatus = ops;
+  state.selfCalibration = calibration;
 }
 
 function briefingGroups(alerts) {
@@ -159,6 +161,32 @@ function briefingGroups(alerts) {
 
 function renderToday() {
   renderBrief();
+}
+
+function renderOpsStatusCard() {
+  const ops = state.opsStatus;
+  if (!ops) return "";
+  const dates = ops.dates || {};
+  const checks = ops.checks || [];
+  const statusText = ops.status === "ok" ? "今日自动更新正常" : ops.status === "warn" ? "今日数据需关注" : "自动更新异常";
+  const statusClass = ops.status === "ok" ? "ok" : ops.status === "warn" ? "warn" : "err";
+  return `
+    <section class="ops-status-card ${statusClass}">
+      <div class="ops-status-main">
+        <span class="ops-dot"></span>
+        <div><strong>${escapeHtml(statusText)}</strong><small>下次自动同步：${escapeHtml(ops.next_sync_at || "—")}</small></div>
+      </div>
+      <div class="ops-date-grid">
+        <div><span>晨报日期</span><strong>${escapeHtml(dates.brief_date || "—")}</strong></div>
+        <div><span>评级日期</span><strong>${escapeHtml(dates.rating_date || "—")}</strong></div>
+        <div><span>行情日期</span><strong>${escapeHtml(dates.market_date || dates.quote_date || "—")}</strong></div>
+        <div><span>看板数量</span><strong>${Number(dates.stock_rows || 0).toLocaleString("en-US")}</strong></div>
+      </div>
+      <div class="ops-checks">
+        ${checks.map(c => `<span class="${c.ok ? "ok" : "warn"}">${c.ok ? "✓" : "!"} ${escapeHtml(c.label)}：${escapeHtml(c.detail || "")}</span>`).join("")}
+      </div>
+      ${ops.last_failure ? `<p class="ops-failure">最近异常：${escapeHtml(ops.last_failure)}</p>` : ""}
+    </section>`;
 }
 
 const TONE_META = {
@@ -219,18 +247,35 @@ function renderBrief() {
       ${brief.is_history ? `<span class="history-badge">历史晨报 · ${escapeHtml(curBriefDate)}</span>` : `<span class="live-badge">最新晨报</span>`}
     </div>` : "";
 
-  const focus = state.stockFocus || { counts: {}, tiers: {} };
-  const TIER_ORDER = ["重点关注", "增持观察", "中性", "回避"];
-  const activeTier = state.focusTier && TIER_ORDER.includes(state.focusTier) ? state.focusTier : "重点关注";
-  const pillCls = { "重点关注": "p-focus", "增持观察": "p-watch", "中性": "p-neutral", "回避": "p-avoid" };
-  const pills = TIER_ORDER.map(t => `<button class="pill ${pillCls[t]} ${t === activeTier ? "active" : ""}" data-tier="${t}">${t}<span>${focus.counts?.[t] || 0}</span></button>`).join("");
+  const focus = state.stockFocus || { counts: {}, tiers: {}, board: {}, main_push: [] };
+  const BOARD_ORDER = ["核心候选", "重点跟踪", "长期好公司", "行业扫描"];
+  const BOARD_LABEL = {
+    "核心候选": "可考虑买入",
+    "重点跟踪": "等待买点",
+    "长期好公司": "长期观察",
+    "行业扫描": "暂不推荐"
+  };
+  const BOARD_DESC = {
+    "核心候选": "已达推荐基础",
+    "重点跟踪": "还差买入信号",
+    "长期好公司": "公司好但先观察",
+    "行业扫描": "不推荐，仅监控"
+  };
+  const boardLabel = t => BOARD_LABEL[t] || t;
+  const activeTier = state.focusTier && BOARD_ORDER.includes(state.focusTier) ? state.focusTier : "核心候选";
+  const pillCls = { "核心候选": "p-focus", "重点跟踪": "p-watch", "长期好公司": "p-neutral", "行业扫描": "p-avoid" };
+  const boardCounts = focus.board_counts || {};
+  const pills = BOARD_ORDER.map(t => `<button class="pill ${pillCls[t]} ${t === activeTier ? "active" : ""}" data-tier="${t}">
+    <span class="pill-text"><strong>${escapeHtml(boardLabel(t))}</strong><em>${escapeHtml(BOARD_DESC[t] || "")}</em></span>
+    <span class="pill-count">${boardCounts[t] || 0}</span>
+  </button>`).join("");
   // 板块筛选（Excel 风格多选）
-  const allStocks = Object.values(focus.tiers || {}).flat();
+  const allStocks = [...(focus.main_push || []), ...Object.values(focus.board || {}).flat()];
   const sectorNames = [...new Set(allStocks.map(s => s.sector_name || "未分类"))];
   // 三态：undefined=全部；空 Set=全不选；非空 Set=显式勾选
   const selectedSectors = state.focusSectors;
   const isAllSectors = selectedSectors === undefined;
-  const tierRows = (focus.tiers || {})[activeTier] || [];
+  const tierRows = (focus.board || {})[activeTier] || [];
   const filteredRows = tierRows.filter(s => isAllSectors || selectedSectors.has(s.sector_name || "未分类"));
   const sectorPanel = state.sectorPanelOpen ? `
     <div class="sector-panel" id="sector-panel">
@@ -242,20 +287,49 @@ function renderBrief() {
         <label class="sector-option"><input type="checkbox" data-sector="${escapeHtml(name)}" ${isAllSectors || selectedSectors.has(name) ? "checked" : ""}><span>${escapeHtml(name)}</span></label>`).join("")}
     </div>` : "";
   const filterLabel = isAllSectors ? "全部板块" : selectedSectors.size === 0 ? "未选板块" : `已选 ${selectedSectors.size} 个板块`;
-  const focusRows = filteredRows.map((s, i) => `
-    <tr>
+  const fmtFlags = flags => Array.isArray(flags) ? flags.slice(0, 2).join(" · ") : (flags || "—");
+  const mainRows = (focus.main_push || []).filter(s => isAllSectors || selectedSectors.has(s.sector_name || "未分类")).map((s, i) => `
+    <tr class="sf-stock-row main" data-stock-id="${escapeHtml(s.security_id || "")}" tabindex="0" role="button" aria-label="查看${escapeHtml(s.security_name)}走势">
       <td class="num rk">${i + 1}</td>
-      <td><strong>${escapeHtml(s.security_name)}</strong><small class="sf-code">${escapeHtml(s.security_id || "")}${s.sector_name ? " · " + escapeHtml(s.sector_name) : ""}</small></td>
-      <td class="num">${s.close_price != null ? s.close_price.toFixed(2) : "—"}</td>
-      <td class="num ${s.change_pct > 0 ? "up" : s.change_pct < 0 ? "down" : ""}">${s.change_pct != null ? (s.change_pct > 0 ? "+" : "") + s.change_pct.toFixed(2) + "%" : "—"}</td>
-      <td class="num">${s.pe_ttm != null && s.pe_ttm > 0 ? s.pe_ttm.toFixed(1) : "—"}</td>
-      <td class="num">${s.volume_ratio != null ? s.volume_ratio.toFixed(2) : "—"}</td>
-      <td class="num"><strong>${s.total_score != null ? s.total_score.toFixed(1) : "—"}</strong></td>
-      <td class="sf-why">${escapeHtml(s.rationale || "")}</td>
+      <td><strong>${escapeHtml(s.security_name)}</strong><small class="sf-code">${escapeHtml(s.security_id || "")}${s.sector_name ? " · " + escapeHtml(s.sector_name) : ""} · 点击看走势</small></td>
+      <td><span class="sf-label">${escapeHtml(s.holding_label || "自动主推")}</span></td>
+      <td>${escapeHtml(s.recommendation_action || "自动生成")}</td>
+      <td class="num"><strong>${s.model_score != null ? Number(s.model_score).toFixed(1) : s.invest_score != null ? Number(s.invest_score).toFixed(1) : s.total_score != null ? Number(s.total_score).toFixed(1) : "—"}</strong></td>
+      <td class="num">${s.close_price != null ? Number(s.close_price).toFixed(2) : "—"}</td>
+      <td class="num ${s.change_pct > 0 ? "up" : s.change_pct < 0 ? "down" : ""}">${s.change_pct != null ? (s.change_pct > 0 ? "+" : "") + Number(s.change_pct).toFixed(2) + "%" : "—"}</td>
+      <td class="sf-why">${escapeHtml(s.core_logic || s.rationale || "")}</td>
+      <td class="sf-why">${escapeHtml(s.downgrade_condition || "")}</td>
+      <td class="sf-why">${escapeHtml(fmtFlags(s.data_quality_flags))}</td>
+    </tr>`).join("");
+  const focusRows = filteredRows.map((s, i) => `
+    <tr class="sf-stock-row" data-stock-id="${escapeHtml(s.security_id || "")}" tabindex="0" role="button" aria-label="查看${escapeHtml(s.security_name)}走势">
+      <td class="num rk">${i + 1}</td>
+      <td><strong>${escapeHtml(s.security_name)}</strong><small class="sf-code">${escapeHtml(s.security_id || "")}${s.sector_name ? " · " + escapeHtml(s.sector_name) : ""} · 点击看走势</small></td>
+      <td><span class="sf-state">${escapeHtml(boardLabel(s.board_status || activeTier))}</span></td>
+      <td class="num"><strong>${s.timing_score != null ? Number(s.timing_score).toFixed(1) : s.total_score != null ? Number(s.total_score).toFixed(1) : "—"}</strong></td>
+      <td class="num">${s.close_price != null ? Number(s.close_price).toFixed(2) : "—"}</td>
+      <td class="num ${s.change_pct > 0 ? "up" : s.change_pct < 0 ? "down" : ""}">${s.change_pct != null ? (s.change_pct > 0 ? "+" : "") + Number(s.change_pct).toFixed(2) + "%" : "—"}</td>
+      <td class="sf-why">${escapeHtml(s.not_main_reason || s.rationale || "")}</td>
+      <td class="sf-why">${escapeHtml(s.decision_basis || "")}</td>
     </tr>`).join("");
   const focusSection = focus.date ? `
     <section class="mb-module stock-focus">
-      <div class="sf-head"><h2><span class="mb-num">★</span>今日股票关注 <small class="sf-date">全消费A股研究池 · ${escapeHtml(focus.date)} 评级${focus.carryover ? "（沿用最近交易日）" : ""} · 行情截至 ${escapeHtml(focus.market_date || focus.date)}</small></h2><button class="btn small" id="sf-rules">评分规则</button></div>
+      <div class="sf-head"><h2><span class="mb-num">★</span>今日主推与股票池看板 <small class="sf-date">全自动 Agent 输出 · ${escapeHtml(focus.date)} 批次${focus.carryover ? "（沿用最近交易日）" : ""} · 行情截至 ${escapeHtml(focus.market_date || focus.date)}</small></h2><button class="btn small" id="sf-rules">规则与审计</button></div>
+      <div class="auto-agent-strip">
+        <strong>AutoInvest Agent</strong>
+        <span>${escapeHtml(focus.automation?.rule_version || "自动荐股模型")}</span>
+        <span>${escapeHtml(focus.automation?.source_level || "P2_local_rating")}</span>
+        <span>${escapeHtml(focus.automation?.audit_note || "每日自动生成，保留审计依据")}</span>
+      </div>
+      <div class="sf-main-block">
+        <div class="sf-subtitle"><strong>每日主推清单</strong><span>≤3只 · 只保留有明确买入动作的标的</span></div>
+        <div class="table-scroll">
+          <table class="data-table sf-table sf-main-table">
+            <thead><tr><th>#</th><th>股票</th><th>正式标签</th><th>建议动作</th><th class="num">投资分</th><th class="num">现价</th><th class="num">涨跌</th><th>核心逻辑</th><th>降级条件</th><th>数据质量</th></tr></thead>
+            <tbody>${mainRows || `<tr><td colspan="10">今日无自动主推，等待数据质量或组合层 Gate 满足</td></tr>`}</tbody>
+          </table>
+        </div>
+      </div>
       <div class="tier-pills-row">
         <div class="tier-pills">${pills}</div>
         <div class="sf-filter">
@@ -266,8 +340,8 @@ function renderBrief() {
       </div>
       <div class="table-scroll">
       <table class="data-table sf-table">
-        <thead><tr><th>#</th><th>股票</th><th class="num">现价</th><th class="num">涨跌</th><th class="num">PE</th><th class="num">量比</th><th class="num">评分</th><th>评级理由</th></tr></thead>
-        <tbody>${focusRows || `<tr><td colspan="8">该档暂无标的</td></tr>`}</tbody>
+        <thead><tr><th>#</th><th>股票</th><th>看板状态</th><th class="num">投资分</th><th class="num">现价</th><th class="num">涨跌</th><th>未进主推/看板原因</th><th>决策依据</th></tr></thead>
+        <tbody>${focusRows || `<tr><td colspan="8">该层暂无标的</td></tr>`}</tbody>
       </table>
       </div>
       <p class="sf-note">${escapeHtml(focus.universe_note || "")}</p>
@@ -307,6 +381,8 @@ function renderBrief() {
       </div>
 
       ${dateNav}
+
+      ${renderOpsStatusCard()}
 
       ${focusSection}
 
@@ -386,6 +462,11 @@ function renderBrief() {
     }, { once: true }), 0);
   }
   document.getElementById("sf-rules")?.addEventListener("click", openRulesDrawer);
+  document.querySelectorAll("[data-stock-id]").forEach(row => {
+    const open = () => row.dataset.stockId && openStockTrendDrawer(row.dataset.stockId);
+    row.addEventListener("click", open);
+    row.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); open(); } });
+  });
   document.querySelectorAll("[data-hm-period]").forEach(btn => btn.addEventListener("click", async () => {
     state.heatPeriod = btn.dataset.hmPeriod;
     state.sectorHeatmap = await api(`/api/sector-heatmap?period=${state.heatPeriod}`);
@@ -453,31 +534,253 @@ function openPickDrawer(pick) {
   drawer.querySelector(".drawer-close").focus();
 }
 
+function stockTrendChart(points) {
+  const valid = (points || []).filter(p => p.close != null && Number(p.close) > 0);
+  if (valid.length < 2) {
+    return `<div class="trend-empty">历史行情快照不足，暂时无法绘制走势。</div>`;
+  }
+  const width = 720, height = 330, padX = 44, padY = 26;
+  const closes = valid.map(p => Number(p.close));
+  const min = Math.min(...closes);
+  const max = Math.max(...closes);
+  const span = Math.max(0.01, max - min);
+  const x = i => padX + i * ((width - padX * 2) / Math.max(1, valid.length - 1));
+  const y = v => height - padY - ((v - min) / span) * (height - padY * 2);
+  const line = valid.map((p, i) => `${x(i).toFixed(1)},${y(Number(p.close)).toFixed(1)}`).join(" ");
+  const first = valid[0], last = valid[valid.length - 1];
+  const lastY = y(Number(last.close));
+  const tone = Number(last.close) >= Number(first.close) ? "trend-up" : "trend-down";
+  const mid = min + span / 2;
+  const gridRows = [max, mid, min].map(v => `
+    <g>
+      <line x1="${padX}" y1="${y(v).toFixed(1)}" x2="${width - padX}" y2="${y(v).toFixed(1)}" class="trend-grid"></line>
+      <text x="${padX - 8}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end" class="trend-label">${v.toFixed(2)}</text>
+    </g>`).join("");
+  return `
+    <div class="trend-chart-wrap">
+      <svg class="trend-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="股票收盘价走势">
+        ${gridRows}
+        <polyline points="${line}" class="trend-line ${tone}"></polyline>
+        <circle cx="${x(valid.length - 1).toFixed(1)}" cy="${lastY.toFixed(1)}" r="4" class="trend-dot ${tone}"></circle>
+      </svg>
+      <div class="trend-x"><span>${escapeHtml(first.date)}</span><span>${escapeHtml(last.date)}</span></div>
+    </div>`;
+}
+
+function stockRatingHistory(history) {
+  const items = Array.isArray(history) ? history : [];
+  if (!items.length) {
+    return `<div class="trend-empty">近一个月暂无评级轨迹。</div>`;
+  }
+  const labelMap = {
+    "核心候选": "可考虑买入",
+    "重点跟踪": "等待买点",
+    "长期好公司": "长期观察",
+    "行业扫描": "暂不推荐"
+  };
+  const clsMap = {
+    "核心候选": "grade-buy",
+    "重点跟踪": "grade-watch",
+    "长期好公司": "grade-long",
+    "行业扫描": "grade-no"
+  };
+  const statusOf = r => r.board_status || (
+    r.tier === "重点关注" ? "核心候选" :
+    r.tier === "增持观察" ? "重点跟踪" :
+    r.tier === "中性" ? "长期好公司" :
+    "行业扫描"
+  );
+  return `
+    <div class="rating-timeline">
+      ${items.map(r => {
+        const status = statusOf(r);
+        const label = labelMap[status] || status || "未评级";
+        const cls = clsMap[status] || "grade-no";
+        const score = r.invest_score != null ? Number(r.invest_score).toFixed(1) : r.total_score != null ? Number(r.total_score).toFixed(1) : "—";
+        const stable = r.stability_score != null ? Number(r.stability_score).toFixed(1) : "—";
+        return `<div class="rating-day ${cls}" title="${escapeHtml(r.rating_date || "")}：${escapeHtml(label)}，投资分 ${escapeHtml(score)}">
+          <span class="rating-dot"></span>
+          <strong>${escapeHtml(label)}</strong>
+          <em>${escapeHtml(r.rating_date || "—")}</em>
+          <small>投资分 ${escapeHtml(score)} · 稳定分 ${escapeHtml(stable)}</small>
+        </div>`;
+      }).join("")}
+    </div>
+    <p class="doc-note">说明：这里展示近一个月已有评级批次中，该股票每天/每个交易批次所处的评价等级，用来观察它是稳定留在同一层，还是频繁升降级。</p>`;
+}
+
+function stockEvidenceChain(evidence) {
+  const ev = evidence || {};
+  const flags = ev.data_quality || [];
+  const risks = ev.risk_flags || [];
+  const events = ev.recent_events || [];
+  return `
+    <div class="evidence-chain">
+      <div class="evidence-main"><strong>模型判断</strong><p>${escapeHtml(ev.decision || "暂无明确模型说明")}</p></div>
+      <div class="evidence-mini-grid">
+        <div><strong>数据质量</strong>${flags.map(f => `<span>${escapeHtml(f)}</span>`).join("") || "<span>暂无标记</span>"}</div>
+        <div><strong>风险扣分/复核点</strong>${risks.map(f => `<span class="risk">${escapeHtml(f)}</span>`).join("") || "<span>暂无显性风险扣分</span>"}</div>
+      </div>
+      <h4>近期相关事件</h4>
+      ${events.length ? events.map(e => `<div class="evidence-event">
+        <strong>${escapeHtml(e.title || "未命名事件")}</strong>
+        <p>${escapeHtml(e.summary || "")}</p>
+        <small>${escapeHtml((e.available_at || e.event_time || "").slice(0, 16))} · 重要性 ${escapeHtml(e.materiality_score ?? "—")} · ${escapeHtml(e.locator || "")}</small>
+      </div>`).join("") : `<p class="doc-note">近期待入库事件中没有匹配到该股票名称；当前主要依据行情、估值和模型状态。</p>`}
+    </div>`;
+}
+
+async function openStockTrendDrawer(securityId, initialPeriod = "1m") {
+  const drawer = document.createElement("div");
+  let activePeriod = initialPeriod;
+  const PERIODS = [["1w", "1周"], ["1m", "1月"], ["3m", "3月"], ["6m", "半年"], ["1y", "1年"]];
+  drawer.className = "detail-backdrop";
+  drawer.innerHTML = `<aside class="brief-drawer stock-trend-drawer" role="dialog" aria-modal="true">
+    <div class="drawer-head"><div><span>今日股票关注 · 走势</span><h2>加载中…</h2></div><button class="drawer-close" aria-label="关闭详情">×</button></div>
+    <div class="drawer-body"><section class="drawer-section"><p>正在读取本地行情快照。</p></section></div>
+    <div class="drawer-foot"><button class="btn drawer-dismiss">关闭</button></div>
+  </aside>`;
+  document.body.appendChild(drawer);
+  const close = () => drawer.remove();
+  drawer.querySelector(".drawer-close").addEventListener("click", close);
+  drawer.querySelector(".drawer-dismiss").addEventListener("click", close);
+  drawer.addEventListener("click", ev => { if (ev.target === drawer) close(); });
+  drawer.addEventListener("keydown", ev => { if (ev.key === "Escape") close(); });
+  drawer.querySelector(".drawer-close").focus();
+
+  const renderTrend = async period => {
+    activePeriod = period;
+    drawer.querySelector(".drawer-body").innerHTML = `<section class="drawer-section"><p>正在读取${escapeHtml(PERIODS.find(p => p[0] === period)?.[1] || "走势")}行情快照。</p></section>`;
+    const data = await api(`/api/stocks/${encodeURIComponent(securityId)}/trend?period=${encodeURIComponent(period)}`);
+    const s = data.security || {};
+    const evidence = data.evidence_chain || {};
+    const sum = data.summary || {};
+    const points = data.points || [];
+    const ratingHistory = data.rating_history || [];
+    const validPoints = points.filter(p => p.close != null && Number(p.close) > 0);
+    const latest = validPoints[validPoints.length - 1] || {};
+    const ret = sum.period_return_pct;
+    drawer.querySelector(".drawer-head div").innerHTML = `<span>${escapeHtml(s.security_id || securityId)} · ${escapeHtml(s.sector_name || "未分类")}</span><h2>${escapeHtml(s.security_name || securityId)}</h2>`;
+    drawer.querySelector(".drawer-body").innerHTML = `
+      <section class="drawer-section trend-hero">
+        <div class="trend-price ${ret > 0 ? "up" : ret < 0 ? "down" : ""}">
+          <strong>${latest.close != null ? Number(latest.close).toFixed(2) : "—"}</strong>
+          <span>${ret != null ? (ret > 0 ? "+" : "") + ret.toFixed(2) + "%" : "—"} · ${escapeHtml(sum.start_date || "—")} 至 ${escapeHtml(sum.end_date || "—")}</span>
+        </div>
+        <div class="trend-tabs">
+          ${PERIODS.map(([key, label]) => `<button class="trend-tab ${key === activePeriod ? "active" : ""}" data-trend-period="${key}">${label}</button>`).join("")}
+        </div>
+      </section>
+      <section class="drawer-section trend-panel">
+        ${stockTrendChart(points)}
+      </section>
+      <section class="drawer-section trend-summary">
+        <div><strong>${sum.high != null ? Number(sum.high).toFixed(2) : "—"}</strong><span>区间高点</span></div>
+        <div><strong>${sum.low != null ? Number(sum.low).toFixed(2) : "—"}</strong><span>区间低点</span></div>
+        <div><strong>${sum.point_count || 0}</strong><span>样本交易日</span></div>
+        <div><strong>${escapeHtml(data.period || activePeriod)}</strong><span>当前周期</span></div>
+      </section>
+      <section class="drawer-section">
+        <h3>当前评级</h3>
+        <dl class="detail-grid">
+          <div><dt>评级批次</dt><dd>${escapeHtml(s.rating_date || "—")}</dd></div>
+          <div><dt>评价等级</dt><dd>${escapeHtml(({ "核心候选": "可考虑买入", "重点跟踪": "等待买点", "长期好公司": "长期观察", "行业扫描": "暂不推荐" })[s.board_status] || s.board_status || s.tier || "—")}</dd></div>
+          <div><dt>投资分</dt><dd>${s.invest_score != null ? Number(s.invest_score).toFixed(1) : s.total_score != null ? Number(s.total_score).toFixed(1) : "—"}</dd></div>
+          <div><dt>PE-TTM</dt><dd>${s.pe_ttm != null && s.pe_ttm > 0 ? Number(s.pe_ttm).toFixed(1) : "—"}</dd></div>
+        </dl>
+        <p style="margin-top:10px">${escapeHtml(s.state_reason || s.rationale || "")}</p>
+      </section>
+      <section class="drawer-section rating-history-section">
+        <h3>近一个月评价等级轨迹</h3>
+        ${stockRatingHistory(ratingHistory)}
+      </section>
+      <section class="drawer-section">
+        <h3>推荐证据链与风险复核</h3>
+        ${stockEvidenceChain(evidence)}
+      </section>
+      <section class="drawer-section"><h3>数据边界</h3><p>${escapeHtml(data.note || "")}</p></section>`;
+    drawer.querySelectorAll("[data-trend-period]").forEach(btn => btn.addEventListener("click", () => {
+      if (btn.dataset.trendPeriod !== activePeriod) renderTrend(btn.dataset.trendPeriod).catch(showError);
+    }));
+  };
+  const showError = error => {
+    drawer.querySelector(".drawer-head h2").textContent = "走势读取失败";
+    drawer.querySelector(".drawer-body").innerHTML = `<section class="drawer-section"><p>${escapeHtml(error.message)}</p></section>`;
+  };
+  renderTrend(activePeriod).catch(showError);
+}
+
 function openRulesDrawer() {
   const focus = state.stockFocus || {};
+  const calibration = state.selfCalibration || {};
+  const activeRule = calibration.active_rule || {};
+  const shadowRule = calibration.shadow_rule || {};
+  const checks = calibration.checks || [];
+  const fixes = calibration.auto_fixes || [];
+  const events = calibration.events || [];
+  const outcomes = calibration.outcomes || [];
+  const checkRows = checks.map(c => `<tr><td>${c.ok ? "✓" : "!"}</td><td>${escapeHtml(c.label || c.key || "")}</td><td>${escapeHtml(c.detail || (c.ok ? "通过" : "需关注"))}</td></tr>`).join("");
+  const fixRows = fixes.map(f => `<tr><td>${escapeHtml(f.type || "auto_fix")}</td><td class="num">${escapeHtml(f.rows ?? "—")}</td><td>${escapeHtml(f.sample ? JSON.stringify(f.sample).slice(0, 80) : "已自动处理")}</td></tr>`).join("");
+  const eventRows = events.map(e => `<tr><td>${escapeHtml(String(e.created_at || "").slice(0, 16))}</td><td>${escapeHtml(e.event_type || "")}</td><td>${escapeHtml(e.reason || "")}</td></tr>`).join("");
+  const outcomeRows = outcomes.map(o => `<tr><td>${escapeHtml(o.horizon || "")}</td><td class="num">${escapeHtml(o.samples ?? 0)}</td><td class="num ${o.avg_return > 0 ? "up" : o.avg_return < 0 ? "down" : ""}">${o.avg_return != null ? (o.avg_return > 0 ? "+" : "") + Number(o.avg_return).toFixed(2) + "%" : "—"}</td></tr>`).join("");
   const drawer = document.createElement("div");
   drawer.className = "detail-backdrop";
   drawer.innerHTML = `<aside class="brief-drawer" role="dialog" aria-modal="true">
-    <div class="drawer-head"><div><span>今日股票关注 · 评级方法</span><h2>评分规则</h2></div><button class="drawer-close" aria-label="关闭详情">×</button></div>
+    <div class="drawer-head"><div><span>今日主推与股票池看板 · AutoInvest Agent</span><h2>规则与审计</h2></div><button class="drawer-close" aria-label="关闭详情">×</button></div>
     <div class="drawer-body">
-      <section class="drawer-section"><h3>评级对象</h3><p>全消费 A 股研究池（项目自研消费分类下的 1,321 只 A 股，正常交易状态下约 1,320 只），每日收盘后统一打分，取总分前 120 只进入展示，另附回避名单。</p></section>
-      <section class="drawer-section"><h3>总分构成</h3>
+      <section class="drawer-section"><h3>自动输出对象</h3><p>Agent 每日自动从全消费 A 股研究池生成两份结果：第一屏为“每日主推清单”（≤3 只，只放明确建仓/小仓位观察），第二屏为“消费股票池看板”（可考虑买入、等待买点、长期观察、暂不推荐）。</p></section>
+      <section class="drawer-section"><h3>当前落地口径</h3>
+        <ul class="doc-list">
+          <li><strong>核心目标</strong>：围绕中期 / 中长期持有价值评价，不再使用旧的“当日动量40%/估值30%/事件30%”作为推荐模型。</li>
+          <li><strong>主推生成</strong>：Agent 从“可考虑买入”中自动挑选 ≤3 只明确动作标的，并写入正式标签、建议动作、核心逻辑、降级条件；暂缓买入不进入主推。</li>
+          <li><strong>看板状态</strong>：【核心·时机满足】/【跟踪·等信号】/【长期·好公司】/【暂不推荐·继续扫描】代表投资研究状态，不是每日热度排名。</li>
+          <li><strong>审计责任</strong>：每条输出必须带决策依据、数据质量、未进主推原因或降级条件。</li>
+        </ul>
+      </section>
+      <section class="drawer-section"><h3>新评判标准</h3>
         <table class="data-table">
-          <tr><td><strong>动量</strong></td><td class="num"><strong>40%</strong></td><td>日涨跌幅（-5%~+5% 映射 0~100）占 50%、量比（0.4~2.5 映射）占 30%、换手率（0~5% 映射）占 20%</td></tr>
-          <tr><td><strong>估值</strong></td><td class="num"><strong>30%</strong></td><td>PE(TTM) 分档：&lt;15 倍=100 分；15~25=80；25~40=60；40~60=40；&gt;60=25；亏损股=25</td></tr>
-          <tr><td><strong>事件催化</strong></td><td class="num"><strong>30%</strong></td><td>基准 50 分；近 3 日事件库中该股票出现正面催化（预增/提价/中标/扩产/回购等）每条 +20，负面事件（预亏/减持/处罚/下滑等）每条 -40</td></tr>
+          <tr><td><strong>投资价值分</strong></td><td class="num"><strong>核心</strong></td><td>以估值质量、跨日稳定性、催化质量和少量时点参考综合形成，代表中期/中长期是否值得纳入推荐体系。</td></tr>
+          <tr><td><strong>稳定分</strong></td><td class="num"><strong>跨日</strong></td><td>参考最近评级日的持续表现和历史池位，防止长期好公司因为单日行情波动被频繁踢出。</td></tr>
+          <tr><td><strong>时点参考</strong></td><td class="num"><strong>辅助</strong></td><td>涨跌幅、量比、换手只用于判断买入时点和短期拥挤度，不再主导股票是否值得推荐。</td></tr>
+          <tr><td><strong>风险扣分</strong></td><td class="num"><strong>硬约束</strong></td><td>ST/退市风险、重大负面事件、治理风险会降低层级或进入暂不推荐/行业扫描，不进入主推。</td></tr>
         </table>
       </section>
-      <section class="drawer-section"><h3>四档划分</h3>
+      <section class="drawer-section"><h3>看板映射</h3>
         <ul class="doc-list">
-          <li><strong>重点关注</strong>：总分第 1-20 名</li>
-          <li><strong>增持观察</strong>：总分第 21-60 名</li>
-          <li><strong>中性</strong>：总分第 61-120 名</li>
-          <li><strong>回避</strong>：近 3 日有负面事件命中的股票，或总分倒数 15 名</li>
+          <li><strong>核心候选</strong>：投资分和稳定分较高，已满足中期/中长期推荐基础，但还需组合层 Gate 后才进入主推。</li>
+          <li><strong>重点跟踪</strong>：投资价值较高，但催化、估值、数据质量或组合约束仍差一个信号。</li>
+          <li><strong>长期好公司</strong>：长期逻辑保留，但当前不是买入时间点；该池具备跨日状态记忆。</li>
+          <li><strong>暂不推荐/行业扫描</strong>：当前不推荐，只保留行业覆盖、风险观察和后续变化监控；若估值、基本面或催化改善，可再升级。</li>
+        </ul>
+      </section>
+      <section class="drawer-section"><h3>自动降级与退出</h3>
+        <ul class="doc-list">
+          <li><strong>主推降级</strong>：核心指标或事件催化连续 2 周转弱，自动降为重点跟踪或长期好公司。</li>
+          <li><strong>长期池退出</strong>：投资分持续恶化、进入回避/风险项、治理风险触发时，从长期好公司降至暂不推荐/行业扫描。</li>
+          <li><strong>数据降级</strong>：关键字段缺失或来源为 P2 时，降低建议动作强度，并在数据质量中标注。</li>
         </ul>
       </section>
       <section class="drawer-section"><h3>数据来源与口径</h3><p>行情与估值：聚源 A 股实时行情（收盘价、涨跌幅、PE-TTM、换手率、量比）；事件：本机研究底座事件库（新闻、公告、研报线索）。评级批次为 ${escapeHtml(focus.date || "当日")}，所用行情实际交易日为 ${escapeHtml(focus.market_date || focus.date || "最近交易日")}。</p></section>
-      <section class="drawer-section"><h3>边界声明</h3><p>本评级为数据驱动的研究候选名单，由规则自动生成、每日更新；不构成投资建议或自动交易指令，不接入也不推断任何基金持仓。最终投资决策由基金经理作出。</p></section>
+      <section class="drawer-section"><h3>全自动边界</h3><p>${escapeHtml(focus.automation?.audit_note || "Agent 自动生成输出并保留审计依据。当前版本为 P2 本地评分口径；接入 P0/P1 后自动提高数据质量等级。")}</p></section>
+      <section class="drawer-section"><h3>Agent 自校准</h3>
+        <p>本系统不需要人工批准：Agent 每日自动自检、自动修复低风险问题、保存推荐快照、生成后验结果，并以影子规则方式自动灰度；如质量恶化，自动回滚。</p>
+        <div class="audit-kpis">
+          <div><span>自检状态</span><strong>${escapeHtml(calibration.status || "unknown")}</strong><small>${escapeHtml(calibration.created_at || "尚未运行")}</small></div>
+          <div><span>正式规则</span><strong>${escapeHtml(activeRule.rule_version || "—")}</strong><small>${escapeHtml(activeRule.status || "")}</small></div>
+          <div><span>影子规则</span><strong>${escapeHtml(shadowRule.rule_version || "—")}</strong><small>${escapeHtml(shadowRule.status || "等待创建")}</small></div>
+          <div><span>推荐快照</span><strong>${Number(calibration.snapshots?.rows || 0).toLocaleString("en-US")}</strong><small>${escapeHtml(calibration.snapshots?.latest_date || "")}</small></div>
+        </div>
+      </section>
+      <section class="drawer-section"><h3>今日自检与自动修复</h3>
+        <table class="data-table"><thead><tr><th>状态</th><th>检查项</th><th>说明</th></tr></thead><tbody>${checkRows || `<tr><td colspan="3">暂无自检记录</td></tr>`}</tbody></table>
+        <h4>自动修复记录</h4>
+        <table class="data-table"><thead><tr><th>修复类型</th><th class="num">数量</th><th>说明</th></tr></thead><tbody>${fixRows || `<tr><td colspan="3">今日无需自动修复</td></tr>`}</tbody></table>
+      </section>
+      <section class="drawer-section"><h3>规则自进化与后验表现</h3>
+        <table class="data-table"><thead><tr><th>周期</th><th class="num">样本</th><th class="num">平均收益</th></tr></thead><tbody>${outcomeRows || `<tr><td colspan="3">后验样本仍在积累</td></tr>`}</tbody></table>
+        <h4>最近自动规则事件</h4>
+        <table class="data-table"><thead><tr><th>时间</th><th>事件</th><th>原因</th></tr></thead><tbody>${eventRows || `<tr><td colspan="3">暂无规则事件</td></tr>`}</tbody></table>
+      </section>
     </div>
     <div class="drawer-foot"><button class="btn drawer-dismiss">关闭</button></div>
   </aside>`;
@@ -1057,49 +1360,6 @@ function openLibraryDrawer(item) {
   drawer.querySelector(".drawer-close").focus();
 }
 
-async function renderUsage() {
-  root.innerHTML = shell(`<div class="loading">正在读取 Token 用量…</div>`);
-  bindShell();
-  const u = await api("/api/token-usage");
-  const fmt = n => Number(n || 0).toLocaleString("en-US");
-  if (!u.available) {
-    root.innerHTML = shell(`<div class="card" style="padding:24px">用量数据不可用：${escapeHtml(u.reason || "未知原因")}</div>`);
-    bindShell();
-    return;
-  }
-  const pct = u.budget_pct;
-  const pctCls = pct >= 90 ? "down" : pct >= 70 ? "warn" : "up";
-  const rows = u.recent.map(r => `
-    <tr>
-      <td>${escapeHtml(r.time)}</td>
-      <td>${escapeHtml(r.model)}</td>
-      <td class="num">${fmt(r.input_tokens)}</td>
-      <td class="num">${fmt(r.output_tokens)}</td>
-      <td class="num">${fmt(r.cache_read_tokens)}</td>
-      <td class="num">$${r.cost_usd}</td>
-      <td class="num">${(r.latency_ms / 1000).toFixed(1)}s</td>
-      <td class="num ${r.status_code === 200 ? "st-ok" : "st-err"}">${r.status_code}</td>
-    </tr>`).join("");
-  const content = `
-    <section class="mb-module">
-      <div class="sf-head"><h2><span class="mb-num">◔</span>Token 用量 <small class="sf-date">${escapeHtml(u.source)}</small></h2></div>
-      <div class="usage-cards">
-        <div class="usage-card"><strong>${fmt(u.month.tokens)}</strong><span>本月已用 token</span></div>
-        <div class="usage-card"><strong>${fmt(u.budget_tokens)}</strong><span>月度上限</span></div>
-        <div class="usage-card"><strong class="${pctCls}">${pct}%</strong><span>预算消耗</span></div>
-        <div class="usage-card sub"><strong>${fmt(u.today.tokens)}</strong><span>今日 token（${u.today.requests} 次调用）</span></div>
-      </div>
-      <p class="usage-sub-line">本月 ${fmt(u.month.requests)} 次调用 · 输出 ${fmt(u.month.output_tokens)} · 缓存读 ${fmt(u.month.cache_read)} · 估算费用 $${fmt(u.month.cost_usd)}（今日 $${u.today.cost_usd}）</p>
-      <h3 class="usage-recent-head">最近调用</h3>
-      <table class="data-table sf-table">
-        <thead><tr><th>时间</th><th>模型</th><th class="num">输入</th><th class="num">输出</th><th class="num">缓存读</th><th class="num">费用</th><th class="num">耗时</th><th class="num">状态</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </section>`;
-  root.innerHTML = shell(content);
-  bindShell();
-}
-
 async function renderReports() {
   root.innerHTML = shell(`<div class="loading">正在读取研究报告…</div>`); bindShell();
   try { state.reports = (await api("/api/reports")).reports; } catch (error) { return renderError(error); }
@@ -1199,7 +1459,6 @@ async function renderView() {
   else if (state.view === "reports") await renderReports();
   else if (state.view === "ask") renderAsk();
   else if (state.view === "library") await renderLibrary();
-  else if (state.view === "usage") await renderUsage();
   else if (state.view === "data") await renderData();
 }
 

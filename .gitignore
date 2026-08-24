@@ -30,3 +30,14 @@ Thumbs.db
 # 日志
 *.log
 logs/
+
+# 运行期数据库副本 / 备份
+data/consumer-research.db
+data/curated/*before*.db
+data/curated/*.deploy.db
+data/curated/*.backup.db
+data/curated/*.bak.db
+
+# 新增运行期监控输出（历史已入库样例不强制移除）
+data/monitoring/module3-realtime-research/server-daily-sync.log
+data/monitoring/module3-realtime-research/daily-sync.log

@@ -1,0 +1,14 @@
+[Unit]
+Description=Consumer Research Workbench Daily Data Sync
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/fund-manager-workbench
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /opt/fund-manager-workbench/tools/Invoke-DailyMorningBriefSync.py
+ExecStartPost=/bin/systemctl try-restart consumer-research.service
+TimeoutStartSec=3600
+StandardOutput=append:/opt/fund-manager-workbench/data/monitoring/module3-realtime-research/server-daily-sync.log
+StandardError=append:/opt/fund-manager-workbench/data/monitoring/module3-realtime-research/server-daily-sync.log
