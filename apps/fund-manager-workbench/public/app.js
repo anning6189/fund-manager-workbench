@@ -777,7 +777,7 @@ function openRulesDrawer() {
         <table class="data-table"><thead><tr><th>修复类型</th><th class="num">数量</th><th>说明</th></tr></thead><tbody>${fixRows || `<tr><td colspan="3">今日无需自动修复</td></tr>`}</tbody></table>
       </section>
       <section class="drawer-section"><h3>规则自进化与后验表现</h3>
-        <table class="data-table"><thead><tr><th>周期</th><th class="num">样本</th><th class="num">平均收益</th></tr></thead><tbody>${outcomeRows || `<tr><td colspan="3">后验样本仍在积累</td></tr>`}</tbody></table>
+        <table class="data-table audit-outcome-table"><thead><tr><th>周期</th><th class="num">样本</th><th class="num">平均收益</th></tr></thead><tbody>${outcomeRows || `<tr><td colspan="3">后验样本仍在积累</td></tr>`}</tbody></table>
         <h4>最近自动规则事件</h4>
         <table class="data-table"><thead><tr><th>时间</th><th>事件</th><th>原因</th></tr></thead><tbody>${eventRows || `<tr><td colspan="3">暂无规则事件</td></tr>`}</tbody></table>
       </section>
