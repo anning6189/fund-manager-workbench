@@ -2077,6 +2077,55 @@ class WorkbenchService:
             "answer_preview": answer[:40],
         }
 
+    def enhance_with_llm(self, payload: dict[str, Any]) -> dict[str, Any]:
+        """用户自带 Key 的业务增强层：只解释/总结/复盘，不改写底层评分与推荐结果。"""
+        config = self._sanitize_user_llm_config(payload.get("llm_config"))
+        if not config:
+            raise ValueError("请先在右上角“模型增强设置”里填写并启用自己的模型 Key")
+        task = str(payload.get("task") or "").strip()
+        context = payload.get("context") if isinstance(payload.get("context"), dict) else {}
+        task_prompts = {
+            "stock_explain": (
+                "你要为一只消费行业股票生成个股解释。请严格基于输入 JSON，不要编造外部事实。"
+                "输出用中文，分为：1）当前结论；2）为什么处于当前评级；3）中期/中长期逻辑；"
+                "4）主要风险；5）升级或降级条件。不要给交易指令，不要承诺收益。"
+            ),
+            "audit_review": (
+                "你要解释 AutoInvest Agent 的规则与审计结果。请严格基于输入 JSON。"
+                "重点说明：推荐后验表现是否合理、为什么观察/扫描组可能阶段性更高、规则是否存在偏差、"
+                "下一步应监控哪些指标。只做解释和建议，不直接修改规则。"
+            ),
+            "brief_enhance": (
+                "你要把消费行研晨报增强成基金经理晨会可读版本。请严格基于输入 JSON。"
+                "输出结构：今日一句话结论、市场/消费板块变化、主推股票线索、风险提示、今日需跟踪。"
+                "保持专业克制，注明这是研究辅助，不构成交易指令。"
+            ),
+        }
+        if task not in task_prompts:
+            raise ValueError("未知的模型增强任务")
+        compact_context = json.dumps(context, ensure_ascii=False, separators=(",", ":"))[:18000]
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "你是服务公募基金经理的资深消费行业研究员，也是这个网页 Agent 的解释层。"
+                    "底层规则模型负责计算，你只负责解释、总结、复盘和质检。"
+                    "必须基于输入内容，不能虚构数据；涉及投资时使用研究观点口径，不输出买卖指令。"
+                ),
+            },
+            {"role": "user", "content": f"{task_prompts[task]}\n\n【输入JSON】\n{compact_context}"},
+        ]
+        started = datetime.now().timestamp()
+        try:
+            data = self._llm_chat_completion(config, messages, stream=False, max_tokens=1400, timeout=60)
+            answer = data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+        except Exception as exc:
+            self.audit("llm_enhance", outcome="failed", detail={"task": task, "provider": config.get("provider"), "error": str(exc)[:200]})
+            return {"ok": False, "error": str(exc)[:180], "elapsed_ms": int((datetime.now().timestamp() - started) * 1000)}
+        elapsed_ms = int((datetime.now().timestamp() - started) * 1000)
+        self.audit("llm_enhance", outcome="success", detail={"task": task, "provider": config.get("provider"), "model": config.get("model"), "elapsed_ms": elapsed_ms})
+        return {"ok": True, "task": task, "answer": answer, "elapsed_ms": elapsed_ms, "model": config.get("model")}
+
     def ask_stream(self, payload: dict[str, Any], emit) -> dict[str, Any]:
         """流式问答：边生成边推送给页面。"""
         question = str(payload.get("question", "")).strip()
@@ -2450,6 +2499,8 @@ body{{margin:0;background:#f7f6f4;color:#171717;font-family:"Segoe UI","Microsof
                 self.json_response(self.app.ask(payload))
             elif parsed.path == "/api/llm/test":
                 self.json_response(self.app.test_llm_config(payload))
+            elif parsed.path == "/api/llm/enhance":
+                self.json_response(self.app.enhance_with_llm(payload))
             elif parsed.path == "/api/ask/stream":
                 self.send_response(200)
                 self.send_header("Content-Type", "text/event-stream; charset=utf-8")

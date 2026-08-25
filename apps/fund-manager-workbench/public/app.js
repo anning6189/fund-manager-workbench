@@ -514,6 +514,11 @@ function renderBrief() {
 
       ${heatSection}
 
+      <section class="mb-module ai-enhance-panel">
+        <div class="sf-head"><h2><span class="mb-num">AI</span>晨报增强解读 <small class="sf-date">接入大模型后可用 · 不改变底层规则结果</small></h2><button class="btn small" id="brief-ai-enhance">生成增强晨报</button></div>
+        <div id="brief-ai-output" class="ai-enhance-box">当前展示为规则基础版晨报。接入模型后，可把今日主推、板块热力、核心观点和风险提示整合成更像晨会口径的文字。</div>
+      </section>
+
       <section class="mb-module">
         <h2><span class="mb-num">1</span>今日核心观点</h2>
         <ul class="tk-list">${takeawayHtml}</ul>
@@ -539,6 +544,16 @@ function renderBrief() {
   if (dailyReport) {
     document.getElementById("open-daily-report")?.addEventListener("click", () => { state.activeReport = dailyReport.run_id; state.reportTab = "report"; navigate("reports"); });
   }
+  document.getElementById("brief-ai-enhance")?.addEventListener("click", ev => runLlmEnhancement("brief_enhance", {
+    brief_date: brief.date,
+    source_date: brief.brief_source_date,
+    main_push: (focus.main_push || []).slice(0, 5),
+    board_counts: focus.board_counts || {},
+    heatmap: { date: heat.date, anchor_date: heat.anchor_date, sectors: (heat.sectors || []).slice(0, 12) },
+    takeaway: brief.takeaway || [],
+    macro_policy: brief.macro_policy || {},
+    risks: brief.risks || [],
+  }, "#brief-ai-output", ev.currentTarget));
   document.querySelectorAll("[data-tk-index]").forEach(el => {
     const open = () => openTakeawayDrawer(brief.takeaway[Number(el.dataset.tkIndex)], brief.takeaway_events || {});
     el.addEventListener("click", open);
@@ -824,10 +839,23 @@ async function openStockTrendDrawer(securityId, initialPeriod = "1m") {
         <h3>推荐证据链与风险复核</h3>
         ${stockEvidenceChain(evidence)}
       </section>
+      <section class="drawer-section ai-enhance-panel">
+        <div class="sf-head"><h3>AI个股解释</h3><button class="btn small" id="stock-ai-explain">生成AI解释</button></div>
+        <div id="stock-ai-output" class="ai-enhance-box">基础版已展示走势图、评级轨迹和证据链；接入模型后，可生成“为什么处于当前等级、主要风险、升级/降级条件”的自然语言解释。</div>
+      </section>
       <section class="drawer-section"><h3>数据边界</h3><p>${escapeHtml(data.note || "")}</p></section>`;
     drawer.querySelectorAll("[data-trend-period]").forEach(btn => btn.addEventListener("click", () => {
       if (btn.dataset.trendPeriod !== activePeriod) renderTrend(btn.dataset.trendPeriod).catch(showError);
     }));
+    drawer.querySelector("#stock-ai-explain")?.addEventListener("click", ev => runLlmEnhancement("stock_explain", {
+      security: s,
+      period: data.period || activePeriod,
+      trend_summary: sum,
+      latest_quote: latest,
+      rating_history: ratingHistory,
+      evidence_chain: evidence,
+      note: data.note,
+    }, drawer.querySelector("#stock-ai-output"), ev.currentTarget));
   };
   const showError = error => {
     drawer.querySelector(".drawer-head h2").textContent = "走势读取失败";
@@ -915,6 +943,10 @@ function openRulesDrawer() {
         <h4>最近自动规则事件</h4>
         <table class="data-table"><thead><tr><th>时间</th><th>事件</th><th>原因</th></tr></thead><tbody>${eventRows || `<tr><td colspan="3">暂无规则事件</td></tr>`}</tbody></table>
       </section>
+      <section class="drawer-section ai-enhance-panel">
+        <div class="sf-head"><h3>AI复盘解释</h3><button class="btn small" id="audit-ai-review">生成AI复盘</button></div>
+        <div id="audit-ai-output" class="ai-enhance-box">基础版已展示样本、平均收益、胜率和规则事件；接入模型后，可解释“主推/候选/观察池”的表现差异，并给出后续监控建议。</div>
+      </section>
     </div>
     <div class="drawer-foot"><button class="btn drawer-dismiss">关闭</button></div>
   </aside>`;
@@ -924,6 +956,22 @@ function openRulesDrawer() {
   drawer.querySelector(".drawer-dismiss").addEventListener("click", close);
   drawer.addEventListener("click", ev => { if (ev.target === drawer) close(); });
   drawer.addEventListener("keydown", ev => { if (ev.key === "Escape") close(); });
+  drawer.querySelector("#audit-ai-review")?.addEventListener("click", ev => runLlmEnhancement("audit_review", {
+    focus_date: focus.date,
+    market_date: focus.market_date,
+    board_counts: focus.board_counts || {},
+    main_push: (focus.main_push || []).slice(0, 5),
+    calibration: {
+      status: calibration.status,
+      checks,
+      auto_fixes: fixes,
+      events,
+      outcomes,
+      active_rule: activeRule,
+      shadow_rule: shadowRule,
+      guardrails: calibration.guardrails || [],
+    },
+  }, drawer.querySelector("#audit-ai-output"), ev.currentTarget));
   drawer.querySelector(".drawer-close").focus();
 }
 
@@ -1204,6 +1252,32 @@ function renderAnswerText(text) {
   return escapeHtml(text || "")
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
     .replace(/\n/g, "<br>");
+}
+
+async function runLlmEnhancement(task, context, targetSelector, button) {
+  const cfg = publicLlmConfig();
+  const target = typeof targetSelector === "string" ? document.querySelector(targetSelector) : targetSelector;
+  if (!target) return;
+  if (!cfg) {
+    target.innerHTML = `<div class="ai-enhance-empty">请先点击右上角“设置”，填写并启用自己的模型 Key；不接入大模型时，基础规则功能仍可正常使用。</div>`;
+    toast("请先在右上角接入自己的模型 Key", true);
+    return;
+  }
+  const oldText = button?.textContent;
+  if (button) { button.disabled = true; button.textContent = "AI生成中…"; }
+  target.innerHTML = `<div class="ai-enhance-loading">正在调用您的模型生成增强解释……</div>`;
+  try {
+    const resp = await api("/api/llm/enhance", {
+      method: "POST",
+      body: JSON.stringify({ task, context, llm_config: cfg }),
+    });
+    if (!resp.ok) throw new Error(resp.error || "生成失败");
+    target.innerHTML = `<div class="ai-enhance-answer">${renderAnswerText(resp.answer || "（空回答）")}<small>由 ${escapeHtml(resp.model || cfg.model)} 生成 · ${(Number(resp.elapsed_ms || 0) / 1000).toFixed(1)} 秒</small></div>`;
+  } catch (e) {
+    target.innerHTML = `<div class="ai-enhance-error">AI增强失败：${escapeHtml(e.message)}</div>`;
+  } finally {
+    if (button) { button.disabled = false; button.textContent = oldText; }
+  }
 }
 
 function renderAsk() {
