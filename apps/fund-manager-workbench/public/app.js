@@ -7,6 +7,8 @@ const toastNode = document.getElementById("toast");
 const state = {
   view: ["today", "ask", "library", "models", "reports", "data"].includes(location.hash.replace("#", "")) ? location.hash.replace("#", "") : "today",
   bootstrap: null,
+  llmConfig: loadLlmConfig(),
+  llmStatus: null,
   alerts: [],
   jobs: [],
   reports: [],
@@ -62,6 +64,39 @@ async function api(path, options = {}) {
   return payload;
 }
 
+function loadLlmConfig() {
+  try {
+    const value = JSON.parse(localStorage.getItem("llm-enhance-config-v1") || "null");
+    return value && typeof value === "object" ? value : { enabled: false };
+  } catch (e) {
+    return { enabled: false };
+  }
+}
+
+function saveLlmConfig(config) {
+  state.llmConfig = { ...(config || {}), api_key: String(config?.api_key || "").trim() };
+  try { localStorage.setItem("llm-enhance-config-v1", JSON.stringify(state.llmConfig)); } catch (e) { /* ignore */ }
+}
+
+function publicLlmConfig() {
+  const cfg = state.llmConfig || {};
+  if (!cfg.enabled || !cfg.base_url || !cfg.model || !cfg.api_key) return null;
+  return {
+    enabled: true,
+    provider: cfg.provider || "openai-compatible",
+    base_url: cfg.base_url,
+    model: cfg.model,
+    api_key: cfg.api_key,
+  };
+}
+
+function maskSecret(value) {
+  const text = String(value || "");
+  if (!text) return "未填写";
+  if (text.length <= 8) return "********";
+  return `${text.slice(0, 4)}****${text.slice(-4)}`;
+}
+
 function status(value, kind) {
   const label = statusLabels[value] || value || "未知";
   const tone = kind || (value === "fresh" || value === "completed" || value === "internal_research_ready" ? "good" :
@@ -81,7 +116,10 @@ function shell(content) {
         <nav class="nav-list" aria-label="主导航">
           ${nav.map(([id, label]) => `<button class="nav-item ${state.view === id ? "active" : ""}" data-nav="${id}">${label}</button>`).join("")}
         </nav>
-  <div class="briefing-date"><strong>${escapeHtml(b.cutoff.date)}</strong><span>研究截止 · 08:00</span></div>
+  <div class="briefing-tools">
+    <button class="llm-settings-btn ${publicLlmConfig() ? "on" : ""}" id="llm-settings" title="模型增强设置" aria-label="模型增强设置">⚙ <span>${publicLlmConfig() ? "AI增强" : "设置"}</span></button>
+    <div class="briefing-date"><strong>${escapeHtml(b.cutoff.date)}</strong><span>研究截止 · 08:00</span></div>
+  </div>
       </header>
       <main class="workspace">
         <div class="content">${content}</div>
@@ -91,6 +129,95 @@ function shell(content) {
 
 function bindShell() {
   document.querySelectorAll("[data-nav]").forEach(button => button.addEventListener("click", () => navigate(button.dataset.nav)));
+  document.getElementById("llm-settings")?.addEventListener("click", openLlmSettings);
+}
+
+async function openLlmSettings() {
+  let serverStatus = state.llmStatus;
+  try {
+    serverStatus = await api("/api/llm/status");
+    state.llmStatus = serverStatus;
+  } catch (e) {
+    serverStatus = { mode: "unknown", note: "暂时无法读取模型增强状态。" };
+  }
+  const cfg = state.llmConfig || { enabled: false };
+  const drawer = document.createElement("div");
+  drawer.className = "detail-backdrop";
+  drawer.innerHTML = `<aside class="brief-drawer llm-settings-drawer" role="dialog" aria-modal="true">
+    <div class="drawer-head"><div><span>用户自带 Key · 模式 B</span><h2>模型增强设置</h2></div><button class="drawer-close" aria-label="关闭设置">×</button></div>
+    <div class="drawer-body">
+      <section class="drawer-section llm-mode-card ${cfg.enabled ? "on" : ""}">
+        <h3>当前模式</h3>
+        <p><strong>${cfg.enabled ? "AI 增强版" : "规则基础版"}</strong>：不接入大模型时，今日主推、股票池分层、走势图、热力图、历史评级、后验审计仍然正常运行；接入后增强问答、解释、复盘和自校对表达。</p>
+        <dl class="detail-grid">
+          <div><dt>保存位置</dt><dd>当前浏览器</dd></div>
+          <div><dt>服务器默认</dt><dd>${escapeHtml(serverStatus.base_mode || "rule_only")}</dd></div>
+          <div><dt>模型名称</dt><dd>${escapeHtml(cfg.model || "未配置")}</dd></div>
+          <div><dt>API Key</dt><dd>${escapeHtml(maskSecret(cfg.api_key))}</dd></div>
+        </dl>
+      </section>
+      <section class="drawer-section">
+        <h3>接入 OpenAI-compatible 模型</h3>
+        <div class="llm-form">
+          <label><span>启用 AI 增强</span><input id="llm-enabled" type="checkbox" ${cfg.enabled ? "checked" : ""}></label>
+          <label><span>服务商标识</span><input class="input" id="llm-provider" value="${escapeHtml(cfg.provider || "openai-compatible")}" placeholder="openai / deepseek / kimi / qwen"></label>
+          <label><span>API Base URL</span><input class="input" id="llm-base-url" value="${escapeHtml(cfg.base_url || "")}" placeholder="https://api.openai.com/v1"></label>
+          <label><span>模型名称</span><input class="input" id="llm-model" value="${escapeHtml(cfg.model || "")}" placeholder="gpt-5.5 / deepseek-chat / qwen-plus"></label>
+          <label class="full"><span>API Key</span><input class="input" id="llm-api-key" type="password" value="${escapeHtml(cfg.api_key || "")}" placeholder="只保存在当前浏览器，不写入 Git"></label>
+        </div>
+        <p class="llm-note">安全说明：该 Key 不写入项目数据库，不提交 GitHub；测试和问答时会临时发给本 Agent 后端转发到您填写的模型服务。</p>
+        <p class="llm-test-result" id="llm-test-result"></p>
+      </section>
+      <section class="drawer-section"><h3>增强范围</h3><p>${escapeHtml(serverStatus.note || "填写用户自己的模型 Key 后，仅该浏览器启用 AI 增强。")}</p></section>
+    </div>
+    <div class="drawer-foot">
+      <button class="btn danger" id="llm-clear">关闭并清除</button>
+      <button class="btn" id="llm-test">测试连接</button>
+      <button class="btn primary" id="llm-save">保存设置</button>
+    </div>
+  </aside>`;
+  document.body.appendChild(drawer);
+  const close = () => drawer.remove();
+  const readForm = () => ({
+    enabled: Boolean(drawer.querySelector("#llm-enabled")?.checked),
+    provider: drawer.querySelector("#llm-provider")?.value.trim() || "openai-compatible",
+    base_url: drawer.querySelector("#llm-base-url")?.value.trim() || "",
+    model: drawer.querySelector("#llm-model")?.value.trim() || "",
+    api_key: drawer.querySelector("#llm-api-key")?.value.trim() || "",
+  });
+  const result = drawer.querySelector("#llm-test-result");
+  drawer.querySelector(".drawer-close").addEventListener("click", close);
+  drawer.addEventListener("click", ev => { if (ev.target === drawer) close(); });
+  drawer.addEventListener("keydown", ev => { if (ev.key === "Escape") close(); });
+  drawer.querySelector("#llm-save")?.addEventListener("click", () => {
+    const next = readForm();
+    saveLlmConfig(next);
+    toast(next.enabled ? "模型增强设置已保存" : "已保存：规则基础版");
+    close();
+    renderView();
+  });
+  drawer.querySelector("#llm-clear")?.addEventListener("click", () => {
+    saveLlmConfig({ enabled: false });
+    toast("已清除当前浏览器的模型 Key");
+    close();
+    renderView();
+  });
+  drawer.querySelector("#llm-test")?.addEventListener("click", async () => {
+    const next = readForm();
+    result.textContent = "正在测试连接…";
+    result.className = "llm-test-result";
+    try {
+      const resp = await api("/api/llm/test", { method: "POST", body: JSON.stringify(next) });
+      if (!resp.ok) throw new Error(resp.error || "连接失败");
+      result.textContent = `连接成功：${resp.model}，耗时 ${(resp.elapsed_ms / 1000).toFixed(1)} 秒。`;
+      result.className = "llm-test-result ok";
+      saveLlmConfig({ ...next, enabled: true });
+    } catch (e) {
+      result.textContent = `连接失败：${e.message}`;
+      result.className = "llm-test-result err";
+    }
+  });
+  drawer.querySelector(".drawer-close").focus();
 }
 
 function navigate(view) {
@@ -1092,9 +1219,14 @@ function renderAsk() {
   const pending = state.askPending
     ? `<div class="chat-row"><div class="chat-bubble agent pending">正在生成回答 <span id="ask-timer">0.0</span> 秒……</div></div>`
     : "";
+  const llmCfg = publicLlmConfig();
+  const modeHtml = llmCfg
+    ? `<div class="llm-inline-status on"><strong>AI增强已启用</strong><span>${escapeHtml(llmCfg.provider)} · ${escapeHtml(llmCfg.model)} · ${escapeHtml(maskSecret(llmCfg.api_key))}</span><button class="btn small" id="ask-open-llm">模型设置</button></div>`
+    : `<div class="llm-inline-status"><strong>当前为规则基础版</strong><span>问答默认尝试服务器本地模型代理；右上角可填写自己的模型 Key 开启 AI 增强。</span><button class="btn small" id="ask-open-llm">接入大模型</button></div>`;
   const content = `
     <section class="mb-module ask-page">
       <div class="sf-head"><h2><span class="mb-num">◈</span>AI研究员 <small class="sf-date">基于本机研究底座 · 快速生成</small></h2></div>
+      ${modeHtml}
       <div class="chat-box" id="chat-box">
         ${messages || `<div class="chat-empty"><p>直接向研究员提问，例如：</p>
           <button class="ask-hint" data-q="今天白酒板块怎么看？">今天白酒板块怎么看？</button>
@@ -1117,6 +1249,7 @@ function renderAsk() {
     input.value = btn.dataset.q;
     input.focus();
   }));
+  document.getElementById("ask-open-llm")?.addEventListener("click", openLlmSettings);
   const submit = async () => {
     const q = input.value.trim();
     if (!q || state.askPending) return;
@@ -1140,7 +1273,7 @@ function renderAsk() {
       const resp = await fetch("/api/ask/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Workbench-Token": token },
-        body: JSON.stringify({ question: q, history: chat.slice(-7, -1) }),
+        body: JSON.stringify({ question: q, history: chat.slice(-7, -1), llm_config: publicLlmConfig() }),
       });
       if (!resp.ok || !resp.body) {
         finish(`生成失败：HTTP ${resp.status}`, null);

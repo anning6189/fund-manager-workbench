@@ -1845,6 +1845,18 @@ class WorkbenchService:
         if fact:
             return fact
         messages, used = self._build_ask_messages(question, history)
+        llm_config = self._sanitize_user_llm_config(payload.get("llm_config"))
+        if llm_config:
+            started = datetime.now().timestamp()
+            try:
+                data = self._llm_chat_completion(llm_config, messages, stream=False, max_tokens=4000, timeout=60)
+                answer = data["choices"][0]["message"]["content"].strip()
+            except Exception as exc:
+                self.audit("ask", outcome="failed", detail={"error": str(exc)[:200], "provider": llm_config.get("provider")})
+                return {"ok": False, "error": f"模型调用失败：{str(exc)[:120]}", "elapsed_ms": int((datetime.now().timestamp() - started) * 1000)}
+            elapsed_ms = int((datetime.now().timestamp() - started) * 1000)
+            self.audit("ask", outcome="success", detail={"q": question[:60], "elapsed_ms": elapsed_ms, "provider": llm_config.get("provider")})
+            return {"ok": True, "answer": answer, "elapsed_ms": elapsed_ms, "context_items": used, "llm_mode": "user_key"}
         request_body = json.dumps({
             "model": "kimi-k3", "messages": messages, "max_tokens": 4000, "stream": False,
         }).encode("utf-8")
@@ -1975,6 +1987,96 @@ class WorkbenchService:
         messages.append({"role": "user", "content": f"{context_text}\n\n【基金经理的问题】{question}"})
         return messages, used
 
+    def llm_status(self) -> dict[str, Any]:
+        """公网默认不绑定站长大模型；用户可在浏览器内填写自己的 OpenAI-compatible Key 增强。"""
+        return {
+            "enabled": False,
+            "mode": "user_key_optional",
+            "base_mode": "rule_only",
+            "server_provider": None,
+            "server_model": None,
+            "enhanced_modules": ["AI研究员问答", "个股解释", "规则审计解释", "晨报文案增强"],
+            "note": "未配置用户自己的模型 Key 时，系统按规则模型、聚源数据和本地数据库运行；填写 Key 后，仅该浏览器会启用 AI 增强。",
+        }
+
+    def _sanitize_user_llm_config(self, raw: Any) -> dict[str, str] | None:
+        if not isinstance(raw, dict):
+            return None
+        enabled = raw.get("enabled", True)
+        if enabled is False or str(enabled).lower() in {"0", "false", "off", "no"}:
+            return None
+        provider = str(raw.get("provider") or "openai-compatible").strip()[:40]
+        base_url = str(raw.get("base_url") or "").strip().rstrip("/")
+        model = str(raw.get("model") or "").strip()
+        api_key = str(raw.get("api_key") or "").strip()
+        if not base_url or not model or not api_key:
+            return None
+        parsed = urlparse(base_url)
+        if parsed.scheme != "https" and parsed.hostname not in {"127.0.0.1", "localhost"}:
+            raise ValueError("模型 API Base URL 必须使用 https，或本机 localhost 调试地址")
+        if not parsed.netloc:
+            raise ValueError("模型 API Base URL 格式不正确")
+        if len(model) > 120:
+            raise ValueError("模型名称过长")
+        if len(api_key) > 300:
+            raise ValueError("API Key 过长")
+        return {"provider": provider, "base_url": base_url, "model": model, "api_key": api_key}
+
+    def _llm_chat_completion(
+        self,
+        config: dict[str, str],
+        messages: list[dict[str, str]],
+        *,
+        stream: bool,
+        max_tokens: int,
+        timeout: int,
+    ) -> dict[str, Any]:
+        url = config["base_url"]
+        if not url.endswith("/chat/completions"):
+            url = f"{url}/chat/completions"
+        body = json.dumps({
+            "model": config["model"],
+            "messages": messages,
+            "max_tokens": max_tokens,
+            "stream": stream,
+        }, ensure_ascii=False).encode("utf-8")
+        req = urllib.request.Request(
+            url,
+            data=body,
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {config['api_key']}",
+                **({"Accept": "text/event-stream"} if stream else {}),
+            },
+        )
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+
+    def test_llm_config(self, payload: dict[str, Any]) -> dict[str, Any]:
+        config = self._sanitize_user_llm_config(payload)
+        if not config:
+            raise ValueError("请填写 API Base URL、模型名称和 API Key")
+        messages = [
+            {"role": "system", "content": "你是连接测试助手。只回答：连接成功。"},
+            {"role": "user", "content": "测试连接"},
+        ]
+        started = datetime.now().timestamp()
+        try:
+            data = self._llm_chat_completion(config, messages, stream=False, max_tokens=20, timeout=20)
+            answer = data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+        except Exception as exc:
+            self.audit("llm_config_test", outcome="failed", detail={"provider": config.get("provider"), "error": str(exc)[:200]})
+            return {"ok": False, "error": str(exc)[:180], "elapsed_ms": int((datetime.now().timestamp() - started) * 1000)}
+        elapsed_ms = int((datetime.now().timestamp() - started) * 1000)
+        self.audit("llm_config_test", outcome="success", detail={"provider": config.get("provider"), "model": config.get("model"), "elapsed_ms": elapsed_ms})
+        return {
+            "ok": True,
+            "provider": config["provider"],
+            "model": config["model"],
+            "elapsed_ms": elapsed_ms,
+            "answer_preview": answer[:40],
+        }
+
     def ask_stream(self, payload: dict[str, Any], emit) -> dict[str, Any]:
         """流式问答：边生成边推送给页面。"""
         question = str(payload.get("question", "")).strip()
@@ -1985,6 +2087,46 @@ class WorkbenchService:
             emit(fact["answer"])
             return {"ok": True, "elapsed_ms": 0, "fast_path": fact["fast_path"]}
         messages, used = self._build_ask_messages(question, payload.get("history") or [])
+        llm_config = self._sanitize_user_llm_config(payload.get("llm_config"))
+        if llm_config:
+            started = datetime.now().timestamp()
+            try:
+                url = llm_config["base_url"]
+                if not url.endswith("/chat/completions"):
+                    url = f"{url}/chat/completions"
+                request_body = json.dumps({
+                    "model": llm_config["model"], "messages": messages, "max_tokens": 4000, "stream": True,
+                }, ensure_ascii=False).encode("utf-8")
+                req = urllib.request.Request(
+                    url,
+                    data=request_body,
+                    headers={"Content-Type": "application/json", "Authorization": f"Bearer {llm_config['api_key']}",
+                             "Accept": "text/event-stream"},
+                )
+                with urllib.request.urlopen(req, timeout=80) as resp:
+                    for raw_line in resp:
+                        line = raw_line.decode("utf-8", errors="ignore").strip()
+                        if not line.startswith("data:"):
+                            continue
+                        data = line[5:].strip()
+                        if data == "[DONE]":
+                            break
+                        try:
+                            chunk = json.loads(data)
+                        except json.JSONDecodeError:
+                            continue
+                        for choice in chunk.get("choices", []):
+                            delta = choice.get("delta", {})
+                            if delta.get("content"):
+                                emit(delta["content"])
+                            elif delta.get("reasoning_content"):
+                                emit(delta["reasoning_content"], kind="think")
+            except Exception as exc:
+                self.audit("ask", outcome="failed", detail={"error": str(exc)[:200], "stream": True, "provider": llm_config.get("provider")})
+                return {"ok": False, "error": f"模型调用失败：{str(exc)[:120]}", "elapsed_ms": int((datetime.now().timestamp() - started) * 1000)}
+            elapsed_ms = int((datetime.now().timestamp() - started) * 1000)
+            self.audit("ask", outcome="success", detail={"q": question[:60], "elapsed_ms": elapsed_ms, "stream": True, "provider": llm_config.get("provider")})
+            return {"ok": True, "elapsed_ms": elapsed_ms, "context_items": used, "llm_mode": "user_key"}
         # 推理型模型：思考链也吃 token，需要给正文留足空间
         request_body = json.dumps({
             "model": "kimi-k3", "messages": messages, "max_tokens": 4000, "stream": True,
@@ -2255,6 +2397,8 @@ body{{margin:0;background:#f7f6f4;color:#171717;font-family:"Segoe UI","Microsof
                 self.json_response(self.app.ops_status())
             elif parsed.path == "/api/self-calibration":
                 self.json_response(self.app.self_calibration_status())
+            elif parsed.path == "/api/llm/status":
+                self.json_response(self.app.llm_status())
             elif parsed.path == "/api/briefing-content":
                 self.json_response(self.app.briefing_content())
             elif parsed.path == "/api/morning-brief":
@@ -2304,6 +2448,8 @@ body{{margin:0;background:#f7f6f4;color:#171717;font-family:"Segoe UI","Microsof
                 self.json_response(self.app.submit_job(payload), 201)
             elif parsed.path == "/api/ask":
                 self.json_response(self.app.ask(payload))
+            elif parsed.path == "/api/llm/test":
+                self.json_response(self.app.test_llm_config(payload))
             elif parsed.path == "/api/ask/stream":
                 self.send_response(200)
                 self.send_header("Content-Type", "text/event-stream; charset=utf-8")
