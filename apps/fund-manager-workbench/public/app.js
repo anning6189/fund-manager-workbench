@@ -293,7 +293,6 @@ function renderBrief() {
       <td class="num rk">${i + 1}</td>
       <td><strong>${escapeHtml(s.security_name)}</strong><small class="sf-code">${escapeHtml(s.security_id || "")}${s.sector_name ? " · " + escapeHtml(s.sector_name) : ""} · 点击看走势</small></td>
       <td><span class="sf-label">${escapeHtml(s.holding_label || "自动主推")}</span></td>
-      <td>${escapeHtml(s.recommendation_action || "自动生成")}</td>
       <td class="num"><strong>${s.model_score != null ? Number(s.model_score).toFixed(1) : s.invest_score != null ? Number(s.invest_score).toFixed(1) : s.total_score != null ? Number(s.total_score).toFixed(1) : "—"}</strong></td>
       <td class="num">${s.close_price != null ? Number(s.close_price).toFixed(2) : "—"}</td>
       <td class="num ${s.change_pct > 0 ? "up" : s.change_pct < 0 ? "down" : ""}">${s.change_pct != null ? (s.change_pct > 0 ? "+" : "") + Number(s.change_pct).toFixed(2) + "%" : "—"}</td>
@@ -325,8 +324,8 @@ function renderBrief() {
         <div class="sf-subtitle"><strong>每日主推清单</strong><span>≤5只 · 只保留有明确买入动作的标的</span></div>
         <div class="table-scroll">
           <table class="data-table sf-table sf-main-table">
-            <thead><tr><th>#</th><th>股票</th><th>正式标签</th><th>建议动作</th><th class="num">投资分</th><th class="num">现价</th><th class="num">涨跌</th><th>核心逻辑</th><th>降级条件</th><th>数据质量</th></tr></thead>
-            <tbody>${mainRows || `<tr><td colspan="10">今日无自动主推，等待数据质量或组合层 Gate 满足</td></tr>`}</tbody>
+            <thead><tr><th>#</th><th>股票</th><th>正式标签</th><th class="num">投资分</th><th class="num">现价</th><th class="num">涨跌</th><th>核心逻辑</th><th>降级条件</th><th>数据质量</th></tr></thead>
+            <tbody>${mainRows || `<tr><td colspan="9">今日无自动主推，等待数据质量或组合层 Gate 满足</td></tr>`}</tbody>
           </table>
         </div>
       </div>
