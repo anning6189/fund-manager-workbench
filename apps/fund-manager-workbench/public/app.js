@@ -719,10 +719,14 @@ function openRulesDrawer() {
   const fixes = calibration.auto_fixes || [];
   const events = calibration.events || [];
   const outcomes = calibration.outcomes || [];
+  const recommendationGroups = new Set(["main_push", "buy_candidate"]);
+  const validationGroups = new Set(["watch_signal", "long_quality", "sector_scan"]);
   const checkRows = checks.map(c => `<tr><td>${c.ok ? "✓" : "!"}</td><td>${escapeHtml(c.label || c.key || "")}</td><td>${escapeHtml(c.detail || (c.ok ? "通过" : "需关注"))}</td></tr>`).join("");
   const fixRows = fixes.map(f => `<tr><td>${escapeHtml(f.type || "auto_fix")}</td><td class="num">${escapeHtml(f.rows ?? "—")}</td><td>${escapeHtml(f.sample ? JSON.stringify(f.sample).slice(0, 80) : "已自动处理")}</td></tr>`).join("");
   const eventRows = events.map(e => `<tr><td>${escapeHtml(String(e.created_at || "").slice(0, 16))}</td><td>${escapeHtml(e.event_type || "")}</td><td>${escapeHtml(e.reason || "")}</td></tr>`).join("");
-  const outcomeRows = outcomes.map(o => `<tr><td>${escapeHtml(o.horizon || "")}</td><td class="num">${escapeHtml(o.samples ?? 0)}</td><td class="num ${o.avg_return > 0 ? "up" : o.avg_return < 0 ? "down" : ""}">${o.avg_return != null ? (o.avg_return > 0 ? "+" : "") + Number(o.avg_return).toFixed(2) + "%" : "—"}</td></tr>`).join("");
+  const outcomeRow = o => `<tr><td>${escapeHtml(o.group_label || o.snapshot_group || "")}</td><td>${escapeHtml(o.horizon || "")}</td><td class="num">${escapeHtml(o.samples ?? 0)}</td><td class="num ${o.avg_return > 0 ? "up" : o.avg_return < 0 ? "down" : ""}">${o.avg_return != null ? (o.avg_return > 0 ? "+" : "") + Number(o.avg_return).toFixed(2) + "%" : "—"}</td><td class="num">${o.win_rate != null ? Number(o.win_rate).toFixed(1) + "%" : "—"}</td></tr>`;
+  const recommendationOutcomeRows = outcomes.filter(o => recommendationGroups.has(o.snapshot_group)).map(outcomeRow).join("");
+  const validationOutcomeRows = outcomes.filter(o => validationGroups.has(o.snapshot_group)).map(outcomeRow).join("");
   const drawer = document.createElement("div");
   drawer.className = "detail-backdrop";
   drawer.innerHTML = `<aside class="brief-drawer" role="dialog" aria-modal="true">
@@ -777,7 +781,11 @@ function openRulesDrawer() {
         <table class="data-table"><thead><tr><th>修复类型</th><th class="num">数量</th><th>说明</th></tr></thead><tbody>${fixRows || `<tr><td colspan="3">今日无需自动修复</td></tr>`}</tbody></table>
       </section>
       <section class="drawer-section"><h3>规则自进化与后验表现</h3>
-        <table class="data-table audit-outcome-table"><thead><tr><th>周期</th><th class="num">样本</th><th class="num">平均收益</th></tr></thead><tbody>${outcomeRows || `<tr><td colspan="3">后验样本仍在积累</td></tr>`}</tbody></table>
+        <p>后验只把“每日主推清单”和“可以考虑买入”作为推荐表现；“等待买点 / 长期观察 / 暂不推荐”只用于校验分层是否合理。所有组内股票暂按等权统计，不代表真实仓位。</p>
+        <h4>推荐后验表现</h4>
+        <table class="data-table audit-outcome-table"><thead><tr><th>样本组</th><th>周期</th><th class="num">样本</th><th class="num">平均收益</th><th class="num">胜率</th></tr></thead><tbody>${recommendationOutcomeRows || `<tr><td colspan="5">推荐后验样本仍在积累</td></tr>`}</tbody></table>
+        <h4>分层校验表现</h4>
+        <table class="data-table audit-outcome-table"><thead><tr><th>样本组</th><th>周期</th><th class="num">样本</th><th class="num">平均收益</th><th class="num">胜率</th></tr></thead><tbody>${validationOutcomeRows || `<tr><td colspan="5">分层校验样本仍在积累</td></tr>`}</tbody></table>
         <h4>最近自动规则事件</h4>
         <table class="data-table"><thead><tr><th>时间</th><th>事件</th><th>原因</th></tr></thead><tbody>${eventRows || `<tr><td colspan="3">暂无规则事件</td></tr>`}</tbody></table>
       </section>

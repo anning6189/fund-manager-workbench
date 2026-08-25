@@ -7,6 +7,7 @@ Wants=network-online.target
 Type=oneshot
 WorkingDirectory=/opt/fund-manager-workbench
 Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=-/opt/fund-manager-workbench/.env
 ExecStart=/usr/bin/python3 /opt/fund-manager-workbench/tools/Invoke-DailyMorningBriefSync.py
 ExecStartPost=/bin/systemctl try-restart consumer-research.service
 TimeoutStartSec=3600

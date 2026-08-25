@@ -6,20 +6,14 @@ param(
     [string]$DailyTime = "08:30"
 )
 
-$ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
-$SyncScript = "$ProjectRoot\tools\Invoke-LocalSyncAndDeploy.ps1"
-$TaskName = "FundWorkbench-DailySync"
+Write-Error @"
+Local daily sync task registration is disabled.
 
-$arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$SyncScript`" -ServerHost $ServerHost -ServerUser $ServerUser -ServerAppDir $ServerAppDir -RemoteServiceName $RemoteServiceName"
+Current rule:
+  Public Aliyun server is the only automatic data-sync source.
+  Local workspace must only pull the public DB for viewing/debugging.
 
-# PS 5.1: use -Weekly + -DaysOfWeek (NOT -Daily + -DaysOfWeek)
-$trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Monday,Tuesday,Wednesday,Thursday,Friday -At $DailyTime
-$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument $arguments -WorkingDirectory $ProjectRoot
-$principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
-$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -WakeToRun
-
-Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue
-
-Register-ScheduledTask -TaskName $TaskName -Trigger $trigger -Action $action -Principal $principal -Settings $settings -Description "Daily sync local DB and push to Aliyun server"
-
-Write-Output "Task registered successfully."
+Use this instead when local data needs refreshing:
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\Sync-PublicDbToLocal.ps1
+"@
+exit 1

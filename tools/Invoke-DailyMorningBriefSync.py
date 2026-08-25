@@ -26,6 +26,24 @@ DB = PROJECT_ROOT / "data" / "curated" / "consumer-research.db"
 LOG_DIR = PROJECT_ROOT / "data" / "monitoring" / "module3-realtime-research"
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 LOG = LOG_DIR / "daily-sync.log"
+
+
+def load_env_file(path: Path) -> None:
+    """Load KEY=VALUE pairs from .env without overriding existing environment."""
+    if not path.exists():
+        return
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        if key and key not in os.environ:
+            os.environ[key] = value
+
+
+load_env_file(PROJECT_ROOT / ".env")
 MCP_URL = os.environ.get("GILDATA_MCP_URL") or (
     f"https://api.gildata.com/mcp-servers/aidata-assistant-srv-tool?token={os.environ.get('GILDATA_MCP_TOKEN', '')}"
 )
@@ -442,6 +460,8 @@ def main() -> int:
     yesterday = (now_bj - timedelta(days=1)).strftime("%Y-%m-%d")
     cutoff = now_bj.isoformat()
     log(f"===== 每日晨报同步开始（{today}）=====")
+    if not os.environ.get("GILDATA_MCP_URL") and not os.environ.get("GILDATA_MCP_TOKEN"):
+        log("!! 聚源授权未配置：请在项目根目录 .env 或系统环境变量中设置 GILDATA_MCP_TOKEN / GILDATA_MCP_URL；聚源新闻、研报、企业风险、批价、行情会返回 401")
     events: list[dict] = []
     research_fetch_ok = False
     research_latest_date = None

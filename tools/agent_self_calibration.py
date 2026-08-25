@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS agent_recommendation_snapshots (
   security_name TEXT,
   sector_code TEXT,
   sector_name TEXT,
+  snapshot_group TEXT,
   board_status TEXT,
   is_main_push INTEGER NOT NULL DEFAULT 0,
   holding_label TEXT,
@@ -106,10 +107,45 @@ CREATE TABLE IF NOT EXISTS agent_rule_events (
 """
 
 
+GROUP_LABELS = {
+    "main_push": "每日主推清单",
+    "buy_candidate": "可以考虑买入",
+    "watch_signal": "等待买点",
+    "long_quality": "长期观察",
+    "sector_scan": "暂不推荐/行业扫描",
+}
+
+
+def ensure_schema(db: sqlite3.Connection) -> None:
+    db.executescript(DDL)
+    columns = {row[1] for row in db.execute("PRAGMA table_info(agent_recommendation_snapshots)").fetchall()}
+    if "snapshot_group" not in columns:
+        db.execute("ALTER TABLE agent_recommendation_snapshots ADD COLUMN snapshot_group TEXT")
+    if "entry_trade_date" not in columns:
+        db.execute("ALTER TABLE agent_recommendation_snapshots ADD COLUMN entry_trade_date TEXT")
+    db.execute(
+        """UPDATE agent_recommendation_snapshots
+           SET snapshot_group=CASE
+               WHEN is_main_push=1 THEN 'main_push'
+               WHEN board_status='核心候选' THEN 'buy_candidate'
+               WHEN board_status='重点跟踪' THEN 'watch_signal'
+               WHEN board_status='长期好公司' THEN 'long_quality'
+               WHEN board_status='行业扫描' THEN 'sector_scan'
+               ELSE COALESCE(snapshot_group,'other')
+           END
+           WHERE snapshot_group IS NULL"""
+    )
+    db.execute(
+        """UPDATE agent_recommendation_snapshots
+           SET entry_trade_date=snapshot_date
+           WHERE entry_trade_date IS NULL"""
+    )
+
+
 def connect(db_path: Path) -> sqlite3.Connection:
     db = sqlite3.connect(db_path)
     db.row_factory = sqlite3.Row
-    db.executescript(DDL)
+    ensure_schema(db)
     return db
 
 
@@ -211,12 +247,13 @@ def save_recommendation_snapshots(db: sqlite3.Connection, rating_date: str) -> i
     main_ids = main_push_ids(db, rating_date)
     rows = [dict(r) for r in db.execute(
         """SELECT r.security_id,r.security_name,r.sector_code,p.sector_name,r.close_price,
+                  r.quote_trade_date,
                   r.total_score,r.invest_score,r.stability_score,r.valuation_score,r.momentum_score,
                   r.board_status,r.holding_label,r.state_reason,r.rationale
            FROM daily_stock_ratings r
            LEFT JOIN research_sector_packs p ON p.sector_code=r.sector_code
            WHERE r.rating_date=? AND r.close_price>0
-             AND (r.security_id IN ({}) OR r.board_status IN ('核心候选','重点跟踪','长期好公司'))
+             AND (r.security_id IN ({}) OR r.board_status IN ('核心候选','重点跟踪','长期好公司','行业扫描'))
            ORDER BY COALESCE(r.invest_score,r.total_score,0) DESC""".format(",".join("?" for _ in main_ids) or "''"),
         (rating_date, *tuple(main_ids)),
     )]
@@ -224,17 +261,29 @@ def save_recommendation_snapshots(db: sqlite3.Connection, rating_date: str) -> i
     count = 0
     for row in rows:
         is_main = 1 if row["security_id"] in main_ids else 0
+        if is_main:
+            snapshot_group = "main_push"
+        elif row["board_status"] == "核心候选":
+            snapshot_group = "buy_candidate"
+        elif row["board_status"] == "重点跟踪":
+            snapshot_group = "watch_signal"
+        elif row["board_status"] == "长期好公司":
+            snapshot_group = "long_quality"
+        elif row["board_status"] == "行业扫描":
+            snapshot_group = "sector_scan"
+        else:
+            snapshot_group = "other"
         db.execute(
             """INSERT OR REPLACE INTO agent_recommendation_snapshots(
-                   snapshot_date,security_id,security_name,sector_code,sector_name,board_status,
+                   snapshot_date,security_id,security_name,sector_code,sector_name,snapshot_group,board_status,
                    is_main_push,holding_label,invest_score,stability_score,valuation_score,timing_score,
-                   close_price,rationale,rule_version,created_at
-               ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                   close_price,rationale,rule_version,created_at,entry_trade_date
+               ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             (
                 rating_date, row["security_id"], row["security_name"], row["sector_code"], row["sector_name"],
-                row["board_status"], is_main, row["holding_label"], row["invest_score"], row["stability_score"],
+                snapshot_group, row["board_status"], is_main, row["holding_label"], row["invest_score"], row["stability_score"],
                 row["valuation_score"], row["momentum_score"], row["close_price"],
-                row["state_reason"] or row["rationale"], RULE_VERSION, created_at,
+                row["state_reason"] or row["rationale"], RULE_VERSION, created_at, row.get("quote_trade_date") or rating_date,
             ),
         )
         count += 1
@@ -353,23 +402,44 @@ def ensure_rule_versions(db: sqlite3.Connection) -> list[dict[str, Any]]:
 
 def maybe_rule_event_from_outcomes(db: sqlite3.Connection) -> list[dict[str, Any]]:
     rows = [dict(r) for r in db.execute(
-        """SELECT horizon,AVG(absolute_return) AS avg_return,COUNT(*) AS n
+        """SELECT COALESCE(s.snapshot_group,CASE WHEN s.is_main_push=1 THEN 'main_push' ELSE 'other' END) AS snapshot_group,
+                  horizon,AVG(absolute_return) AS avg_return,COUNT(*) AS n
            FROM agent_recommendation_outcomes o
            JOIN agent_recommendation_snapshots s
              ON s.snapshot_date=o.snapshot_date AND s.security_id=o.security_id
-           WHERE s.is_main_push=1 AND o.absolute_return IS NOT NULL
-           GROUP BY horizon"""
+           WHERE o.absolute_return IS NOT NULL
+           GROUP BY snapshot_group,horizon"""
     )]
     if not rows:
         return []
-    metrics = {r["horizon"]: {"avg_return": round(float(r["avg_return"]), 2), "n": r["n"]} for r in rows}
+    metrics: dict[str, dict[str, dict[str, Any]]] = {}
+    for r in rows:
+        group = r["snapshot_group"] or "other"
+        metrics.setdefault(group, {})[r["horizon"]] = {
+            "label": GROUP_LABELS.get(group, group),
+            "avg_return": round(float(r["avg_return"]), 2),
+            "n": r["n"],
+        }
     today = today_bj()
     now = now_iso()
     event_type = "auto_observe_rule"
     reason = "样本继续积累，维持正式规则与影子规则并行观察"
-    if metrics.get("T+5", {}).get("n", 0) >= 5 and metrics["T+5"]["avg_return"] < -5:
+    main_t5 = metrics.get("main_push", {}).get("T+5", {})
+    buy_t5 = metrics.get("buy_candidate", {}).get("T+5", {})
+    long_t5 = metrics.get("long_quality", {}).get("T+5", {})
+    scan_t5 = metrics.get("sector_scan", {}).get("T+5", {})
+    if main_t5.get("n", 0) >= 5 and main_t5.get("avg_return", 0) < -5:
         event_type = "auto_guardrail_warn"
-        reason = "T+5 主推后验收益偏弱，保持影子观察并收紧自动晋级条件"
+        reason = "每日主推清单 T+5 后验收益偏弱，自动收紧短期动量影响并提高稳定分观察权重"
+    elif buy_t5.get("n", 0) >= 10 and main_t5.get("n", 0) >= 5 and buy_t5.get("avg_return", 0) - main_t5.get("avg_return", 0) > 2:
+        event_type = "auto_ranking_review"
+        reason = "可以考虑买入 T+5 明显跑赢每日主推，自动检查主推排序是否过度偏向事件/板块分散"
+    elif long_t5.get("n", 0) >= 10 and main_t5.get("n", 0) >= 5 and long_t5.get("avg_return", 0) - main_t5.get("avg_return", 0) > 2:
+        event_type = "auto_stability_weight_review"
+        reason = "长期观察 T+5 跑赢每日主推，自动提高稳定分与长期质量信号观察权重"
+    elif scan_t5.get("n", 0) >= 10 and scan_t5.get("avg_return", 0) > 2:
+        event_type = "auto_gate_review"
+        reason = "暂不推荐/行业扫描 T+5 表现偏强，自动检查分类、估值阈值或风险 Gate 是否误杀"
     eid = stable_event_id(event_type, today)
     db.execute(
         "INSERT OR REPLACE INTO agent_rule_events VALUES(?,?,?,?,?,?,?)",

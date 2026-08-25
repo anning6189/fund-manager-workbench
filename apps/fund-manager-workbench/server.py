@@ -756,8 +756,22 @@ class WorkbenchService:
                     if "每日晨报同步结束" in line and m:
                         last_success_at = m.group(1)
                         break
+                handled_degradation_markers = (
+                    "核心文案暂不可用",
+                    "模型不可用，研报库使用真实底座兜底生成",
+                    "晨报文案已入库",
+                    "晨报文案撰写完成",
+                )
+                handled_degradation = any(marker in line for line in lines for marker in handled_degradation_markers)
                 for line in reversed(lines):
                     if any(k in line for k in ("失败", "Error", "Exception", "Traceback")):
+                        is_llm_optional_failure = (
+                            handled_degradation
+                            and any(k in line for k in ("撰写调用失败", "大事件第", "研报库第"))
+                            and any(k in line for k in ("Connection refused", "积极拒绝", "Errno 111", "WinError 10061"))
+                        )
+                        if is_llm_optional_failure:
+                            continue
                         last_failure = line[-220:]
                         break
             except Exception as exc:
@@ -828,7 +842,7 @@ class WorkbenchService:
                 return fallback
 
         with self.connect() as connection:
-            connection.executescript(self_calibration.DDL)
+            self_calibration.ensure_schema(connection)
             audit = connection.execute(
                 """SELECT * FROM agent_self_audit_runs
                    ORDER BY created_at DESC LIMIT 1"""
@@ -853,10 +867,29 @@ class WorkbenchService:
                    FROM agent_recommendation_snapshots"""
             ).fetchone()
             outcome_rows = [dict(row) for row in connection.execute(
-                """SELECT horizon,COUNT(*) AS samples,AVG(absolute_return) AS avg_return
-                   FROM agent_recommendation_outcomes
-                   WHERE absolute_return IS NOT NULL
-                   GROUP BY horizon ORDER BY horizon"""
+                """SELECT COALESCE(s.snapshot_group,CASE WHEN s.is_main_push=1 THEN 'main_push' ELSE 'other' END) AS snapshot_group,
+                          horizon,COUNT(*) AS samples,AVG(o.absolute_return) AS avg_return,
+                          SUM(CASE WHEN o.absolute_return>0 THEN 1 ELSE 0 END)*1.0/COUNT(*) AS win_rate
+                   FROM agent_recommendation_outcomes o
+                   JOIN agent_recommendation_snapshots s
+                     ON s.snapshot_date=o.snapshot_date AND s.security_id=o.security_id
+                   WHERE o.absolute_return IS NOT NULL
+                   GROUP BY snapshot_group,horizon
+                   ORDER BY CASE snapshot_group
+                       WHEN 'main_push' THEN 1
+                       WHEN 'buy_candidate' THEN 2
+                       WHEN 'watch_signal' THEN 3
+                       WHEN 'long_quality' THEN 4
+                       WHEN 'sector_scan' THEN 5
+                       ELSE 9 END,
+                       CASE horizon WHEN 'T+1' THEN 1 WHEN 'T+5' THEN 2 WHEN 'T+20' THEN 3 WHEN 'T+60' THEN 4 ELSE 9 END"""
+            ).fetchall()]
+            outcome_group_rows = [dict(row) for row in connection.execute(
+                """SELECT COALESCE(s.snapshot_group,CASE WHEN s.is_main_push=1 THEN 'main_push' ELSE 'other' END) AS snapshot_group,
+                          COUNT(*) AS rows,
+                          COUNT(DISTINCT s.snapshot_date) AS days
+                   FROM agent_recommendation_snapshots s
+                   GROUP BY snapshot_group"""
             ).fetchall()]
         audit_dict = dict(audit) if audit else {}
         checks = parse_json(audit_dict.get("checks_json"), [])
@@ -877,8 +910,32 @@ class WorkbenchService:
             ],
             "snapshots": dict(snapshot_summary) if snapshot_summary else {},
             "outcomes": [
-                {**row, "avg_return": round(float(row["avg_return"]), 2) if row.get("avg_return") is not None else None}
+                {
+                    **row,
+                    "group_label": {
+                        "main_push": "每日主推清单",
+                        "buy_candidate": "可以考虑买入",
+                        "watch_signal": "等待买点",
+                        "long_quality": "长期观察",
+                        "sector_scan": "暂不推荐/行业扫描",
+                    }.get(row.get("snapshot_group"), row.get("snapshot_group") or "其他"),
+                    "avg_return": round(float(row["avg_return"]), 2) if row.get("avg_return") is not None else None,
+                    "win_rate": round(float(row["win_rate"]) * 100, 1) if row.get("win_rate") is not None else None,
+                }
                 for row in outcome_rows
+            ],
+            "outcome_groups": [
+                {
+                    **row,
+                    "group_label": {
+                        "main_push": "每日主推清单",
+                        "buy_candidate": "可以考虑买入",
+                        "watch_signal": "等待买点",
+                        "long_quality": "长期观察",
+                        "sector_scan": "暂不推荐/行业扫描",
+                    }.get(row.get("snapshot_group"), row.get("snapshot_group") or "其他"),
+                }
+                for row in outcome_group_rows
             ],
             "guardrails": [
                 "无人工批准：自动自检、自动修复、自动灰度、自动回滚",
