@@ -228,17 +228,17 @@ def main_push_ids(db: sqlite3.Connection, rating_date: str) -> set[str]:
     sector_count = len({r.get("sector_code") for r in rows if r.get("sector_code")})
     for row in rows:
         sector = row.get("sector_code") or "unknown"
-        if len(chosen) < 3 and sector_count >= 3 and sector in sectors:
+        if len(chosen) < 5 and sector_count >= 5 and sector in sectors:
             continue
         chosen.append(row["security_id"])
         sectors.add(sector)
-        if len(chosen) >= 3:
+        if len(chosen) >= 5:
             break
-    if len(chosen) < 3:
+    if len(chosen) < 5:
         for row in rows:
             if row["security_id"] not in chosen:
                 chosen.append(row["security_id"])
-            if len(chosen) >= 3:
+            if len(chosen) >= 5:
                 break
     return set(chosen)
 
@@ -362,7 +362,7 @@ def ensure_rule_versions(db: sqlite3.Connection) -> list[dict[str, Any]]:
     events: list[dict[str, Any]] = []
     params = {
         "invest_weight": {"valuation": 0.42, "stability": 0.33, "catalyst": 0.18, "timing": 0.07},
-        "main_push_limit": 3,
+        "main_push_limit": 5,
         "auto_guardrails": {"max_weight_step": 0.03, "max_threshold_step": 2, "auto_rollback": True},
     }
     guardrail = {

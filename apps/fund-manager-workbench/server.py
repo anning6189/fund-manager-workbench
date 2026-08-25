@@ -1324,11 +1324,11 @@ class WorkbenchService:
         # 主推清单只放“有明确动作”的标的；暂缓买入的标的不再放入主推，
         # 而是留在“可考虑买入/等待买点”等看板中继续观察。
         main_push: list[dict[str, Any]] = []
-        main_push_limit = 3
+        main_push_limit = 5
         used_sectors: set[str] = set()
         for row in main_candidates:
             sector = row.get("sector_code") or row.get("sector_name") or "unknown"
-            if len(main_push) < 3 and sector in used_sectors and len({r.get("sector_code") for r in main_candidates}) >= 3:
+            if len(main_push) < main_push_limit and sector in used_sectors and len({r.get("sector_code") for r in main_candidates}) >= main_push_limit:
                 continue
             main_push.append(enrich(row, "主推", len(main_push)))
             used_sectors.add(sector)

@@ -535,6 +535,7 @@ def run(limit: int = 0, batch_size: int = 30, workers: int = 2, target_date: str
             r["holding_label"] = ""
         r["state_reason"] = build_state_reason(r, hist)
 
+    # 页面口径：每日主推 5 个从核心候选中挑出；剩余“可以考虑买入”显示 25 个。
     status_limits = {"核心候选": 30, "重点跟踪": 45, "长期好公司": 80, "行业扫描": 40}
     display = []
     for status, limit_n in status_limits.items():

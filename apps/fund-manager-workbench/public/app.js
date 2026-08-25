@@ -322,7 +322,7 @@ function renderBrief() {
         <span>${escapeHtml(focus.automation?.audit_note || "每日自动生成，保留审计依据")}</span>
       </div>
       <div class="sf-main-block">
-        <div class="sf-subtitle"><strong>每日主推清单</strong><span>≤3只 · 只保留有明确买入动作的标的</span></div>
+        <div class="sf-subtitle"><strong>每日主推清单</strong><span>≤5只 · 只保留有明确买入动作的标的</span></div>
         <div class="table-scroll">
           <table class="data-table sf-table sf-main-table">
             <thead><tr><th>#</th><th>股票</th><th>正式标签</th><th>建议动作</th><th class="num">投资分</th><th class="num">现价</th><th class="num">涨跌</th><th>核心逻辑</th><th>降级条件</th><th>数据质量</th></tr></thead>
@@ -732,11 +732,11 @@ function openRulesDrawer() {
   drawer.innerHTML = `<aside class="brief-drawer" role="dialog" aria-modal="true">
     <div class="drawer-head"><div><span>今日主推与股票池看板 · AutoInvest Agent</span><h2>规则与审计</h2></div><button class="drawer-close" aria-label="关闭详情">×</button></div>
     <div class="drawer-body">
-      <section class="drawer-section"><h3>自动输出对象</h3><p>Agent 每日自动从全消费 A 股研究池生成两份结果：第一屏为“每日主推清单”（≤3 只，只放明确建仓/小仓位观察），第二屏为“消费股票池看板”（可考虑买入、等待买点、长期观察、暂不推荐）。</p></section>
+      <section class="drawer-section"><h3>自动输出对象</h3><p>Agent 每日自动从全消费 A 股研究池生成两份结果：第一屏为“每日主推清单”（≤5 只，只放明确建仓/小仓位观察），第二屏为“消费股票池看板”（可考虑买入 25 只、等待买点、长期观察、暂不推荐）。</p></section>
       <section class="drawer-section"><h3>当前落地口径</h3>
         <ul class="doc-list">
           <li><strong>核心目标</strong>：围绕中期 / 中长期持有价值评价，不再使用旧的“当日动量40%/估值30%/事件30%”作为推荐模型。</li>
-          <li><strong>主推生成</strong>：Agent 从“可考虑买入”中自动挑选 ≤3 只明确动作标的，并写入正式标签、建议动作、核心逻辑、降级条件；暂缓买入不进入主推。</li>
+          <li><strong>主推生成</strong>：Agent 从“可考虑买入”中自动挑选 ≤5 只明确动作标的，并写入正式标签、建议动作、核心逻辑、降级条件；暂缓买入不进入主推。</li>
           <li><strong>看板状态</strong>：【核心·时机满足】/【跟踪·等信号】/【长期·好公司】/【暂不推荐·继续扫描】代表投资研究状态，不是每日热度排名。</li>
           <li><strong>审计责任</strong>：每条输出必须带决策依据、数据质量、未进主推原因或降级条件。</li>
         </ul>
