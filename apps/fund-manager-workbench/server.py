@@ -804,7 +804,13 @@ class WorkbenchService:
         quote_date = quote["quote_date"] if quote else None
         mismatches = []
         if rating_date and market_date and rating_date != market_date:
-            mismatches.append(f"股票评级日期 {rating_date} 与行情实际交易日 {market_date} 不一致")
+            now_shanghai = datetime.now(SHANGHAI)
+            before_close_sync = now_shanghai < datetime.combine(now_shanghai.date(), time(15, 40), SHANGHAI)
+            expected_morning_snapshot = rating_date == today and quote_date == market_date and before_close_sync
+            if expected_morning_snapshot:
+                pass
+            else:
+                mismatches.append(f"股票评级日期 {rating_date} 与行情实际交易日 {market_date} 不一致")
         if brief_date and rating_date and brief_date != rating_date:
             mismatches.append(f"晨报日期 {brief_date} 与股票评级日期 {rating_date} 不一致")
         stale = rating_date != today
@@ -834,6 +840,7 @@ class WorkbenchService:
             "checks": [
                 {"key": "daily_sync", "label": "自动同步", "ok": daily_sync_ok, "detail": daily_sync_detail},
                 {"key": "date_consistency", "label": "日期一致性", "ok": not mismatches, "detail": "一致" if not mismatches else "；".join(mismatches)},
+                {"key": "market_snapshot", "label": "行情口径", "ok": True, "detail": "08:40 早盘评级允许使用上一交易日收盘行情；15:40 收盘同步后刷新为最新收盘口径" if rating_date == today and market_date and market_date != rating_date else "最新收盘口径"},
                 {"key": "service_data", "label": "股票看板", "ok": bool(rating_date and stock and stock["rows"]), "detail": f"{rating_date or '无'} · {stock['rows'] if stock else 0} 条评级"},
             ],
             "last_failure": last_failure,

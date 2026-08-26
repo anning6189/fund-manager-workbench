@@ -602,7 +602,10 @@ def main() -> int:
             )
             events.append({
                 "source_id": "CR.SRC.GILDATA.NEWS", "event_type": "industry_data_release", "sector_code": "CR.S.FB",
-                "event_time": now_bj.replace(hour=9, minute=45, second=0, microsecond=0).isoformat(),
+                # 早盘同步通常在 08:40 左右运行；若把批价事件硬写成 09:45，
+                # 会出现 event_time 晚于 available_at，被事件校验拒绝。
+                # 因此用实际采集时间作为保守可得时间，保证当日批价能稳定入库。
+                "event_time": now_bj.isoformat(),
                 "available_at": now_bj.isoformat(),
                 "title": f"名酒批价日报（今日酒价 {today}）：飞天散瓶{m2.group(2)}元",
                 "summary": summary, "materiality_score": 0.62,
