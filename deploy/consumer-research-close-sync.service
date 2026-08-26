@@ -1,0 +1,15 @@
+[Unit]
+Description=Consumer Research Workbench Close Market Sync
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/fund-manager-workbench
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=-/opt/fund-manager-workbench/.env
+ExecStart=/usr/bin/python3 /opt/fund-manager-workbench/tools/Invoke-CloseSync.py
+ExecStartPost=/bin/systemctl try-restart consumer-research.service
+TimeoutStartSec=3600
+StandardOutput=append:/opt/fund-manager-workbench/data/monitoring/module3-realtime-research/server-close-sync.log
+StandardError=append:/opt/fund-manager-workbench/data/monitoring/module3-realtime-research/server-close-sync.log

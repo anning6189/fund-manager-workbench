@@ -301,7 +301,7 @@ function renderOpsStatusCard() {
     <section class="ops-status-card ${statusClass}">
       <div class="ops-status-main">
         <span class="ops-dot"></span>
-        <div><strong>${escapeHtml(statusText)}</strong><small>下次自动同步：${escapeHtml(ops.next_sync_at || "—")}</small></div>
+        <div><strong>${escapeHtml(statusText)}</strong><small>早盘同步：${escapeHtml(ops.next_sync_at || "—")}；收盘同步：${escapeHtml(ops.next_close_sync_at || "—")}</small></div>
       </div>
       <div class="ops-date-grid">
         <div><span>晨报日期</span><strong>${escapeHtml(dates.brief_date || "—")}</strong></div>

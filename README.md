@@ -294,6 +294,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/Sync-PublicDbToLocal.p
 consumer-research.service
 consumer-research-daily-sync.service
 consumer-research-daily-sync.timer
+consumer-research-close-sync.service
+consumer-research-close-sync.timer
+```
+
+自动同步时间：
+
+```text
+周一至周五 08:40：早盘总同步，更新晨报、研报、新闻、政策、企业风险、行情快照、股票评级和自校准。
+周一至周五 15:40：收盘同步，更新收盘行情快照与股票评级，不改写早盘晨报口径。
 ```
 
 部署脚本：
@@ -302,6 +311,8 @@ consumer-research-daily-sync.timer
 deploy/consumer-research.service
 deploy/consumer-research-daily-sync.service
 deploy/consumer-research-daily-sync.timer
+deploy/consumer-research-close-sync.service
+deploy/consumer-research-close-sync.timer
 deploy/install-daily-sync.sh
 deploy/update-server.sh
 deploy/nginx-consumer-agent.conf
@@ -312,6 +323,7 @@ deploy/nginx-consumer-agent.conf
 ```bash
 systemctl status consumer-research.service
 systemctl status consumer-research-daily-sync.timer
+systemctl status consumer-research-close-sync.timer
 systemctl restart consumer-research.service
 ```
 
@@ -381,4 +393,3 @@ http://127.0.0.1:8765/#today
 ```
 
 如果要接入自己的数据源，请配置 `.env`；如果只想看演示效果，可以直接使用仓库内随附的 SQLite 数据库。
-

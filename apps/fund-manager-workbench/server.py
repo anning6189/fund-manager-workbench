@@ -734,11 +734,16 @@ class WorkbenchService:
     def ops_status(self) -> dict[str, Any]:
         """正式交付状态卡：自动同步、数据日期一致性、最近日志。"""
         today = datetime.now(SHANGHAI).date().isoformat()
-        next_sync = datetime.combine(datetime.now(SHANGHAI).date(), time(8, 40), SHANGHAI)
-        if datetime.now(SHANGHAI) >= next_sync:
-            next_sync = next_sync + timedelta(days=1)
-        while next_sync.weekday() >= 5:
-            next_sync = next_sync + timedelta(days=1)
+        def next_weekday_run(hour: int, minute: int) -> datetime:
+            run_at = datetime.combine(datetime.now(SHANGHAI).date(), time(hour, minute), SHANGHAI)
+            if datetime.now(SHANGHAI) >= run_at:
+                run_at = run_at + timedelta(days=1)
+            while run_at.weekday() >= 5:
+                run_at = run_at + timedelta(days=1)
+            return run_at
+
+        next_sync = next_weekday_run(8, 40)
+        next_close_sync = next_weekday_run(15, 40)
         log_candidates = [
             PROJECT_ROOT / "data" / "monitoring" / "module3-realtime-research" / "server-daily-sync.log",
             self.data_root.parent.parent / "monitoring" / "module3-realtime-research" / "server-daily-sync.log",
@@ -813,6 +818,11 @@ class WorkbenchService:
             "today": today,
             "last_success_at": last_success_at,
             "next_sync_at": next_sync.isoformat(timespec="minutes"),
+            "next_close_sync_at": next_close_sync.isoformat(timespec="minutes"),
+            "sync_schedule": {
+                "morning": "周一至周五 08:40，更新晨报、研报、新闻、政策、企业风险、行情快照、股票评级、自校准",
+                "close": "周一至周五 15:40，更新收盘行情快照与股票评级，不改写早盘晨报口径",
+            },
             "dates": {
                 "brief_date": brief_date,
                 "rating_date": rating_date,

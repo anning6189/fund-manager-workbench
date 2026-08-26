@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Consumer Research Workbench Close Market Sync
+
+[Timer]
+OnCalendar=Mon..Fri 15:40:00
+Persistent=true
+Unit=consumer-research-close-sync.service
+
+[Install]
+WantedBy=timers.target
