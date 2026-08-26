@@ -743,7 +743,7 @@ class WorkbenchService:
             return run_at
 
         next_sync = next_weekday_run(8, 40)
-        next_close_sync = next_weekday_run(15, 40)
+        next_close_sync = next_weekday_run(16, 10)
         log_candidates = [
             PROJECT_ROOT / "data" / "monitoring" / "module3-realtime-research" / "server-daily-sync.log",
             self.data_root.parent.parent / "monitoring" / "module3-realtime-research" / "server-daily-sync.log",
@@ -805,7 +805,7 @@ class WorkbenchService:
         mismatches = []
         if rating_date and market_date and rating_date != market_date:
             now_shanghai = datetime.now(SHANGHAI)
-            before_close_sync = now_shanghai < datetime.combine(now_shanghai.date(), time(15, 40), SHANGHAI)
+            before_close_sync = now_shanghai < datetime.combine(now_shanghai.date(), time(16, 10), SHANGHAI)
             expected_morning_snapshot = rating_date == today and quote_date == market_date and before_close_sync
             if expected_morning_snapshot:
                 pass
@@ -827,7 +827,7 @@ class WorkbenchService:
             "next_close_sync_at": next_close_sync.isoformat(timespec="minutes"),
             "sync_schedule": {
                 "morning": "周一至周五 08:40，更新晨报、研报、新闻、政策、企业风险、行情快照、股票评级、自校准",
-                "close": "周一至周五 15:40，更新收盘行情快照与股票评级，不改写早盘晨报口径",
+                "close": "周一至周五 16:10，更新收盘行情快照与股票评级，不改写早盘晨报口径",
             },
             "dates": {
                 "brief_date": brief_date,
@@ -840,7 +840,7 @@ class WorkbenchService:
             "checks": [
                 {"key": "daily_sync", "label": "自动同步", "ok": daily_sync_ok, "detail": daily_sync_detail},
                 {"key": "date_consistency", "label": "日期一致性", "ok": not mismatches, "detail": "一致" if not mismatches else "；".join(mismatches)},
-                {"key": "market_snapshot", "label": "行情口径", "ok": True, "detail": "08:40 早盘评级允许使用上一交易日收盘行情；15:40 收盘同步后刷新为最新收盘口径" if rating_date == today and market_date and market_date != rating_date else "最新收盘口径"},
+                {"key": "market_snapshot", "label": "行情口径", "ok": True, "detail": "08:40 早盘评级允许使用上一交易日收盘行情；16:10 收盘同步后刷新为最新收盘口径" if rating_date == today and market_date and market_date != rating_date else "最新收盘口径"},
                 {"key": "service_data", "label": "股票看板", "ok": bool(rating_date and stock and stock["rows"]), "detail": f"{rating_date or '无'} · {stock['rows'] if stock else 0} 条评级"},
             ],
             "last_failure": last_failure,

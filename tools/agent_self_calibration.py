@@ -34,11 +34,11 @@ def today_bj() -> str:
 
 
 def is_expected_morning_quote_lag(rating_date: str | None, quote_date: str | None, target_date: str) -> bool:
-    """08:40 早盘评级允许使用上一交易日收盘行情，15:40 收盘同步后再要求刷新。"""
+    """08:40 早盘评级允许使用上一交易日收盘行情，16:10 收盘同步后再要求刷新。"""
     if not rating_date or not quote_date or rating_date != target_date:
         return False
     now = datetime.now(BJ)
-    close_sync_time = datetime.combine(now.date(), time(15, 40), BJ)
+    close_sync_time = datetime.combine(now.date(), time(16, 10), BJ)
     return now < close_sync_time and quote_date <= rating_date
 
 
@@ -478,7 +478,7 @@ def run(db_path: Path = DB, target_date: str | None = None) -> dict[str, Any]:
             and (rating_date == quote_date or is_expected_morning_quote_lag(rating_date, quote_date, target_date))
         )
         quote_alignment_detail = (
-            f"rating={rating_date},quote={quote_date}；08:40早盘评级允许使用上一交易日收盘行情，15:40收盘同步后刷新"
+            f"rating={rating_date},quote={quote_date}；08:40早盘评级允许使用上一交易日收盘行情，16:10收盘同步后刷新"
             if rating_date and quote_date and rating_date != quote_date and quote_alignment_ok
             else f"rating={rating_date},quote={quote_date}"
         )

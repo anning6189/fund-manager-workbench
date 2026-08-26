@@ -2,7 +2,7 @@
 Description=Run Consumer Research Workbench Close Market Sync
 
 [Timer]
-OnCalendar=Mon..Fri 15:40:00
+OnCalendar=Mon..Fri 16:10:00
 Persistent=true
 Unit=consumer-research-close-sync.service
 
