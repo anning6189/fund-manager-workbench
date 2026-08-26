@@ -13,7 +13,7 @@ import argparse
 import json
 import sqlite3
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -31,6 +31,15 @@ def now_iso() -> str:
 
 def today_bj() -> str:
     return datetime.now(BJ).date().isoformat()
+
+
+def is_expected_morning_quote_lag(rating_date: str | None, quote_date: str | None, target_date: str) -> bool:
+    """08:40 早盘评级允许使用上一交易日收盘行情，15:40 收盘同步后再要求刷新。"""
+    if not rating_date or not quote_date or rating_date != target_date:
+        return False
+    now = datetime.now(BJ)
+    close_sync_time = datetime.combine(now.date(), time(15, 40), BJ)
+    return now < close_sync_time and quote_date <= rating_date
 
 
 def stable_event_id(*parts: str) -> str:
@@ -463,10 +472,20 @@ def run(db_path: Path = DB, target_date: str | None = None) -> dict[str, Any]:
         outcome_count = update_outcomes(db)
         rule_events = [*ensure_rule_versions(db), *maybe_rule_event_from_outcomes(db)]
 
+        quote_alignment_ok = bool(
+            rating_date
+            and quote_date
+            and (rating_date == quote_date or is_expected_morning_quote_lag(rating_date, quote_date, target_date))
+        )
+        quote_alignment_detail = (
+            f"rating={rating_date},quote={quote_date}；08:40早盘评级允许使用上一交易日收盘行情，15:40收盘同步后刷新"
+            if rating_date and quote_date and rating_date != quote_date and quote_alignment_ok
+            else f"rating={rating_date},quote={quote_date}"
+        )
         checks = [
             {"label": "行情无 0 价", "ok": db.execute("SELECT COUNT(*) FROM stock_daily_quotes WHERE close_price IS NULL OR close_price<=0").fetchone()[0] == 0},
             {"label": "行情无孤立尖刺", "ok": len(scan_isolated_outliers(db)) == 0},
-            {"label": "评级与行情日期一致", "ok": bool(rating_date and quote_date and rating_date == quote_date), "detail": f"rating={rating_date},quote={quote_date}"},
+            {"label": "评级与行情日期一致", "ok": quote_alignment_ok, "detail": quote_alignment_detail},
             {"label": "推荐快照已保存", "ok": snapshot_count > 0, "detail": f"{snapshot_count} rows"},
             {"label": "规则版本可审计", "ok": db.execute("SELECT COUNT(*) FROM agent_rule_versions").fetchone()[0] >= 1},
         ]
