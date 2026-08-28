@@ -34,7 +34,7 @@ def check(name: str, ok: bool, detail: object = "") -> None:
 
 
 def get(path: str) -> dict:
-    with urllib.request.urlopen(BASE + path, timeout=20) as response:
+    with urllib.request.urlopen(BASE + path, timeout=75) as response:
         return json.loads(response.read().decode("utf-8"))
 
 
@@ -111,6 +111,14 @@ def main() -> int:
     check("AI基金经理策略说明", bool(strategy.get("summary") or strategy.get("ai_strategy")), {
         "ai_generated": strategy.get("ai_generated"),
         "mode": (strategy.get("ai_strategy") or {}).get("mode"),
+    })
+
+    autonomy = get("/api/ai-fund/autonomy")
+    check("AI基金经理自主投研建议", bool(autonomy.get("market_view")) and bool(autonomy.get("guardrails")), {
+        "mode": (autonomy.get("llm") or {}).get("mode"),
+        "accepted": len(autonomy.get("accepted_actions") or []),
+        "rejected": len(autonomy.get("rejected_actions") or []),
+        "shadow_positions": len(autonomy.get("shadow_positions") or []),
     })
 
     history = get("/api/ai-fund/history")

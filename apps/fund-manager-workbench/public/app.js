@@ -1691,8 +1691,13 @@ function renderFundStrategyDrawer(data) {
   drawer.className = "detail-backdrop";
   const additions = data.adds || [];
   const cuts = data.cuts || [];
+  const autonomy = data.autonomy || {};
+  const accepted = autonomy.accepted_actions || [];
+  const rejected = autonomy.rejected_actions || [];
+  const factor = autonomy.guardrails?.factor_adjustment || {};
   const ai = data.ai_strategy?.ok ? data.ai_strategy.content || {} : null;
   const aiList = items => (Array.isArray(items) ? items : []).map(x => `<li>${escapeHtml(x)}</li>`).join("");
+  const factorList = Object.entries(factor).map(([k, v]) => `<span>${escapeHtml(k)} ${Number(v) >= 0 ? "+" : ""}${Number(v).toFixed(2)}</span>`).join("");
   drawer.innerHTML = `<aside class="brief-drawer fund-strategy-drawer" role="dialog" aria-modal="true">
     <div class="drawer-head"><div><span>${escapeHtml(data.date || "本周")}</span><h2>${escapeHtml(data.title || "本周持仓策略")}</h2></div><button class="drawer-close" aria-label="关闭">×</button></div>
     <div class="drawer-body">
@@ -1707,6 +1712,18 @@ function renderFundStrategyDrawer(data) {
         </div>
         <p class="ai-cost-note">${escapeHtml(ai.cost_note || "")}</p>
       </section>` : `<section class="drawer-section notice warning"><strong>AI解读暂未生成</strong>当前使用规则模板说明。${escapeHtml(data.ai_strategy?.error || "")}</section>`}
+      <section class="drawer-section ai-autonomy-box">
+        <div class="ai-strategy-head"><h3>AI自主投研建议</h3><span>${autonomy.llm?.ok ? `${escapeHtml(autonomy.llm.model || "SYSTEM_LLM")} · 已生成` : "规则兜底"}</span></div>
+        <p class="ai-headline">${escapeHtml(autonomy.market_view?.summary || "AI自主建议包暂未生成。")}</p>
+        <div class="ai-strategy-grid">
+          <div><h4>主动看多方向</h4><ol>${aiList(autonomy.market_view?.preferred_sectors || []) || "<li>暂无</li>"}</ol></div>
+          <div><h4>主动回避方向</h4><ol>${aiList(autonomy.market_view?.avoid_sectors || []) || "<li>暂无</li>"}</ol></div>
+          <div><h4>因子调权</h4><div class="strategy-chips">${factorList || "<span>暂无调整</span>"}</div><p>${escapeHtml(autonomy.factor_view?.reason || "")}</p></div>
+          <div><h4>风控结果</h4><p>采纳 ${accepted.length} 条，拒绝 ${rejected.length} 条；正式持仓不直接改变，先进入影子增强分。</p></div>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>动作</th><th>股票</th><th>影子调分</th><th>置信度</th><th>理由</th></tr></thead><tbody>${accepted.slice(0, 8).map(x => `<tr><td>${escapeHtml(x.action || "")}</td><td>${escapeHtml(x.security_name || x.security_id || "")}</td><td class="${Number(x.applied_delta || 0) >= 0 ? "up" : "down"}">${Number(x.applied_delta || 0) >= 0 ? "+" : ""}${Number(x.applied_delta || 0).toFixed(2)}</td><td>${Number(x.confidence || 0).toFixed(2)}</td><td>${escapeHtml(x.reason || "")}</td></tr>`).join("") || `<tr><td colspan="5">暂无被风控采纳的单股建议</td></tr>`}</tbody></table></div>
+        ${rejected.length ? `<p class="ai-cost-note">被风控拒绝 ${rejected.length} 条，常见原因：不在当前持仓、置信度不足、正负分值方向不一致。</p>` : ""}
+      </section>
       <section class="drawer-section">
         <h3>规则模型结论</h3>
         ${(data.summary || []).map(x => `<p>${escapeHtml(x)}</p>`).join("")}
@@ -1742,7 +1759,7 @@ function renderFundStrategyDrawer(data) {
           </div>
         </div>
       </section>
-      <div class="notice warning"><strong>说明</strong>这里展示的是模拟组合的自动选股和调仓逻辑，不代表真实交易指令。AI解读只基于规则模型已生成的数据进行表达增强，不直接改仓位。</div>
+      <div class="notice warning"><strong>说明</strong>这里展示的是模拟组合的自动选股和调仓逻辑，不代表真实交易指令。AI自主建议拥有主动调研、调分、否决和因子建议权，但必须经过系统风控，先进入影子组合和审计日志。</div>
     </div>
     <div class="drawer-foot"><button class="btn primary drawer-close-bottom">关闭</button></div>
   </aside>`;
@@ -1764,11 +1781,38 @@ async function openFundStrategy() {
   }
 }
 
+function renderFundAutonomy(autonomy) {
+  const accepted = autonomy?.accepted_actions || [];
+  const rejected = autonomy?.rejected_actions || [];
+  const shadow = autonomy?.shadow_positions || [];
+  const factor = autonomy?.guardrails?.factor_adjustment || {};
+  const factorChips = Object.entries(factor).map(([k, v]) => `<span>${escapeHtml(k)} ${Number(v) >= 0 ? "+" : ""}${Number(v).toFixed(2)}</span>`).join("");
+  return `<section class="section ai-autonomy-section">
+    <div class="section-head"><h2 class="section-title">AI自主投研建议</h2><span class="section-meta">${autonomy?.llm?.ok ? `${escapeHtml(autonomy.llm.model || "SYSTEM_LLM")} 自动生成` : "规则兜底 / 待模型生成"}</span></div>
+    <div class="ai-autonomy-box">
+      <p class="ai-headline">${escapeHtml(autonomy?.market_view?.summary || "AI自主投研建议暂未生成。")}</p>
+      <div class="fund-grid compact">
+        <div class="fund-tile"><span>采纳建议</span><strong>${accepted.length}</strong><em>进入影子增强分</em></div>
+        <div class="fund-tile"><span>风控拒绝</span><strong>${rejected.length}</strong><em>保留审计原因</em></div>
+        <div class="fund-tile"><span>风险等级</span><strong>${escapeHtml(autonomy?.market_view?.risk_level || "—")}</strong><em>AI自主判断</em></div>
+        <div class="fund-tile"><span>正式持仓</span><strong>${autonomy?.guardrails?.formal_position_changed ? "已改" : "未直接改"}</strong><em>先走影子组合</em></div>
+      </div>
+      <div class="ai-strategy-grid">
+        <div><h4>主动看多</h4><div class="strategy-chips">${(autonomy?.market_view?.preferred_sectors || []).map(x => `<span>${escapeHtml(x)}</span>`).join("") || "<span>暂无</span>"}</div></div>
+        <div><h4>主动回避</h4><div class="strategy-chips">${(autonomy?.market_view?.avoid_sectors || []).map(x => `<span>${escapeHtml(x)}</span>`).join("") || "<span>暂无</span>"}</div></div>
+        <div><h4>因子调权</h4><div class="strategy-chips">${factorChips || "<span>暂无调整</span>"}</div></div>
+        <div><h4>影子分前列</h4><div class="strategy-chips">${shadow.slice(0, 5).map(x => `<span>${escapeHtml(x.security_name || x.security_id)} ${Number(x.llm_delta || 0) >= 0 ? "+" : ""}${Number(x.llm_delta || 0).toFixed(2)}</span>`).join("") || "<span>暂无</span>"}</div></div>
+      </div>
+      <p class="ai-cost-note">${escapeHtml(autonomy?.guardrails?.note || "大模型建议先进入影子组合，后续由自动回测和风控决定是否升级正式规则。")}</p>
+    </div>
+  </section>`;
+}
+
 async function renderFundManager() {
   root.innerHTML = shell(`<div class="loading">正在生成 AI基金经理模拟组合…</div>`); bindShell();
-  let overview, positions, navData, rebalance, events, audit, history;
+  let overview, positions, navData, rebalance, events, audit, history, autonomy;
   try {
-    [overview, positions, navData, rebalance, events, audit, history] = await Promise.all([
+    [overview, positions, navData, rebalance, events, audit, history, autonomy] = await Promise.all([
       api("/api/ai-fund/overview"),
       api("/api/ai-fund/positions"),
       api("/api/ai-fund/nav"),
@@ -1776,6 +1820,7 @@ async function renderFundManager() {
       api("/api/ai-fund/events"),
       api("/api/ai-fund/audit"),
       api("/api/ai-fund/history"),
+      api("/api/ai-fund/autonomy"),
     ]);
   } catch (error) {
     return renderError(error);
@@ -1813,6 +1858,7 @@ async function renderFundManager() {
       <div class="notice info"><strong>交易成本口径</strong>${escapeHtml(overview.trade_cost?.assumption || "净值曲线已采用扣费后口径。")} 当前成本拖累约 ${Number(overview.cost_drag || 0).toFixed(2)} 个百分点。</div>
       ${renderFundNav(navData.points || [], navData.benchmarks || [])}
     </section>
+    ${renderFundAutonomy(autonomy)}
     <section class="section">
       <div class="section-head"><h2 class="section-title">历史组合复盘</h2><span class="section-meta">每周固化一版，可追踪后来表现</span></div>
       ${(history.versions || []).length ? `<div class="table-wrap"><table><thead><tr><th>版本</th><th>评级日</th><th>生成时间</th><th>持仓</th><th>扣费后收益</th><th>年化</th><th>换手率</th><th>交易成本</th><th>AI说明</th></tr></thead><tbody>${history.versions.map(v => `<tr><td><div class="table-primary">${escapeHtml(v.week_start)}</div><div class="table-secondary mono">${escapeHtml(v.version_id)}</div></td><td>${escapeHtml(v.rating_date)}</td><td>${formatDate(v.generated_at)}</td><td>${v.position_count}</td><td class="${v.total_return >= 0 ? "up" : "down"}">${v.total_return >= 0 ? "+" : ""}${Number(v.total_return || 0).toFixed(2)}%</td><td class="${v.annualized_return >= 0 ? "up" : "down"}">${v.annualized_return >= 0 ? "+" : ""}${Number(v.annualized_return || 0).toFixed(2)}%</td><td>${Number(v.turnover || 0).toFixed(2)}%</td><td>${Number(v.cost_bps || 0).toFixed(2)}bp</td><td>${v.ai_generated ? "已生成" : "规则兜底"}</td></tr>`).join("")}</tbody></table></div>` : `<div class="empty"><strong>暂无历史版本</strong>本周策略生成后会自动固化到这里。</div>`}

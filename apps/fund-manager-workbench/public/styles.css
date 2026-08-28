@@ -768,6 +768,10 @@ tbody tr:hover { background: #faf8f1; }
 .event-impact p { margin: 7px 0 0; color: var(--ink-soft); line-height: 1.75; }
 .fund-strategy-drawer .drawer-body { padding-bottom: 30px; }
 .ai-strategy-box { border: 1px solid rgba(42, 113, 80, .32); background: linear-gradient(180deg, #f4fbf7, #fff); border-radius: var(--radius); padding: 16px; }
+.ai-autonomy-box { border: 1px solid rgba(163, 33, 43, .24); background: linear-gradient(180deg, #fff8f4, #fff); border-radius: var(--radius); padding: 16px; }
+.ai-autonomy-section .fund-grid.compact { grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 12px 0; }
+.ai-autonomy-section .fund-grid.compact .fund-tile { min-height: 74px; padding: 12px; }
+.ai-autonomy-section .fund-grid.compact .fund-tile strong { font-size: 22px; }
 .ai-strategy-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
 .ai-strategy-head h3 { margin: 0; }
 .ai-strategy-head span { color: var(--teal); font-size: 12px; font-weight: 700; }
@@ -803,4 +807,5 @@ tbody tr:hover { background: #faf8f1; }
   .fund-tile:nth-child(n+3) { border-top: 1px solid var(--line); }
   .bar-row { grid-template-columns: 88px minmax(80px, 1fr) 58px; }
   .ai-strategy-grid { grid-template-columns: 1fr; }
+  .ai-autonomy-section .fund-grid.compact { grid-template-columns: repeat(2, 1fr); }
 }

@@ -2148,6 +2148,52 @@ class WorkbenchService:
                 reason TEXT,
                 PRIMARY KEY(version_id, security_id)
             );
+            CREATE TABLE IF NOT EXISTS llm_research_runs (
+                run_id TEXT PRIMARY KEY,
+                run_date TEXT NOT NULL,
+                model_provider TEXT,
+                model_name TEXT,
+                mode TEXT NOT NULL,
+                status TEXT NOT NULL,
+                input_hash TEXT,
+                output_hash TEXT,
+                created_at TEXT NOT NULL,
+                elapsed_ms INTEGER,
+                summary_json TEXT,
+                raw_output_json TEXT
+            );
+            CREATE TABLE IF NOT EXISTS llm_research_actions (
+                action_id TEXT PRIMARY KEY,
+                run_id TEXT NOT NULL,
+                action_type TEXT NOT NULL,
+                security_id TEXT,
+                security_name TEXT,
+                sector_name TEXT,
+                score_delta REAL,
+                confidence REAL,
+                horizon TEXT,
+                reason TEXT,
+                evidence_json TEXT,
+                raw_action_json TEXT
+            );
+            CREATE TABLE IF NOT EXISTS llm_action_guardrail_results (
+                action_id TEXT PRIMARY KEY,
+                run_id TEXT NOT NULL,
+                accepted INTEGER NOT NULL,
+                applied_delta REAL,
+                reject_reason TEXT,
+                guardrail_detail_json TEXT
+            );
+            CREATE TABLE IF NOT EXISTS ai_fund_shadow_portfolios (
+                shadow_version TEXT PRIMARY KEY,
+                run_id TEXT NOT NULL,
+                run_date TEXT NOT NULL,
+                positions_json TEXT NOT NULL,
+                factor_weights_json TEXT,
+                expected_changes_json TEXT,
+                created_at TEXT NOT NULL,
+                status TEXT NOT NULL
+            );
             """
         )
 
@@ -2458,6 +2504,370 @@ class WorkbenchService:
             "orders": orders,
         }
 
+    def _ai_fund_autonomy_context(self, rating_date: str | None, positions: list[dict[str, Any]]) -> dict[str, Any]:
+        overview = self.ai_fund_overview()
+        with self.connect() as connection:
+            rows = [dict(row) for row in connection.execute(
+                """SELECT event_time,available_at,event_type,sector_code,title,summary,materiality_score,source_url,locator
+                   FROM monitor_events
+                   WHERE date(COALESCE(available_at,event_time)) >= date(?, '-14 days')
+                   ORDER BY materiality_score DESC, COALESCE(available_at,event_time) DESC
+                   LIMIT 20""",
+                (rating_date or default_cutoff_date(),),
+            ).fetchall()]
+            try:
+                calibration = self_calibration.run(self.db_path, rating_date)
+            except Exception as exc:  # noqa: BLE001 - 自主投研不应因审计模块临时失败而中断
+                calibration = {"status": "unavailable", "error": str(exc)[:160]}
+        candidate_pool = [{
+            "security_id": row.get("security_id"),
+            "name": repair_mojibake(row.get("security_name")),
+            "sector": row.get("sector_name"),
+            "label": row.get("label"),
+            "base_score": row.get("score"),
+            "weight": row.get("weight"),
+            "weight_change": row.get("weight_change"),
+            "pe_ttm": row.get("pe_ttm"),
+            "change_pct": row.get("change_pct"),
+            "reason": row.get("reason"),
+        } for row in positions[:30]]
+        return {
+            "date": rating_date,
+            "objective": overview.get("objective"),
+            "portfolio_state": {
+                "position_count": overview.get("position_count"),
+                "turnover": overview.get("turnover"),
+                "turnover_band": overview.get("turnover_band"),
+                "trade_cost": overview.get("trade_cost"),
+                "sector_weights": overview.get("sector_weights", [])[:10],
+                "label_weights": overview.get("label_weights", []),
+                "nav": {
+                    "latest_nav": overview.get("latest_nav"),
+                    "total_return": overview.get("total_return"),
+                    "annualized_return": overview.get("annualized_return"),
+                    "max_drawdown": overview.get("max_drawdown"),
+                },
+            },
+            "candidate_pool": candidate_pool,
+            "recent_events": [{
+                "event_type": row.get("event_type"),
+                "sector_code": row.get("sector_code"),
+                "title": repair_mojibake(row.get("title") or ""),
+                "summary": repair_mojibake(row.get("summary") or ""),
+                "score": row.get("materiality_score"),
+                "source": row.get("source_url") or row.get("locator"),
+            } for row in rows],
+            "backtest_snapshot": {
+                "status": calibration.get("status"),
+                "outcome_groups": calibration.get("outcome_groups", [])[:8],
+                "active_rule": (calibration.get("active_rule") or {}).get("rule_version"),
+                "shadow_rule": (calibration.get("shadow_rule") or {}).get("rule_version"),
+            },
+            "guardrails": {
+                "no_real_trading": True,
+                "max_single_stock_delta": 4,
+                "max_veto_delta": -8,
+                "min_confidence_for_apply": 0.6,
+                "max_factor_delta_abs": 0.05,
+                "max_sector_weight": 30,
+                "max_turnover": 30,
+                "main_push_limit": 5,
+                "position_count": 30,
+            },
+        }
+
+    def _ai_fund_parse_autonomy_json(self, text: str) -> dict[str, Any]:
+        content = (text or "").strip()
+        if content.startswith("```"):
+            content = re.sub(r"^```(?:json)?\s*", "", content)
+            content = re.sub(r"\s*```$", "", content)
+        parsed = json.loads(content)
+        if not isinstance(parsed, dict):
+            raise ValueError("模型返回不是 JSON 对象")
+        return parsed
+
+    def _ai_fund_rule_autonomy_package(self, context: dict[str, Any]) -> dict[str, Any]:
+        positions = context.get("candidate_pool") or []
+        sector_weights = context.get("portfolio_state", {}).get("sector_weights") or []
+        overweight = [s for s in sector_weights if float(s.get("weight") or 0) > 24]
+        top = positions[:6]
+        actions = []
+        for idx, row in enumerate(top):
+            delta = 2.0 if idx < 3 else 1.0
+            actions.append({
+                "security_id": row.get("security_id"),
+                "security_name": row.get("name"),
+                "sector_name": row.get("sector"),
+                "action": "raise_score",
+                "score_delta": delta,
+                "confidence": 0.68,
+                "horizon": "3-6个月",
+                "reason": "规则分位居前，且符合中期/中长期持有筛选口径。",
+                "evidence": [row.get("reason")],
+            })
+        for row in positions:
+            if float(row.get("change_pct") or 0) > 7:
+                actions.append({
+                    "security_id": row.get("security_id"),
+                    "security_name": row.get("name"),
+                    "sector_name": row.get("sector"),
+                    "action": "reduce_score",
+                    "score_delta": -2.0,
+                    "confidence": 0.7,
+                    "horizon": "1-4周",
+                    "reason": "短期涨幅偏大，避免把短期情绪误当作中期逻辑。",
+                    "evidence": [f"当日涨跌幅 {row.get('change_pct')}%"],
+                })
+                break
+        return {
+            "market_view": {
+                "summary": "系统模型未生成时，使用规则兜底：保持中期/中长期质量优先，控制换手和行业集中。",
+                "risk_level": "medium",
+                "preferred_sectors": [s.get("name") for s in sector_weights[:3]],
+                "avoid_sectors": [s.get("name") for s in overweight[:2]],
+            },
+            "factor_view": {
+                "valuation_delta": 0.02,
+                "stability_delta": 0.02,
+                "catalyst_delta": -0.01,
+                "timing_delta": -0.01,
+                "risk_penalty_delta": 0.02,
+                "reason": "兜底策略提高估值和稳定性权重，降低短期事件追逐。",
+            },
+            "stock_actions": actions[:10],
+            "portfolio_view": {
+                "max_turnover_suggestion": 0.15,
+                "sector_bias": [],
+                "reason": "维持30只组合与低换手约束，只在影子分中体现 AI/规则建议。",
+            },
+            "audit_notes": ["当前为规则兜底自主建议包；配置 SYSTEM_LLM 后会由大模型生成更完整的主动投研判断。"],
+        }
+
+    def _ai_fund_generate_autonomy_package(self, context: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+        config = self._system_llm_config()
+        if not config:
+            return self._ai_fund_rule_autonomy_package(context), {"ok": False, "mode": "rule_fallback", "error": "SYSTEM_LLM 未配置"}
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "你是一个更自主的消费行业 AI 基金经理。你可以主动提出行业观点、因子权重调整、"
+                    "单股加减分、风险否决和组合方向建议。但你不能给真实交易指令，不能编造未给出的事实。"
+                    "只输出 JSON，不要 Markdown。"
+                ),
+            },
+            {
+                "role": "user",
+                "content": (
+                    "基于下面上下文，生成“AI自主投研建议包”。必须输出 JSON，字段："
+                    "market_view{summary,risk_level,preferred_sectors,avoid_sectors}; "
+                    "factor_view{valuation_delta,stability_delta,catalyst_delta,timing_delta,risk_penalty_delta,reason}; "
+                    "stock_actions数组，每项{security_id,security_name,sector_name,action,score_delta,confidence,horizon,reason,evidence}; "
+                    "portfolio_view{max_turnover_suggestion,sector_bias,reason}; audit_notes数组。"
+                    "action 只能是 raise_score/reduce_score/veto/observe/upgrade。"
+                    "score_delta 控制在 -8 到 +4，confidence 为0-1。优先体现中期/中长期好股票，不做短线追涨。\n\n"
+                    + json.dumps(context, ensure_ascii=False)
+                ),
+            },
+        ]
+        started = datetime.now().timestamp()
+        try:
+            data = self._llm_chat_completion(config, messages, stream=False, max_tokens=3000, timeout=60)
+            text = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+            parsed = self._ai_fund_parse_autonomy_json(text)
+            elapsed_ms = int((datetime.now().timestamp() - started) * 1000)
+            return parsed, {
+                "ok": True,
+                "mode": "system_llm",
+                "provider": config.get("provider"),
+                "model": config.get("model"),
+                "elapsed_ms": elapsed_ms,
+            }
+        except Exception as exc:
+            self.audit("ai_fund_autonomy_llm", outcome="failed", detail={"model": config.get("model"), "error": str(exc)[:200]})
+            fallback = self._ai_fund_rule_autonomy_package(context)
+            return fallback, {
+                "ok": False,
+                "mode": "rule_fallback",
+                "provider": config.get("provider"),
+                "model": config.get("model"),
+                "error": str(exc)[:180],
+            }
+
+    def _ai_fund_apply_autonomy_guardrails(
+        self,
+        package: dict[str, Any],
+        positions: list[dict[str, Any]],
+        overview: dict[str, Any],
+    ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+        by_id = {row.get("security_id"): row for row in positions}
+        accepted: list[dict[str, Any]] = []
+        rejected: list[dict[str, Any]] = []
+        for raw in (package.get("stock_actions") or [])[:20]:
+            if not isinstance(raw, dict):
+                continue
+            sid = raw.get("security_id")
+            row = by_id.get(sid)
+            confidence = float(raw.get("confidence") or 0)
+            requested = float(raw.get("score_delta") or 0)
+            action = str(raw.get("action") or "observe")
+            reason = repair_mojibake(raw.get("reason") or "")
+            reject_reason = ""
+            if not row:
+                reject_reason = "不在当前30只持仓内，先进入观察，不直接影响组合。"
+            elif confidence < 0.6:
+                reject_reason = "置信度低于0.60，只展示为观察建议。"
+            elif action in {"raise_score", "upgrade"} and requested <= 0:
+                reject_reason = "正向建议缺少正向分值。"
+            elif action in {"reduce_score", "veto"} and requested >= 0:
+                reject_reason = "负向/否决建议缺少负向分值。"
+            applied = max(-8.0, min(4.0, requested * confidence))
+            if action == "veto":
+                applied = min(applied, -5.0)
+            if reject_reason:
+                rejected.append({**raw, "accepted": False, "applied_delta": 0, "reject_reason": reject_reason})
+            else:
+                accepted.append({
+                    **raw,
+                    "security_id": sid,
+                    "security_name": repair_mojibake(raw.get("security_name") or row.get("security_name")),
+                    "sector_name": repair_mojibake(raw.get("sector_name") or row.get("sector_name")),
+                    "accepted": True,
+                    "applied_delta": round(applied, 2),
+                    "base_score": row.get("score"),
+                    "shadow_score": round(float(row.get("score") or 0) + applied, 2),
+                    "reason": reason,
+                })
+        factor = package.get("factor_view") if isinstance(package.get("factor_view"), dict) else {}
+        clipped_factor = {}
+        for key in ("valuation_delta", "stability_delta", "catalyst_delta", "timing_delta", "risk_penalty_delta"):
+            clipped_factor[key] = round(max(-0.05, min(0.05, float(factor.get(key) or 0))), 4)
+        shadow_positions = []
+        delta_by_id = {item["security_id"]: item["applied_delta"] for item in accepted}
+        for row in positions:
+            shadow_positions.append({
+                "security_id": row.get("security_id"),
+                "security_name": repair_mojibake(row.get("security_name")),
+                "sector_name": row.get("sector_name"),
+                "weight": row.get("weight"),
+                "base_score": row.get("score"),
+                "shadow_score": round(float(row.get("score") or 0) + float(delta_by_id.get(row.get("security_id"), 0)), 2),
+                "llm_delta": round(float(delta_by_id.get(row.get("security_id"), 0)), 2),
+            })
+        shadow_positions.sort(key=lambda x: x["shadow_score"], reverse=True)
+        guardrail_summary = {
+            "accepted": len(accepted),
+            "rejected": len(rejected),
+            "factor_adjustment": clipped_factor,
+            "formal_position_changed": False,
+            "note": "AI自主建议只进入影子增强分和审计展示；正式持仓仍需通过自动回测/风控后才升级。",
+            "turnover_ok": float(overview.get("turnover") or 0) <= 30,
+            "max_sector_ok": max((float(x.get("weight") or 0) for x in overview.get("sector_weights", [])), default=0) <= 30,
+        }
+        return accepted, rejected, {"summary": guardrail_summary, "shadow_positions": shadow_positions[:30]}
+
+    def ai_fund_autonomy(self) -> dict[str, Any]:
+        rating_date, positions = self._ai_fund_current_positions()
+        overview = self.ai_fund_overview()
+        version_id = self._ai_fund_version_id(rating_date)
+        run_id = stable_id("llm-research-run", version_id, rating_date or "", "v2-autonomy")
+        with self.connect() as connection:
+            self._ai_fund_ensure_schema(connection)
+            cached = connection.execute(
+                "SELECT summary_json, raw_output_json, status, model_provider, model_name, mode, elapsed_ms FROM llm_research_runs WHERE run_id=?",
+                (run_id,),
+            ).fetchone()
+            if cached:
+                summary = json_load(cached["summary_json"], {})
+                raw = json_load(cached["raw_output_json"], {})
+                return {
+                    "run_id": run_id,
+                    "date": rating_date,
+                    "cached": True,
+                    "llm": {
+                        "ok": cached["status"] == "success",
+                        "provider": cached["model_provider"],
+                        "model": cached["model_name"],
+                        "mode": cached["mode"],
+                        "elapsed_ms": cached["elapsed_ms"],
+                    },
+                    **summary,
+                    "raw_package": raw,
+                }
+        context = self._ai_fund_autonomy_context(rating_date, positions)
+        package, llm_meta = self._ai_fund_generate_autonomy_package(context)
+        accepted, rejected, guardrails = self._ai_fund_apply_autonomy_guardrails(package, positions, overview)
+        payload = {
+            "market_view": package.get("market_view") or {},
+            "factor_view": package.get("factor_view") or {},
+            "portfolio_view": package.get("portfolio_view") or {},
+            "audit_notes": package.get("audit_notes") or [],
+            "accepted_actions": accepted,
+            "rejected_actions": rejected,
+            "guardrails": guardrails.get("summary") or {},
+            "shadow_positions": guardrails.get("shadow_positions") or [],
+        }
+        now = datetime.now(SHANGHAI).isoformat(timespec="seconds")
+        with self.connect() as connection:
+            self._ai_fund_ensure_schema(connection)
+            connection.execute(
+                """INSERT OR REPLACE INTO llm_research_runs
+                   (run_id,run_date,model_provider,model_name,mode,status,input_hash,output_hash,created_at,elapsed_ms,summary_json,raw_output_json)
+                   VALUES(?,?,?,?,?,?,?,?,?,?,?,?)""",
+                (
+                    run_id,
+                    rating_date,
+                    llm_meta.get("provider"),
+                    llm_meta.get("model"),
+                    llm_meta.get("mode"),
+                    "success" if llm_meta.get("ok") else "fallback",
+                    stable_id("input", json.dumps(context, ensure_ascii=False))[:32],
+                    stable_id("output", json.dumps(package, ensure_ascii=False))[:32],
+                    now,
+                    llm_meta.get("elapsed_ms"),
+                    json.dumps(payload, ensure_ascii=False),
+                    json.dumps(package, ensure_ascii=False),
+                ),
+            )
+            connection.execute("DELETE FROM llm_research_actions WHERE run_id=?", (run_id,))
+            connection.execute("DELETE FROM llm_action_guardrail_results WHERE run_id=?", (run_id,))
+            for idx, item in enumerate(accepted + rejected):
+                action_id = stable_id("llm-action", run_id, str(idx), item.get("security_id") or "", item.get("action") or "")
+                connection.execute(
+                    """INSERT OR REPLACE INTO llm_research_actions
+                       (action_id,run_id,action_type,security_id,security_name,sector_name,score_delta,confidence,horizon,reason,evidence_json,raw_action_json)
+                       VALUES(?,?,?,?,?,?,?,?,?,?,?,?)""",
+                    (
+                        action_id, run_id, item.get("action"), item.get("security_id"), repair_mojibake(item.get("security_name")),
+                        repair_mojibake(item.get("sector_name")), item.get("score_delta"), item.get("confidence"), item.get("horizon"),
+                        repair_mojibake(item.get("reason")), json.dumps(item.get("evidence") or [], ensure_ascii=False),
+                        json.dumps(item, ensure_ascii=False),
+                    ),
+                )
+                connection.execute(
+                    """INSERT OR REPLACE INTO llm_action_guardrail_results
+                       (action_id,run_id,accepted,applied_delta,reject_reason,guardrail_detail_json)
+                       VALUES(?,?,?,?,?,?)""",
+                    (
+                        action_id, run_id, 1 if item.get("accepted") else 0, item.get("applied_delta", 0),
+                        item.get("reject_reason"), json.dumps({"confidence": item.get("confidence")}, ensure_ascii=False),
+                    ),
+                )
+            shadow_version = stable_id("shadow-portfolio", run_id)
+            connection.execute(
+                """INSERT OR REPLACE INTO ai_fund_shadow_portfolios
+                   (shadow_version,run_id,run_date,positions_json,factor_weights_json,expected_changes_json,created_at,status)
+                   VALUES(?,?,?,?,?,?,?,?)""",
+                (
+                    shadow_version, run_id, rating_date, json.dumps(payload["shadow_positions"], ensure_ascii=False),
+                    json.dumps(payload["guardrails"].get("factor_adjustment") or {}, ensure_ascii=False),
+                    json.dumps({"accepted": len(accepted), "rejected": len(rejected)}, ensure_ascii=False),
+                    now, "shadow_observing",
+                ),
+            )
+            connection.commit()
+        return {"run_id": run_id, "date": rating_date, "cached": False, "llm": llm_meta, **payload, "raw_package": package}
+
     def ai_fund_strategy(self) -> dict[str, Any]:
         rating_date, positions = self._ai_fund_current_positions()
         overview = self.ai_fund_overview()
@@ -2531,6 +2941,27 @@ class WorkbenchService:
             } for row in cuts],
             "system_llm": overview.get("system_llm"),
         }
+        autonomy_run_id = stable_id("llm-research-run", version_id, rating_date or "", "v2-autonomy")
+        with self.connect() as connection:
+            autonomy_row = connection.execute(
+                "SELECT summary_json, status, model_provider, model_name, mode, elapsed_ms FROM llm_research_runs WHERE run_id=?",
+                (autonomy_run_id,),
+            ).fetchone()
+        if autonomy_row:
+            autonomy_summary = json_load(autonomy_row["summary_json"], {})
+            result["autonomy"] = {
+                "run_id": autonomy_run_id,
+                "date": rating_date,
+                "cached": True,
+                "llm": {
+                    "ok": autonomy_row["status"] == "success",
+                    "provider": autonomy_row["model_provider"],
+                    "model": autonomy_row["model_name"],
+                    "mode": autonomy_row["mode"],
+                    "elapsed_ms": autonomy_row["elapsed_ms"],
+                },
+                **autonomy_summary,
+            }
         cached = self._ai_fund_cached_strategy(version_id)
         if cached and cached.get("ai_strategy"):
             result["ai_strategy"] = cached.get("ai_strategy")
@@ -3360,6 +3791,8 @@ body{{margin:0;background:#f7f6f4;color:#171717;font-family:"Segoe UI","Microsof
                 self.json_response(self.app.ai_fund_history())
             elif parsed.path == "/api/ai-fund/events":
                 self.json_response(self.app.ai_fund_events())
+            elif parsed.path == "/api/ai-fund/autonomy":
+                self.json_response(self.app.ai_fund_autonomy())
             elif parsed.path == "/api/ai-fund/audit":
                 self.json_response(self.app.ai_fund_audit())
             else:
