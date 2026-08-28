@@ -19,7 +19,6 @@ BJ = timezone(timedelta(hours=8))
 sys.path.insert(0, str(PROJECT_ROOT / "tools"))
 import consumer_stock_focus  # noqa: E402
 
-RETRY_TIMER = "consumer-research-close-sync-retry.timer"
 RETRY_SERVICE = "consumer-research-close-sync.service"
 
 
@@ -50,9 +49,11 @@ def schedule_retry(reason: str) -> None:
         log(f"收盘同步重试未注册（非 systemd 环境）：{reason}")
         return
     retry_at = next_retry_time(datetime.now(BJ))
+    retry_unit = f"consumer-research-close-sync-retry-{retry_at.strftime('%Y%m%d%H%M')}"
     command = [
         "systemd-run",
-        "--unit", "consumer-research-close-sync-retry",
+        "--unit", retry_unit,
+        "--collect",
         "--on-calendar", retry_at.strftime("%Y-%m-%d %H:%M:%S"),
         "--property", "Description=Retry Consumer Research Close Market Sync",
         "/bin/systemctl", "start", RETRY_SERVICE,
