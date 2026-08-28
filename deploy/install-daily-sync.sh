@@ -24,22 +24,29 @@ sudo install -m 0644 deploy/consumer-research-daily-sync.service /etc/systemd/sy
 sudo install -m 0644 deploy/consumer-research-daily-sync.timer /etc/systemd/system/consumer-research-daily-sync.timer
 sudo install -m 0644 deploy/consumer-research-close-sync.service /etc/systemd/system/consumer-research-close-sync.service
 sudo install -m 0644 deploy/consumer-research-close-sync.timer /etc/systemd/system/consumer-research-close-sync.timer
+sudo install -m 0644 deploy/consumer-research-ai-fund-weekly.service /etc/systemd/system/consumer-research-ai-fund-weekly.service
+sudo install -m 0644 deploy/consumer-research-ai-fund-weekly.timer /etc/systemd/system/consumer-research-ai-fund-weekly.timer
 
 sudo systemctl daemon-reload
 sudo systemctl enable --now consumer-research-daily-sync.timer
 sudo systemctl enable --now consumer-research-close-sync.timer
+sudo systemctl enable --now consumer-research-ai-fund-weekly.timer
 
-echo "Installed daily and close sync timers."
+echo "Installed daily, close, and AI fund weekly timers."
 echo
 systemctl list-timers consumer-research-daily-sync.timer --no-pager
 systemctl list-timers consumer-research-close-sync.timer --no-pager
+systemctl list-timers consumer-research-ai-fund-weekly.timer --no-pager
 echo
 echo "To run once now:"
 echo "  sudo systemctl start consumer-research-daily-sync.service"
 echo "  sudo systemctl start consumer-research-close-sync.service"
+echo "  sudo systemctl start consumer-research-ai-fund-weekly.service"
 echo
 echo "To view logs:"
 echo "  sudo journalctl -u consumer-research-daily-sync.service -n 120 --no-pager"
 echo "  tail -n 120 $APP_DIR/data/monitoring/module3-realtime-research/server-daily-sync.log"
 echo "  sudo journalctl -u consumer-research-close-sync.service -n 120 --no-pager"
 echo "  tail -n 120 $APP_DIR/data/monitoring/module3-realtime-research/server-close-sync.log"
+echo "  sudo journalctl -u consumer-research-ai-fund-weekly.service -n 120 --no-pager"
+echo "  tail -n 120 $APP_DIR/data/monitoring/module3-realtime-research/ai-fund-weekly.log"

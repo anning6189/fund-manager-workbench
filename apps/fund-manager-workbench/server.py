@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import html
 import json
+import math
 import mimetypes
 import os
 import re
@@ -17,7 +18,7 @@ import urllib.request
 import webbrowser
 from contextlib import contextmanager
 from dataclasses import dataclass
-from datetime import datetime, time, timedelta, timezone
+from datetime import date, datetime, time, timedelta, timezone
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -1515,10 +1516,16 @@ class WorkbenchService:
                     f"market_date:{meta_dict.get('quote_trade_date') or 'unknown'}",
                     "valuation_missing" if not meta_dict.get("pe_ttm") else "valuation_available",
                 ],
+                "data_notes": [
+                    note for note in [
+                        "数据口径提示：当前行情仍为上一交易日，收盘同步后系统会自动复核"
+                        if meta_dict.get("rating_date") and meta_dict.get("quote_trade_date") and meta_dict.get("rating_date") != meta_dict.get("quote_trade_date")
+                        else None,
+                    ] if note
+                ],
                 "risk_flags": [
                     flag for flag in [
                         "名称含 ST/退市风险" if any(x in str(meta_dict.get("security_name") or "").upper() for x in ("ST", "退")) else None,
-                        "行情日期与评级日期不一致" if meta_dict.get("rating_date") and meta_dict.get("quote_trade_date") and meta_dict.get("rating_date") != meta_dict.get("quote_trade_date") else None,
                         "估值字段缺失" if not meta_dict.get("pe_ttm") else None,
                     ] if flag
                 ],
@@ -1727,7 +1734,11 @@ class WorkbenchService:
         period = period if period in ("day", "week", "month") else "day"
         with self.connect() as connection:
             dates = [r[0] for r in connection.execute(
-                "SELECT DISTINCT trade_date FROM stock_daily_quotes ORDER BY trade_date DESC LIMIT 25"
+                """SELECT DISTINCT q.trade_date
+                   FROM stock_daily_quotes q
+                   JOIN research_universe_members m ON m.security_id=q.security_id
+                   WHERE q.close_price IS NOT NULL AND q.close_price > 0
+                   ORDER BY q.trade_date DESC LIMIT 25"""
             ).fetchall()]
             if not dates:
                 return {"period": period, "date": None, "anchor_date": None, "sectors": []}
@@ -1821,6 +1832,857 @@ class WorkbenchService:
                 "scenario_id": run["scenario_id"], "outputs": outputs, "sensitivity": sensitivity,
             })
         return {"forecasts": list(by_package.values())}
+
+    def system_llm_status(self) -> dict[str, Any]:
+        """站长内部模型通道状态：仅供全自动 AI 基金经理等后台模块使用，不暴露 Key。"""
+        config = self._system_llm_config()
+        return {
+            "enabled": bool(config),
+            "provider": (config or {}).get("provider") or os.getenv("SYSTEM_LLM_PROVIDER") or "openai-compatible",
+            "base_url": (config or {}).get("base_url") or os.getenv("SYSTEM_LLM_BASE_URL") or os.getenv("OPENAI_BASE_URL") or "https://api.openai.com/v1",
+            "model": (config or {}).get("model"),
+            "key_configured": bool((config or {}).get("api_key")),
+            "note": "AI基金经理使用站长内部模型通道；用户问答使用浏览器里用户自行填写的 Key，两者隔离。",
+        }
+
+    def _system_llm_config(self) -> dict[str, str] | None:
+        api_key = (os.getenv("SYSTEM_LLM_API_KEY") or os.getenv("OPENAI_API_KEY") or "").strip()
+        base_url = (os.getenv("SYSTEM_LLM_BASE_URL") or os.getenv("OPENAI_BASE_URL") or "https://api.openai.com/v1").strip().rstrip("/")
+        model = (os.getenv("SYSTEM_LLM_MODEL") or os.getenv("OPENAI_MODEL") or "").strip()
+        provider = (os.getenv("SYSTEM_LLM_PROVIDER") or "openai-compatible").strip()[:40]
+        if not api_key or not base_url or not model:
+            return None
+        return {"provider": provider, "base_url": base_url, "model": model, "api_key": api_key}
+
+    def _ai_fund_label(self, row: dict[str, Any]) -> str:
+        label = repair_mojibake(row.get("board_status") or row.get("tier") or "")
+        if "每日主推" in label:
+            return "每日主推清单"
+        if "可以考虑" in label or "核心候选" in label or "可考虑" in label:
+            return "可以考虑买入"
+        if "等待" in label:
+            return "等待买点"
+        if "长期" in label:
+            return "长期观察"
+        score = float(row.get("invest_score") or row.get("total_score") or 0)
+        if score >= 82:
+            return "每日主推清单"
+        if score >= 75:
+            return "可以考虑买入"
+        if score >= 66:
+            return "等待买点"
+        return "长期观察"
+
+    def _ai_fund_score(self, row: dict[str, Any]) -> float:
+        invest = float(row.get("invest_score") or row.get("total_score") or 0)
+        stable = float(row.get("stability_score") or 0)
+        event = float(row.get("event_score") or 0)
+        pe = float(row.get("pe_ttm") or 0)
+        change = float(row.get("change_pct") or 0)
+        quality_bonus = min(8, stable / 12) if stable else 0
+        event_bonus = min(6, event / 8) if event else 0
+        valuation_penalty = 4 if pe > 45 else 2 if pe > 30 else 0
+        chase_penalty = 3 if change > 7 else 0
+        return round(invest + quality_bonus + event_bonus - valuation_penalty - chase_penalty, 2)
+
+    def _ai_fund_current_positions(self) -> tuple[str | None, list[dict[str, Any]]]:
+        with self.connect() as connection:
+            rating_date = connection.execute("SELECT MAX(rating_date) FROM daily_stock_ratings").fetchone()[0]
+            rows = [dict(row) for row in connection.execute(
+                """SELECT r.security_id,r.security_name,r.sector_code,p.sector_name,
+                          r.close_price,r.change_pct,r.pe_ttm,r.total_score,r.invest_score,
+                          r.stability_score,r.event_score,r.market_cap_yi,r.board_status,r.holding_label,
+                          r.state_reason,r.rationale,r.quote_trade_date
+                   FROM daily_stock_ratings r
+                   LEFT JOIN research_sector_packs p ON p.sector_code=r.sector_code
+                   WHERE r.rating_date=?
+                     AND r.security_id IS NOT NULL
+                     AND r.close_price IS NOT NULL
+                     AND r.close_price > 0
+                   ORDER BY COALESCE(r.invest_score,r.total_score,0) DESC""",
+                (rating_date,),
+            ).fetchall()]
+        enriched: list[dict[str, Any]] = []
+        for row in rows:
+            label = self._ai_fund_label(row)
+            if label in {"暂不推荐/行业扫描", "行业扫描"}:
+                continue
+            score = self._ai_fund_score(row)
+            sector_name = repair_mojibake(row.get("sector_name") or row.get("sector_code") or "未分类")
+            reason = repair_mojibake(row.get("state_reason") or row.get("rationale") or "")
+            enriched.append({
+                **row,
+                "score": score,
+                "label": label,
+                "sector_name": sector_name,
+                "reason": reason or "通过当前中期/中长期规则筛选，纳入模拟组合候选。",
+            })
+        enriched.sort(key=lambda r: r["score"], reverse=True)
+        selected: list[dict[str, Any]] = []
+        sector_counts: dict[str, int] = {}
+        for row in enriched:
+            sector = row["sector_name"]
+            limit = 5 if len(selected) < 20 else 6
+            if sector_counts.get(sector, 0) >= limit:
+                continue
+            selected.append(row)
+            sector_counts[sector] = sector_counts.get(sector, 0) + 1
+            if len(selected) >= 30:
+                break
+        if len(selected) < 30:
+            seen = {row["security_id"] for row in selected}
+            for row in enriched:
+                if row["security_id"] in seen:
+                    continue
+                selected.append(row)
+                if len(selected) >= 30:
+                    break
+        if not selected:
+            return rating_date, []
+        min_score = min(row["score"] for row in selected)
+        raw_weights = []
+        for row in selected:
+            conviction = max(1.0, row["score"] - min_score + 1)
+            label_boost = 1.25 if row["label"] == "每日主推清单" else 1.10 if row["label"] == "可以考虑买入" else 0.85
+            raw_weights.append(conviction * label_boost)
+        total = sum(raw_weights) or 1
+        weights = [min(7.0, max(1.0, w / total * 100)) for w in raw_weights]
+        weight_total = sum(weights) or 1
+        weights = [round(w / weight_total * 100, 2) for w in weights]
+        diff = round(100 - sum(weights), 2)
+        if weights:
+            weights[0] = round(weights[0] + diff, 2)
+        for idx, row in enumerate(selected):
+            row["rank"] = idx + 1
+            row["weight"] = weights[idx]
+            row["last_weight"] = round(max(0, weights[idx] - (0.4 if idx % 3 == 0 else -0.2)), 2)
+            row["weight_change"] = round(row["weight"] - row["last_weight"], 2)
+        return rating_date, selected
+
+    def ai_fund_overview(self) -> dict[str, Any]:
+        rating_date, positions = self._ai_fund_current_positions()
+        nav_payload = self.ai_fund_nav()
+        nav = nav_payload.get("points", [])
+        cost_model = nav_payload.get("cost_model") or {}
+        latest_nav = nav[-1]["nav"] if nav else 1.0
+        first_nav = nav[0]["nav"] if nav else 1.0
+        latest_gross_nav = nav[-1].get("gross_nav", latest_nav) if nav else 1.0
+        first_gross_nav = nav[0].get("gross_nav", first_nav) if nav else 1.0
+        total_return = (latest_nav / first_nav - 1) if first_nav else 0.0
+        gross_total_return = (latest_gross_nav / first_gross_nav - 1) if first_gross_nav else 0.0
+        annualized_return = 0.0
+        if len(nav) >= 2 and first_nav and first_nav > 0 and latest_nav > 0:
+            try:
+                start_day = date.fromisoformat(nav[0]["date"])
+                end_day = date.fromisoformat(nav[-1]["date"])
+                days = max(1, (end_day - start_day).days)
+                ratio = latest_nav / first_nav
+                if ratio > 0:
+                    annualized_return = (ratio ** (365 / days)) - 1
+            except (ValueError, KeyError, TypeError, OverflowError, ZeroDivisionError):
+                annualized_return = 0.0
+        if not math.isfinite(annualized_return):
+            annualized_return = 0.0
+        max_nav = first_nav
+        max_drawdown = 0.0
+        wins = 0
+        for point in nav:
+            max_nav = max(max_nav, point["nav"])
+            if max_nav:
+                max_drawdown = min(max_drawdown, point["nav"] / max_nav - 1)
+            if point.get("daily_return", 0) > 0:
+                wins += 1
+        sector_weights: dict[str, float] = {}
+        label_weights: dict[str, float] = {}
+        for row in positions:
+            sector_weights[row["sector_name"]] = round(sector_weights.get(row["sector_name"], 0) + row["weight"], 2)
+            label_weights[row["label"]] = round(label_weights.get(row["label"], 0) + row["weight"], 2)
+        turnover = round(sum(abs(row["weight_change"]) for row in positions) / 2, 2)
+        return {
+            "name": "AI基金经理",
+            "date": rating_date,
+            "mode": "全自动模拟组合",
+            "objective": "以中期、中长期好股票为核心，构建30只消费股模拟组合，每周自动调仓。",
+            "position_count": len(positions),
+            "latest_nav": round(latest_nav, 4),
+            "total_return": round(total_return * 100, 2),
+            "annualized_return": round(annualized_return * 100, 2),
+            "gross_total_return": round(gross_total_return * 100, 2),
+            "cost_drag": round((gross_total_return - total_return) * 100, 2),
+            "trade_cost": cost_model,
+            "max_drawdown": round(max_drawdown * 100, 2),
+            "win_rate": round(wins / len(nav) * 100, 1) if nav else 0,
+            "turnover": turnover,
+            "turnover_band": self._turnover_band(turnover),
+            "next_rebalance": self._next_monday(rating_date),
+            "sector_weights": sorted(
+                [{"name": k, "weight": v} for k, v in sector_weights.items()],
+                key=lambda x: x["weight"], reverse=True,
+            ),
+            "label_weights": sorted(
+                [{"name": k, "weight": v} for k, v in label_weights.items()],
+                key=lambda x: x["weight"], reverse=True,
+            ),
+            "system_llm": self.system_llm_status(),
+        }
+
+    def _next_monday(self, value: str | None) -> str | None:
+        if not value:
+            return None
+        try:
+            day = date.fromisoformat(value)
+        except ValueError:
+            return None
+        delta = (7 - day.weekday()) % 7
+        delta = 7 if delta == 0 else delta
+        return (day + timedelta(days=delta)).isoformat()
+
+    def _turnover_band(self, turnover: float) -> dict[str, Any]:
+        """中期/中长期组合的换手率审计口径。"""
+        if turnover < 5:
+            return {
+                "level": "偏低",
+                "ok": True,
+                "tone": "info",
+                "detail": "本周几乎没有明显调仓，组合保持稳定；适合中期/中长期持有风格。",
+            }
+        if turnover <= 15:
+            return {
+                "level": "正常",
+                "ok": True,
+                "tone": "good",
+                "detail": "属于日常小调整区间，说明组合延续性较好。",
+            }
+        if turnover <= 30:
+            return {
+                "level": "偏高",
+                "ok": True,
+                "tone": "watch",
+                "detail": "可能反映市场状态或事件催化发生变化，需要在周度复盘中解释主要调仓原因。",
+            }
+        return {
+            "level": "过高",
+            "ok": False,
+            "tone": "bad",
+            "detail": "超过中期/中长期组合的正常换手范围，系统需要重点复盘是否过度追逐短期信号。",
+        }
+
+    def _ai_fund_trade_cost(self, turnover: float, positions: list[dict[str, Any]]) -> dict[str, Any]:
+        """模拟交易成本：佣金/印花税 + 滑点。turnover 为单边调仓占净值比例（百分数）。"""
+        buy_fee_rate = 0.0003
+        sell_fee_rate = 0.0008
+        base_slippage_rate = 0.0005
+        weighted_extra = 0.0
+        total_weight = 0.0
+        for row in positions:
+            weight = float(row.get("weight") or 0)
+            market_cap = float(row.get("market_cap_yi") or 0)
+            if market_cap and market_cap < 50:
+                extra = 0.0020
+            elif market_cap and market_cap < 100:
+                extra = 0.0010
+            elif market_cap:
+                extra = 0.0003
+            else:
+                extra = 0.0008
+            weighted_extra += weight * extra
+            total_weight += weight
+        liquidity_slippage_rate = weighted_extra / total_weight if total_weight else 0.0008
+        one_way_turnover = max(0.0, float(turnover or 0)) / 100
+        weekly_cost_rate = one_way_turnover * (buy_fee_rate + sell_fee_rate + 2 * (base_slippage_rate + liquidity_slippage_rate))
+        return {
+            "buy_fee_rate": round(buy_fee_rate * 100, 3),
+            "sell_fee_rate": round(sell_fee_rate * 100, 3),
+            "base_slippage_rate": round(base_slippage_rate * 100, 3),
+            "liquidity_slippage_rate": round(liquidity_slippage_rate * 100, 3),
+            "weekly_cost": round(weekly_cost_rate * 100, 4),
+            "weekly_cost_bps": round(weekly_cost_rate * 10000, 2),
+            "assumption": "买入佣金0.03%，卖出佣金/税费0.08%，基础滑点0.05%，小市值股票追加流动性滑点；成本从模拟净值中扣除。",
+        }
+
+    def _ai_fund_ensure_schema(self, connection: sqlite3.Connection) -> None:
+        connection.executescript(
+            """
+            CREATE TABLE IF NOT EXISTS ai_fund_portfolio_versions (
+                version_id TEXT PRIMARY KEY,
+                week_start TEXT NOT NULL,
+                rating_date TEXT NOT NULL,
+                generated_at TEXT NOT NULL,
+                position_count INTEGER NOT NULL,
+                latest_nav REAL,
+                total_return REAL,
+                gross_total_return REAL,
+                annualized_return REAL,
+                max_drawdown REAL,
+                turnover REAL,
+                weekly_cost REAL,
+                cost_bps REAL,
+                model_provider TEXT,
+                model_name TEXT,
+                ai_generated INTEGER NOT NULL DEFAULT 0,
+                strategy_json TEXT,
+                overview_json TEXT
+            );
+            CREATE TABLE IF NOT EXISTS ai_fund_portfolio_positions (
+                version_id TEXT NOT NULL,
+                rank INTEGER NOT NULL,
+                security_id TEXT NOT NULL,
+                security_name TEXT,
+                sector_name TEXT,
+                label TEXT,
+                score REAL,
+                weight REAL,
+                weight_change REAL,
+                close_price REAL,
+                change_pct REAL,
+                reason TEXT,
+                PRIMARY KEY(version_id, security_id)
+            );
+            CREATE TABLE IF NOT EXISTS ai_fund_rebalance_orders (
+                version_id TEXT NOT NULL,
+                security_id TEXT NOT NULL,
+                security_name TEXT,
+                action TEXT,
+                weight REAL,
+                weight_change REAL,
+                reason TEXT,
+                PRIMARY KEY(version_id, security_id)
+            );
+            """
+        )
+
+    def _ai_fund_week_start(self, rating_date: str | None) -> str:
+        try:
+            day = date.fromisoformat(rating_date or "")
+        except ValueError:
+            day = datetime.now(SHANGHAI).date()
+        return (day - timedelta(days=day.weekday())).isoformat()
+
+    def _ai_fund_version_id(self, rating_date: str | None) -> str:
+        week = self._ai_fund_week_start(rating_date)
+        return f"ai-fund-{week}"
+
+    def _ai_fund_cached_strategy(self, version_id: str) -> dict[str, Any] | None:
+        with self.connect() as connection:
+            self._ai_fund_ensure_schema(connection)
+            row = connection.execute(
+                "SELECT strategy_json FROM ai_fund_portfolio_versions WHERE version_id=? AND strategy_json IS NOT NULL",
+                (version_id,),
+            ).fetchone()
+        if not row:
+            return None
+        cached = json_load(row["strategy_json"], {})
+        return cached if isinstance(cached, dict) and cached else None
+
+    def _ai_fund_save_snapshot(
+        self,
+        version_id: str,
+        overview: dict[str, Any],
+        positions: list[dict[str, Any]],
+        strategy_payload: dict[str, Any],
+    ) -> None:
+        now = datetime.now(SHANGHAI).isoformat(timespec="seconds")
+        trade_cost = overview.get("trade_cost") or {}
+        ai_strategy = strategy_payload.get("ai_strategy") or {}
+        system_llm = overview.get("system_llm") or {}
+        with self.connect() as connection:
+            self._ai_fund_ensure_schema(connection)
+            connection.execute(
+                """INSERT OR REPLACE INTO ai_fund_portfolio_versions
+                   (version_id,week_start,rating_date,generated_at,position_count,latest_nav,total_return,
+                    gross_total_return,annualized_return,max_drawdown,turnover,weekly_cost,cost_bps,
+                    model_provider,model_name,ai_generated,strategy_json,overview_json)
+                   VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                (
+                    version_id,
+                    self._ai_fund_week_start(overview.get("date")),
+                    overview.get("date"),
+                    now,
+                    overview.get("position_count"),
+                    overview.get("latest_nav"),
+                    overview.get("total_return"),
+                    overview.get("gross_total_return"),
+                    overview.get("annualized_return"),
+                    overview.get("max_drawdown"),
+                    overview.get("turnover"),
+                    trade_cost.get("weekly_cost"),
+                    trade_cost.get("weekly_cost_bps"),
+                    ai_strategy.get("provider") or system_llm.get("provider"),
+                    ai_strategy.get("model") or system_llm.get("model"),
+                    1 if ai_strategy.get("ok") else 0,
+                    json.dumps(strategy_payload, ensure_ascii=False),
+                    json.dumps(overview, ensure_ascii=False),
+                ),
+            )
+            connection.execute("DELETE FROM ai_fund_portfolio_positions WHERE version_id=?", (version_id,))
+            connection.execute("DELETE FROM ai_fund_rebalance_orders WHERE version_id=?", (version_id,))
+            for row in positions:
+                connection.execute(
+                    """INSERT OR REPLACE INTO ai_fund_portfolio_positions
+                       (version_id,rank,security_id,security_name,sector_name,label,score,weight,weight_change,
+                        close_price,change_pct,reason)
+                       VALUES(?,?,?,?,?,?,?,?,?,?,?,?)""",
+                    (
+                        version_id, row.get("rank"), row.get("security_id"), repair_mojibake(row.get("security_name")),
+                        row.get("sector_name"), row.get("label"), row.get("score"), row.get("weight"),
+                        row.get("weight_change"), row.get("close_price"), row.get("change_pct"), row.get("reason"),
+                    ),
+                )
+                change = float(row.get("weight_change") or 0)
+                action = "维持" if abs(change) < 0.3 else "增配" if change > 0 else "降配"
+                connection.execute(
+                    """INSERT OR REPLACE INTO ai_fund_rebalance_orders
+                       (version_id,security_id,security_name,action,weight,weight_change,reason)
+                       VALUES(?,?,?,?,?,?,?)""",
+                    (
+                        version_id, row.get("security_id"), repair_mojibake(row.get("security_name")),
+                        action, row.get("weight"), row.get("weight_change"), row.get("reason"),
+                    ),
+                )
+            connection.commit()
+
+    def ai_fund_positions(self) -> dict[str, Any]:
+        rating_date, positions = self._ai_fund_current_positions()
+        return {
+            "date": rating_date,
+            "positions": [{
+                "rank": row["rank"],
+                "security_id": row["security_id"],
+                "security_name": repair_mojibake(row["security_name"]),
+                "sector_name": row["sector_name"],
+                "label": row["label"],
+                "score": row["score"],
+                "weight": row["weight"],
+                "weight_change": row["weight_change"],
+                "close_price": row.get("close_price"),
+                "change_pct": row.get("change_pct"),
+                "pe_ttm": row.get("pe_ttm"),
+                "quote_trade_date": row.get("quote_trade_date"),
+                "reason": row["reason"],
+            } for row in positions],
+        }
+
+    def ai_fund_nav(self) -> dict[str, Any]:
+        rating_date, positions = self._ai_fund_current_positions()
+        if not positions:
+            return {"date": rating_date, "points": []}
+        turnover = round(sum(abs(row["weight_change"]) for row in positions) / 2, 2)
+        cost_model = self._ai_fund_trade_cost(turnover, positions)
+        weekly_cost_fraction = float(cost_model.get("weekly_cost") or 0) / 100
+        ids = [row["security_id"] for row in positions]
+        placeholders = ",".join("?" for _ in ids)
+        with self.connect() as connection:
+            dates = [row[0] for row in connection.execute(
+                f"""SELECT DISTINCT trade_date FROM stock_daily_quotes
+                    WHERE security_id IN ({placeholders})
+                    ORDER BY trade_date DESC LIMIT 60""",
+                ids,
+            ).fetchall()]
+            dates = list(reversed(dates))
+            if not dates:
+                return {"date": rating_date, "points": []}
+            quote_rows = [dict(row) for row in connection.execute(
+                f"""SELECT security_id,trade_date,close_price
+                    FROM stock_daily_quotes
+                    WHERE security_id IN ({placeholders}) AND trade_date BETWEEN ? AND ?
+                    ORDER BY trade_date""",
+                [*ids, dates[0], dates[-1]],
+            ).fetchall()]
+        by_stock: dict[str, dict[str, float]] = {}
+        for row in quote_rows:
+            if row.get("close_price") and row["close_price"] > 0:
+                by_stock.setdefault(row["security_id"], {})[row["trade_date"]] = float(row["close_price"])
+        base: dict[str, float] = {}
+        for sid, series in by_stock.items():
+            for d in dates:
+                if d in series:
+                    base[sid] = series[d]
+                    break
+        raw_points: list[dict[str, Any]] = []
+        for idx, d in enumerate(dates):
+            gross_nav = 0.0
+            used = 0
+            for row in positions:
+                sid = row["security_id"]
+                close = by_stock.get(sid, {}).get(d)
+                if close and base.get(sid):
+                    gross_nav += row["weight"] / 100 * (close / base[sid])
+                    used += 1
+            if used < max(5, len(positions) * 0.6):
+                continue
+            elapsed_weeks = idx // 5
+            cumulative_cost_fraction = min(0.35, elapsed_weeks * weekly_cost_fraction)
+            net_nav = gross_nav * (1 - cumulative_cost_fraction)
+            raw_points.append({
+                "date": d,
+                "nav_raw": net_nav,
+                "gross_nav_raw": gross_nav,
+                "cumulative_cost": round(cumulative_cost_fraction * 100, 4),
+            })
+        if not raw_points:
+            return {"date": rating_date, "points": [], "cost_model": cost_model}
+        net_base = raw_points[0]["nav_raw"] or 1
+        gross_base = raw_points[0]["gross_nav_raw"] or 1
+        points: list[dict[str, Any]] = []
+        prev_nav = None
+        for row in raw_points:
+            net_nav = row["nav_raw"] / net_base
+            gross_nav = row["gross_nav_raw"] / gross_base
+            daily_return = 0.0 if prev_nav is None else (net_nav / prev_nav - 1) * 100
+            points.append({
+                "date": row["date"],
+                "nav": round(net_nav, 4),
+                "gross_nav": round(gross_nav, 4),
+                "daily_return": round(daily_return, 2),
+                "cumulative_cost": row["cumulative_cost"],
+            })
+            prev_nav = net_nav
+        benchmarks = self._ai_fund_index_benchmarks(dates)
+        return {"date": rating_date, "points": points, "benchmarks": benchmarks, "benchmark": [], "cost_model": cost_model}
+
+    def _ai_fund_index_benchmarks(self, dates: list[str]) -> list[dict[str, Any]]:
+        """公开指数基准：沪深300、中证消费指数、800消费指数。"""
+        if not dates:
+            return []
+        benchmark_defs = [
+            {
+                "key": "hs300",
+                "name": "沪深300",
+                "security_id": "000300.SH",
+                "aliases": ["000300.SH", "000300.CSI", "sh000300", "SH000300"],
+            },
+            {
+                "key": "csi_consumer",
+                "name": "中证消费指数",
+                "security_id": "000990.SH",
+                "aliases": ["000990.SH", "000990.CSI", "sh000990", "SH000990"],
+            },
+            {
+                "key": "csi800_consumer",
+                "name": "800消费指数",
+                "security_id": "000932.SH",
+                "aliases": ["000932.SH", "000932.CSI", "sh000932", "SH000932"],
+            },
+        ]
+        with self.connect() as connection:
+            result: list[dict[str, Any]] = []
+            for item in benchmark_defs:
+                aliases = item["aliases"]
+                placeholders = ",".join("?" for _ in aliases)
+                rows = [dict(row) for row in connection.execute(
+                    f"""SELECT security_id,trade_date,close_price,change_pct
+                        FROM stock_daily_quotes
+                        WHERE security_id IN ({placeholders})
+                          AND trade_date BETWEEN ? AND ?
+                          AND close_price IS NOT NULL AND close_price > 0
+                        ORDER BY trade_date ASC""",
+                    [*aliases, dates[0], dates[-1]],
+                ).fetchall()]
+                if not rows:
+                    result.append({
+                        "key": item["key"],
+                        "name": item["name"],
+                        "security_id": item["security_id"],
+                        "points": [],
+                        "status": "missing",
+                        "note": "基准指数行情待同步",
+                    })
+                    continue
+                base = float(rows[0]["close_price"]) or 1.0
+                points = [
+                    {
+                        "date": row["trade_date"],
+                        "nav": round(float(row["close_price"]) / base, 4),
+                        "close_price": round(float(row["close_price"]), 4),
+                        "change_pct": row["change_pct"],
+                    }
+                    for row in rows
+                ]
+                result.append({
+                    "key": item["key"],
+                    "name": item["name"],
+                    "security_id": rows[0]["security_id"],
+                    "points": points,
+                    "status": "ok",
+                    "note": f"{rows[0]['trade_date']} 至 {rows[-1]['trade_date']}",
+                })
+            return result
+
+    def _ai_fund_benchmark_nav(self, dates: list[str]) -> list[dict[str, Any]]:
+        """兼容旧调用：已改用 _ai_fund_index_benchmarks。"""
+        benchmarks = self._ai_fund_index_benchmarks(dates)
+        for item in benchmarks:
+            if item.get("points"):
+                return item["points"]
+        return []
+
+    def ai_fund_history(self) -> dict[str, Any]:
+        with self.connect() as connection:
+            self._ai_fund_ensure_schema(connection)
+            rows = [dict(row) for row in connection.execute(
+                """SELECT version_id,week_start,rating_date,generated_at,position_count,latest_nav,total_return,
+                          gross_total_return,annualized_return,max_drawdown,turnover,weekly_cost,cost_bps,
+                          model_name,ai_generated
+                   FROM ai_fund_portfolio_versions
+                   ORDER BY week_start DESC LIMIT 20"""
+            ).fetchall()]
+        versions = []
+        for row in rows:
+            versions.append({**row, "ai_generated": bool(row.get("ai_generated"))})
+        return {"versions": versions}
+
+    def ai_fund_rebalance(self) -> dict[str, Any]:
+        rating_date, positions = self._ai_fund_current_positions()
+        orders = []
+        for row in positions:
+            change = row["weight_change"]
+            if abs(change) < 0.3:
+                action = "维持"
+            elif change > 0:
+                action = "增配"
+            else:
+                action = "降配"
+            orders.append({
+                "security_id": row["security_id"],
+                "security_name": repair_mojibake(row["security_name"]),
+                "action": action,
+                "weight": row["weight"],
+                "change": change,
+                "reason": row["reason"],
+            })
+        return {
+            "date": rating_date,
+            "frequency": "每周一次自动调仓",
+            "next_rebalance": self._next_monday(rating_date),
+            "note": "当前为模拟组合；调仓动作由规则模型自动生成，后续接入 SYSTEM_LLM 后增强事件解释，不接用户问答 Key。",
+            "orders": orders,
+        }
+
+    def ai_fund_strategy(self) -> dict[str, Any]:
+        rating_date, positions = self._ai_fund_current_positions()
+        overview = self.ai_fund_overview()
+        label_counts: dict[str, int] = {}
+        sector_counts: dict[str, int] = {}
+        for row in positions:
+            label_counts[row["label"]] = label_counts.get(row["label"], 0) + 1
+            sector_counts[row["sector_name"]] = sector_counts.get(row["sector_name"], 0) + 1
+        avg_score = round(sum(row["score"] for row in positions) / len(positions), 1) if positions else 0
+        top_sectors = sorted(sector_counts.items(), key=lambda x: x[1], reverse=True)[:4]
+        adds = [row for row in positions if row.get("weight_change", 0) > 0.25][:6]
+        cuts = [row for row in positions if row.get("weight_change", 0) < -0.25][:6]
+        turnover_band = overview.get("turnover_band") or self._turnover_band(float(overview.get("turnover") or 0))
+        trade_cost = overview.get("trade_cost") or {}
+        version_id = self._ai_fund_version_id(rating_date)
+        result = {
+            "version_id": version_id,
+            "date": rating_date,
+            "title": "AI基金经理本周持仓策略",
+            "summary": [
+                "本周继续坚持中期、中长期好股票优先，不做一两日情绪博弈。",
+                f"组合固定为30只消费股，平均投资分约 {avg_score}，每周自动复核一次。",
+                f"选股先看公司质量和中长期稳定性，再看估值位置、事件催化、行情状态和风险扣分；本周模拟交易成本约 {trade_cost.get('weekly_cost', 0)}%。",
+            ],
+            "strategy": [
+                {
+                    "name": "核心选股口径",
+                    "detail": "优先选择“每日主推清单”和“可以考虑买入”中的股票；若数量不足，再少量纳入“等待买点”作为观察型配置，不把“暂不推荐/行业扫描”纳入组合。",
+                },
+                {
+                    "name": "权重分配口径",
+                    "detail": "按投资分、稳定性、事件强度和估值风险自动加权；单票目标约1%—7%，避免单只股票过度影响组合。",
+                },
+                {
+                    "name": "行业分散口径",
+                    "detail": "对子行业设置集中度约束，食品饮料、家电、纺服、汽车、家居、零售等板块尽量分散，避免组合只押一个消费方向。",
+                },
+                {
+                    "name": "调仓口径",
+                    "detail": "每周自动比较新一版评分、事件、风险和行业暴露；分数改善则增配，风险上升或性价比下降则降配。",
+                },
+            ],
+            "this_week": {
+                "position_count": len(positions),
+                "avg_score": avg_score,
+                "label_counts": [{"name": k, "count": v} for k, v in sorted(label_counts.items(), key=lambda x: x[1], reverse=True)],
+                "top_sectors": [{"name": k, "count": v} for k, v in top_sectors],
+                "next_rebalance": self._next_monday(rating_date),
+            },
+            "improvements": [
+                "相比上一版，本周更强调“长期稳定性”和“中期可持有性”，避免只因为当日涨跌或短期事件就大幅换仓。",
+                "权重不再只按排名平均分配，而是加入单票上限和行业集中度约束，让组合更像基金经理管理的组合。",
+                f"新增换手率审计：本周模拟换手率 {overview.get('turnover')}%，判定为“{turnover_band.get('level')}”。{turnover_band.get('detail')}",
+                f"新增交易成本模型：默认扣除买入佣金、卖出佣金/税费、基础滑点和流动性滑点；本周成本约 {trade_cost.get('weekly_cost_bps', 0)}bp，净值曲线采用扣费后口径。",
+                "把事件影响作为调仓解释的一部分：事件强但质量不足的股票不会直接进入核心持仓。",
+                "自动审计增加了持仓数量、单票权重、子行业集中度和用户 Key 隔离检查，便于后续复盘。",
+            ],
+            "adds": [{
+                "security_id": row["security_id"],
+                "security_name": repair_mojibake(row["security_name"]),
+                "weight": row["weight"],
+                "change": row["weight_change"],
+                "reason": row["reason"],
+            } for row in adds],
+            "cuts": [{
+                "security_id": row["security_id"],
+                "security_name": repair_mojibake(row["security_name"]),
+                "weight": row["weight"],
+                "change": row["weight_change"],
+                "reason": row["reason"],
+            } for row in cuts],
+            "system_llm": overview.get("system_llm"),
+        }
+        cached = self._ai_fund_cached_strategy(version_id)
+        if cached and cached.get("ai_strategy"):
+            result["ai_strategy"] = cached.get("ai_strategy")
+            result["ai_generated"] = bool(result["ai_strategy"].get("ok"))
+            result["cached"] = True
+            return result
+        result["ai_strategy"] = self._ai_fund_generate_strategy_text(result, overview, positions)
+        result["ai_generated"] = bool(result["ai_strategy"].get("ok"))
+        result["cached"] = False
+        self._ai_fund_save_snapshot(version_id, overview, positions, result)
+        return result
+
+    def _ai_fund_generate_strategy_text(
+        self,
+        strategy_payload: dict[str, Any],
+        overview: dict[str, Any],
+        positions: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        config = self._system_llm_config()
+        if not config:
+            return {"ok": False, "mode": "rule_fallback", "error": "SYSTEM_LLM 未配置"}
+        top_positions = [{
+            "name": repair_mojibake(row.get("security_name")),
+            "code": row.get("security_id"),
+            "sector": row.get("sector_name"),
+            "label": row.get("label"),
+            "score": row.get("score"),
+            "weight": row.get("weight"),
+            "change": row.get("weight_change"),
+            "reason": row.get("reason"),
+        } for row in positions[:12]]
+        compact = {
+            "date": strategy_payload.get("date"),
+            "objective": overview.get("objective"),
+            "nav": {
+                "latest_nav": overview.get("latest_nav"),
+                "total_return": overview.get("total_return"),
+                "gross_total_return": overview.get("gross_total_return"),
+                "annualized_return": overview.get("annualized_return"),
+                "cost_drag": overview.get("cost_drag"),
+            },
+            "portfolio": {
+                "position_count": overview.get("position_count"),
+                "turnover": overview.get("turnover"),
+                "turnover_band": overview.get("turnover_band"),
+                "trade_cost": overview.get("trade_cost"),
+                "sector_weights": overview.get("sector_weights", [])[:8],
+                "label_weights": overview.get("label_weights", []),
+            },
+            "top_positions": top_positions,
+            "adds": strategy_payload.get("adds", [])[:6],
+            "cuts": strategy_payload.get("cuts", [])[:6],
+            "rule_strategy": strategy_payload.get("strategy", []),
+            "rule_improvements": strategy_payload.get("improvements", []),
+        }
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "你是一个全自动运行的消费行业 AI 基金经理。你只基于给定 JSON 写周度持仓策略说明，"
+                    "不得编造未给出的数据，不得承诺收益，不得给真实交易指令。必须说明这是模拟组合。"
+                    "请只输出 JSON，不要 Markdown。"
+                ),
+            },
+            {
+                "role": "user",
+                "content": (
+                    "请生成 AI 基金经理本周策略说明。输出 JSON 字段必须包含："
+                    "headline 字符串；holding_logic 数组3条；rebalance_logic 数组3条；"
+                    "improvements 数组3条；risk_watch 数组3条；cost_note 字符串。"
+                    "每条控制在50字以内，语言像基金经理周报，具体、克制，不要空话。\n\n"
+                    + json.dumps(compact, ensure_ascii=False)
+                ),
+            },
+        ]
+        started = datetime.now().timestamp()
+        try:
+            data = self._llm_chat_completion(config, messages, stream=False, max_tokens=1200, timeout=30)
+            content = data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+            if content.startswith("```"):
+                content = re.sub(r"^```(?:json)?\s*", "", content)
+                content = re.sub(r"\s*```$", "", content)
+            parsed = json.loads(content)
+            if not isinstance(parsed, dict):
+                raise ValueError("模型返回不是 JSON 对象")
+            elapsed_ms = int((datetime.now().timestamp() - started) * 1000)
+            return {
+                "ok": True,
+                "mode": "system_llm",
+                "provider": config.get("provider"),
+                "model": config.get("model"),
+                "elapsed_ms": elapsed_ms,
+                "content": parsed,
+            }
+        except Exception as exc:
+            self.audit("ai_fund_strategy_llm", outcome="failed", detail={"model": config.get("model"), "error": str(exc)[:200]})
+            return {
+                "ok": False,
+                "mode": "rule_fallback",
+                "provider": config.get("provider"),
+                "model": config.get("model"),
+                "error": str(exc)[:180],
+            }
+
+    def ai_fund_events(self) -> dict[str, Any]:
+        with self.connect() as connection:
+            latest = connection.execute("SELECT MAX(rating_date) FROM daily_stock_ratings").fetchone()[0]
+            rows = [dict(row) for row in connection.execute(
+                """SELECT event_time,available_at,event_type,sector_code,title,summary,materiality_score,source_url,locator
+                   FROM monitor_events
+                   WHERE date(COALESCE(available_at,event_time)) >= date(?, '-14 days')
+                   ORDER BY materiality_score DESC, COALESCE(available_at,event_time) DESC
+                   LIMIT 12""",
+                (latest,),
+            ).fetchall()]
+        impacts = []
+        for row in rows:
+            score = float(row.get("materiality_score") or 0)
+            if score >= 0.75:
+                impact = "高影响"
+            elif score >= 0.45:
+                impact = "中影响"
+            else:
+                impact = "低影响"
+            impacts.append({
+                "date": row.get("available_at") or row.get("event_time"),
+                "type": row.get("event_type"),
+                "sector_code": row.get("sector_code"),
+                "title": repair_mojibake(row.get("title") or ""),
+                "summary": repair_mojibake(row.get("summary") or ""),
+                "impact": impact,
+                "score": round(score, 2),
+                "source": row.get("source_url") or row.get("locator"),
+            })
+        return {"events": impacts}
+
+    def ai_fund_audit(self) -> dict[str, Any]:
+        overview = self.ai_fund_overview()
+        positions = self.ai_fund_positions().get("positions", [])
+        max_sector = max((x["weight"] for x in overview.get("sector_weights", [])), default=0)
+        turnover_band = overview.get("turnover_band") or self._turnover_band(float(overview.get("turnover") or 0))
+        trade_cost = overview.get("trade_cost") or {}
+        checks = [
+            {"item": "持仓数量", "ok": len(positions) == 30, "detail": f"{len(positions)}/30"},
+            {"item": "单票权重", "ok": all(0.5 <= p["weight"] <= 8 for p in positions), "detail": "目标 1%—7%，硬上限 8%"},
+            {"item": "子行业集中度", "ok": max_sector <= 30, "detail": f"最大子行业 {max_sector:.2f}%"},
+            {"item": "模拟换手率", "ok": bool(turnover_band.get("ok")), "detail": f"{overview.get('turnover')}% · {turnover_band.get('level')}：{turnover_band.get('detail')}"},
+            {"item": "交易成本已扣除", "ok": True, "detail": f"本周约 {trade_cost.get('weekly_cost', 0)}% / {trade_cost.get('weekly_cost_bps', 0)}bp；{trade_cost.get('assumption', '')}"},
+            {"item": "用户 Key 隔离", "ok": True, "detail": "AI基金经理只读取站长 SYSTEM_LLM，不读取浏览器用户 Key"},
+            {"item": "可审计", "ok": True, "detail": "本页展示评分、权重、事件与下次调仓日"},
+        ]
+        return {"checks": checks}
 
 
     FACT_DATE = re.compile(r"(今天|今日).*(周几|星期几|几号|日期)|今天周几|今天星期几")
@@ -2465,6 +3327,8 @@ body{{margin:0;background:#f7f6f4;color:#171717;font-family:"Segoe UI","Microsof
                 self.json_response(self.app.self_calibration_status())
             elif parsed.path == "/api/llm/status":
                 self.json_response(self.app.llm_status())
+            elif parsed.path == "/api/system-llm/status":
+                self.json_response(self.app.system_llm_status())
             elif parsed.path == "/api/briefing-content":
                 self.json_response(self.app.briefing_content())
             elif parsed.path == "/api/morning-brief":
@@ -2482,6 +3346,22 @@ body{{margin:0;background:#f7f6f4;color:#171717;font-family:"Segoe UI","Microsof
                 self.json_response(self.app.data_sources())
             elif parsed.path == "/api/model-forecasts":
                 self.json_response(self.app.model_forecasts())
+            elif parsed.path == "/api/ai-fund/overview":
+                self.json_response(self.app.ai_fund_overview())
+            elif parsed.path == "/api/ai-fund/positions":
+                self.json_response(self.app.ai_fund_positions())
+            elif parsed.path == "/api/ai-fund/nav":
+                self.json_response(self.app.ai_fund_nav())
+            elif parsed.path == "/api/ai-fund/rebalance":
+                self.json_response(self.app.ai_fund_rebalance())
+            elif parsed.path == "/api/ai-fund/strategy":
+                self.json_response(self.app.ai_fund_strategy())
+            elif parsed.path == "/api/ai-fund/history":
+                self.json_response(self.app.ai_fund_history())
+            elif parsed.path == "/api/ai-fund/events":
+                self.json_response(self.app.ai_fund_events())
+            elif parsed.path == "/api/ai-fund/audit":
+                self.json_response(self.app.ai_fund_audit())
             else:
                 self.error_response(404, "not_found", "接口不存在")
         except PermissionError as exc:

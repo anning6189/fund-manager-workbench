@@ -5,7 +5,7 @@ const root = document.getElementById("app");
 const toastNode = document.getElementById("toast");
 
 const state = {
-  view: ["today", "ask", "library", "models", "reports", "data"].includes(location.hash.replace("#", "")) ? location.hash.replace("#", "") : "today",
+  view: ["today", "fund", "ask", "library", "models", "reports", "data"].includes(location.hash.replace("#", "")) ? location.hash.replace("#", "") : "today",
   bootstrap: null,
   llmConfig: loadLlmConfig(),
   llmStatus: null,
@@ -20,6 +20,7 @@ const state = {
 
 const nav = [
   ["today", "首页"],
+  ["fund", "AI基金经理"],
   ["ask", "AI研究员"],
   ["library", "研报库"],
   ["data", "数据来源"],
@@ -753,6 +754,7 @@ function stockRatingHistory(history) {
 function stockEvidenceChain(evidence) {
   const ev = evidence || {};
   const flags = ev.data_quality || [];
+  const notes = ev.data_notes || [];
   const risks = ev.risk_flags || [];
   const events = ev.recent_events || [];
   return `
@@ -760,7 +762,8 @@ function stockEvidenceChain(evidence) {
       <div class="evidence-main"><strong>模型判断</strong><p>${escapeHtml(ev.decision || "暂无明确模型说明")}</p></div>
       <div class="evidence-mini-grid">
         <div><strong>数据质量</strong>${flags.map(f => `<span>${escapeHtml(f)}</span>`).join("") || "<span>暂无标记</span>"}</div>
-        <div><strong>风险扣分/复核点</strong>${risks.map(f => `<span class="risk">${escapeHtml(f)}</span>`).join("") || "<span>暂无显性风险扣分</span>"}</div>
+        <div><strong>数据口径/系统复核提示</strong>${notes.map(f => `<span>${escapeHtml(f)}</span>`).join("") || "<span>行情与评级口径一致</span>"}</div>
+        <div><strong>风险扣分</strong>${risks.map(f => `<span class="risk">${escapeHtml(f)}</span>`).join("") || "<span>暂无显性风险扣分</span>"}</div>
       </div>
       <h4>近期相关事件</h4>
       ${events.length ? events.map(e => `<div class="evidence-event">
@@ -1638,6 +1641,219 @@ async function submitAnnotation(event) {
   } catch (error) { toast(error.message, true); }
 }
 
+function renderFundNav(points, benchmarks = []) {
+  if (!points?.length) return `<div class="empty"><strong>暂无净值数据</strong>等待行情数据同步后自动生成。</div>`;
+  const width = 860, height = 280, pad = 28;
+  const benchmarkItems = Array.isArray(benchmarks) ? benchmarks : [];
+  const benchmarkSeries = benchmarkItems
+    .filter(item => Array.isArray(item.points) && item.points.length)
+    .map((item, idx) => ({ ...item, colorIndex: idx }));
+  const values = [
+    ...points.map(p => p.nav),
+    ...benchmarkSeries.flatMap(item => item.points.map(p => p.nav)),
+  ];
+  const min = Math.min(...values), max = Math.max(...values);
+  const span = max - min || 1;
+  const coordsFor = series => series.map((p, i) => {
+    const x = pad + (series.length === 1 ? 0 : i / (series.length - 1)) * (width - pad * 2);
+    const y = pad + (1 - (p.nav - min) / span) * (height - pad * 2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+  const coords = coordsFor(points);
+  const benchmarkLines = benchmarkSeries.map((item, idx) => {
+    const benchCoords = coordsFor(item.points);
+    return benchCoords ? `<polyline points="${benchCoords}" class="benchmark-line b${idx}"></polyline>` : "";
+  }).join("");
+  const benchmarkLegend = benchmarkItems.length
+    ? benchmarkItems.map((item, idx) => `<span><i class="bench b${idx}"></i>${escapeHtml(item.name || "指数基准")}${item.status === "missing" ? "（待同步）" : ""}</span>`).join("")
+    : `<span class="muted">基准指数行情待同步</span>`;
+  const latest = points[points.length - 1];
+  return `<div class="fund-chart">
+    <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="AI基金经理模拟净值曲线">
+      <line x1="${pad}" y1="${pad}" x2="${width - pad}" y2="${pad}" class="grid-line"></line>
+      <line x1="${pad}" y1="${height / 2}" x2="${width - pad}" y2="${height / 2}" class="grid-line"></line>
+      <line x1="${pad}" y1="${height - pad}" x2="${width - pad}" y2="${height - pad}" class="grid-line"></line>
+      ${benchmarkLines}
+      <polyline points="${coords}" class="nav-line"></polyline>
+      <circle cx="${coords.split(" ").at(-1).split(",")[0]}" cy="${coords.split(" ").at(-1).split(",")[1]}" r="5" class="nav-dot"></circle>
+      <text x="${pad}" y="${height - 6}" class="chart-label">${escapeHtml(points[0].date)}</text>
+      <text x="${width - pad - 90}" y="${height - 6}" class="chart-label">${escapeHtml(latest.date)}</text>
+      <text x="${pad}" y="20" class="chart-label">高 ${max.toFixed(4)}</text>
+      <text x="${pad}" y="${height / 2 - 6}" class="chart-label">中 ${((max + min) / 2).toFixed(4)}</text>
+      <text x="${pad}" y="${height - pad - 6}" class="chart-label">低 ${min.toFixed(4)}</text>
+    </svg>
+    <div class="fund-chart-legend"><span><i class="nav"></i>AI基金经理扣费后净值</span>${benchmarkLegend}</div>
+  </div>`;
+}
+
+function renderFundStrategyDrawer(data) {
+  const drawer = document.createElement("div");
+  drawer.className = "detail-backdrop";
+  const additions = data.adds || [];
+  const cuts = data.cuts || [];
+  const ai = data.ai_strategy?.ok ? data.ai_strategy.content || {} : null;
+  const aiList = items => (Array.isArray(items) ? items : []).map(x => `<li>${escapeHtml(x)}</li>`).join("");
+  drawer.innerHTML = `<aside class="brief-drawer fund-strategy-drawer" role="dialog" aria-modal="true">
+    <div class="drawer-head"><div><span>${escapeHtml(data.date || "本周")}</span><h2>${escapeHtml(data.title || "本周持仓策略")}</h2></div><button class="drawer-close" aria-label="关闭">×</button></div>
+    <div class="drawer-body">
+      ${ai ? `<section class="drawer-section ai-strategy-box">
+        <div class="ai-strategy-head"><h3>AI基金经理解读</h3><span>${escapeHtml(data.ai_strategy.model || "SYSTEM_LLM")} · ${Number(data.ai_strategy.elapsed_ms || 0)}ms</span></div>
+        <p class="ai-headline">${escapeHtml(ai.headline || "")}</p>
+        <div class="ai-strategy-grid">
+          <div><h4>持仓逻辑</h4><ol>${aiList(ai.holding_logic)}</ol></div>
+          <div><h4>调仓逻辑</h4><ol>${aiList(ai.rebalance_logic)}</ol></div>
+          <div><h4>本周优化</h4><ol>${aiList(ai.improvements)}</ol></div>
+          <div><h4>风险跟踪</h4><ol>${aiList(ai.risk_watch)}</ol></div>
+        </div>
+        <p class="ai-cost-note">${escapeHtml(ai.cost_note || "")}</p>
+      </section>` : `<section class="drawer-section notice warning"><strong>AI解读暂未生成</strong>当前使用规则模板说明。${escapeHtml(data.ai_strategy?.error || "")}</section>`}
+      <section class="drawer-section">
+        <h3>规则模型结论</h3>
+        ${(data.summary || []).map(x => `<p>${escapeHtml(x)}</p>`).join("")}
+      </section>
+      <section class="drawer-section">
+        <h3>本周选股策略</h3>
+        <div class="strategy-list">${(data.strategy || []).map(item => `<div class="strategy-item"><strong>${escapeHtml(item.name)}</strong><p>${escapeHtml(item.detail)}</p></div>`).join("")}</div>
+      </section>
+      <section class="drawer-section">
+        <h3>本周组合画像</h3>
+        <dl class="detail-grid">
+          <div><dt>持仓数量</dt><dd>${data.this_week?.position_count ?? "—"} 只</dd></div>
+          <div><dt>平均投资分</dt><dd>${data.this_week?.avg_score ?? "—"}</dd></div>
+          <div><dt>下次调仓</dt><dd>${escapeHtml(data.this_week?.next_rebalance || "待定")}</dd></div>
+          <div><dt>内部模型</dt><dd>${data.system_llm?.enabled ? `已启用 ${escapeHtml(data.system_llm.model || "")}` : "未启用，规则模式运行"}</dd></div>
+        </dl>
+        <div class="strategy-chips">${(data.this_week?.label_counts || []).map(x => `<span>${escapeHtml(x.name)} ${x.count}</span>`).join("")}</div>
+      </section>
+      <section class="drawer-section">
+        <h3>相比上周/上一版的优化</h3>
+        <ol class="strategy-steps">${(data.improvements || []).map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ol>
+      </section>
+      <section class="drawer-section">
+        <h3>本周主要权重变化</h3>
+        <div class="fund-layout compact">
+          <div>
+            <h4>增配方向</h4>
+            ${additions.length ? additions.map(x => `<div class="event-impact"><strong>${escapeHtml(x.security_name)} <span class="up">+${Number(x.change || 0).toFixed(2)}%</span></strong><p>${escapeHtml(x.reason)}</p></div>`).join("") : `<p class="muted">暂无明显增配。</p>`}
+          </div>
+          <div>
+            <h4>降配方向</h4>
+            ${cuts.length ? cuts.map(x => `<div class="event-impact"><strong>${escapeHtml(x.security_name)} <span class="down">${Number(x.change || 0).toFixed(2)}%</span></strong><p>${escapeHtml(x.reason)}</p></div>`).join("") : `<p class="muted">暂无明显降配。</p>`}
+          </div>
+        </div>
+      </section>
+      <div class="notice warning"><strong>说明</strong>这里展示的是模拟组合的自动选股和调仓逻辑，不代表真实交易指令。AI解读只基于规则模型已生成的数据进行表达增强，不直接改仓位。</div>
+    </div>
+    <div class="drawer-foot"><button class="btn primary drawer-close-bottom">关闭</button></div>
+  </aside>`;
+  document.body.appendChild(drawer);
+  const close = () => drawer.remove();
+  drawer.querySelector(".drawer-close")?.addEventListener("click", close);
+  drawer.querySelector(".drawer-close-bottom")?.addEventListener("click", close);
+  drawer.addEventListener("click", ev => { if (ev.target === drawer) close(); });
+  drawer.addEventListener("keydown", ev => { if (ev.key === "Escape") close(); });
+  drawer.querySelector(".drawer-close")?.focus();
+}
+
+async function openFundStrategy() {
+  try {
+    const data = await api("/api/ai-fund/strategy");
+    renderFundStrategyDrawer(data);
+  } catch (error) {
+    toast(error.message, true);
+  }
+}
+
+async function renderFundManager() {
+  root.innerHTML = shell(`<div class="loading">正在生成 AI基金经理模拟组合…</div>`); bindShell();
+  let overview, positions, navData, rebalance, events, audit, history;
+  try {
+    [overview, positions, navData, rebalance, events, audit, history] = await Promise.all([
+      api("/api/ai-fund/overview"),
+      api("/api/ai-fund/positions"),
+      api("/api/ai-fund/nav"),
+      api("/api/ai-fund/rebalance"),
+      api("/api/ai-fund/events"),
+      api("/api/ai-fund/audit"),
+      api("/api/ai-fund/history"),
+    ]);
+  } catch (error) {
+    return renderError(error);
+  }
+  const systemLlm = overview.system_llm || {};
+  const rows = positions.positions || [];
+  const topOrders = (rebalance.orders || []).filter(o => o.action !== "维持").slice(0, 10);
+  const content = `<div class="fund-page">
+    ${hero("AI基金经理", "全自动模拟组合 · 30只消费股 · 每周调仓", "以中期、中长期好股票为核心，自动选股、自动分配权重、自动复盘表现。当前为研究模拟，不代表真实持仓或交易指令。")}
+    <section class="fund-hero">
+      <div>
+        <div class="eyebrow">${escapeHtml(overview.mode)} · ${escapeHtml(overview.date || "暂无日期")}</div>
+        <h2>30只股票自动组合</h2>
+        <p>${escapeHtml(overview.objective)}</p>
+        <div class="fund-hero-actions"><button class="btn primary" id="fund-strategy-btn">本周策略与优化</button></div>
+      </div>
+      <div class="fund-llm-card ${systemLlm.enabled ? "on" : ""}">
+        <strong>内部模型通道：${systemLlm.enabled ? "已启用" : "规则模式"}</strong>
+        <span>${systemLlm.enabled ? escapeHtml(systemLlm.model || "已配置") : "未配置 SYSTEM_LLM_API_KEY，不影响规则组合运行"}</span>
+        <small>AI基金经理使用站长内部模型；AI研究员问答使用用户自己的 Key。两者隔离。</small>
+      </div>
+    </section>
+    <div class="fund-grid">
+      <div class="fund-tile"><span>扣费后净值</span><strong>${Number(overview.latest_nav || 1).toFixed(4)}</strong><em>起始日=1.0000</em></div>
+      <div class="fund-tile"><span>成立以来收益</span><strong class="${overview.total_return >= 0 ? "up" : "down"}">${overview.total_return >= 0 ? "+" : ""}${overview.total_return}%</strong><em>毛收益 ${overview.gross_total_return >= 0 ? "+" : ""}${overview.gross_total_return}%</em></div>
+      <div class="fund-tile"><span>年化收益率</span><strong class="${overview.annualized_return >= 0 ? "up" : "down"}">${overview.annualized_return >= 0 ? "+" : ""}${overview.annualized_return}%</strong><em>扣费后</em></div>
+      <div class="fund-tile"><span>持仓数</span><strong>${overview.position_count}</strong></div>
+      <div class="fund-tile"><span>最大回撤</span><strong>${overview.max_drawdown}%</strong></div>
+      <div class="fund-tile"><span>日胜率</span><strong>${overview.win_rate}%</strong></div>
+      <div class="fund-tile"><span>模拟换手率</span><strong>${overview.turnover}%</strong><em>${escapeHtml(overview.turnover_band?.level || "")}</em></div>
+      <div class="fund-tile"><span>本周交易成本</span><strong>${Number(overview.trade_cost?.weekly_cost || 0).toFixed(4)}%</strong><em>${Number(overview.trade_cost?.weekly_cost_bps || 0).toFixed(2)} bp</em></div>
+    </div>
+    <section class="section">
+      <div class="section-head"><h2 class="section-title">模拟净值曲线</h2><span class="section-meta">下次自动调仓：${escapeHtml(overview.next_rebalance || "待定")}</span></div>
+      <div class="notice info"><strong>交易成本口径</strong>${escapeHtml(overview.trade_cost?.assumption || "净值曲线已采用扣费后口径。")} 当前成本拖累约 ${Number(overview.cost_drag || 0).toFixed(2)} 个百分点。</div>
+      ${renderFundNav(navData.points || [], navData.benchmarks || [])}
+    </section>
+    <section class="section">
+      <div class="section-head"><h2 class="section-title">历史组合复盘</h2><span class="section-meta">每周固化一版，可追踪后来表现</span></div>
+      ${(history.versions || []).length ? `<div class="table-wrap"><table><thead><tr><th>版本</th><th>评级日</th><th>生成时间</th><th>持仓</th><th>扣费后收益</th><th>年化</th><th>换手率</th><th>交易成本</th><th>AI说明</th></tr></thead><tbody>${history.versions.map(v => `<tr><td><div class="table-primary">${escapeHtml(v.week_start)}</div><div class="table-secondary mono">${escapeHtml(v.version_id)}</div></td><td>${escapeHtml(v.rating_date)}</td><td>${formatDate(v.generated_at)}</td><td>${v.position_count}</td><td class="${v.total_return >= 0 ? "up" : "down"}">${v.total_return >= 0 ? "+" : ""}${Number(v.total_return || 0).toFixed(2)}%</td><td class="${v.annualized_return >= 0 ? "up" : "down"}">${v.annualized_return >= 0 ? "+" : ""}${Number(v.annualized_return || 0).toFixed(2)}%</td><td>${Number(v.turnover || 0).toFixed(2)}%</td><td>${Number(v.cost_bps || 0).toFixed(2)}bp</td><td>${v.ai_generated ? "已生成" : "规则兜底"}</td></tr>`).join("")}</tbody></table></div>` : `<div class="empty"><strong>暂无历史版本</strong>本周策略生成后会自动固化到这里。</div>`}
+    </section>
+    <section class="section">
+      <div class="section-head"><h2 class="section-title">当前30只模拟持仓</h2><span class="section-meta">按中期/中长期投资分、稳定性、事件和风险自动加权</span></div>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>股票</th><th>分层</th><th>行业</th><th>投资分</th><th>权重</th><th>权重变化</th><th>现价/涨跌</th><th>入选理由</th></tr></thead><tbody>
+        ${rows.map(r => `<tr class="fund-stock-row" data-stock-id="${escapeHtml(r.security_id)}" tabindex="0" role="button" aria-label="查看${escapeHtml(r.security_name)}走势"><td>${r.rank}</td><td><div class="table-primary">${escapeHtml(r.security_name)}</div><div class="table-secondary mono">${escapeHtml(r.security_id)}</div></td><td>${status(r.label, r.label === "每日主推清单" ? "good" : "info")}</td><td>${escapeHtml(r.sector_name)}</td><td>${Number(r.score || 0).toFixed(1)}</td><td><strong>${Number(r.weight || 0).toFixed(2)}%</strong></td><td class="${r.weight_change >= 0 ? "up" : "down"}">${r.weight_change >= 0 ? "+" : ""}${Number(r.weight_change || 0).toFixed(2)}%</td><td><div>${Number(r.close_price || 0).toFixed(2)}</div><div class="${r.change_pct >= 0 ? "up" : "down"}">${r.change_pct >= 0 ? "+" : ""}${Number(r.change_pct || 0).toFixed(2)}%</div></td><td>${escapeHtml(r.reason)}</td></tr>`).join("")}
+      </tbody></table></div>
+    </section>
+    <div class="fund-layout">
+      <section class="section">
+        <div class="section-head"><h2 class="section-title">行业权重</h2><span class="section-meta">避免单一消费子行业过度集中</span></div>
+        <div class="bar-list">${(overview.sector_weights || []).map(s => `<div class="bar-row"><span>${escapeHtml(s.name)}</span><div><i style="width:${Math.min(100, s.weight * 3)}%"></i></div><strong>${Number(s.weight).toFixed(2)}%</strong></div>`).join("")}</div>
+      </section>
+      <section class="section">
+        <div class="section-head"><h2 class="section-title">周调仓摘要</h2><span class="section-meta">${escapeHtml(rebalance.frequency || "")}</span></div>
+        ${(topOrders.length ? topOrders : (rebalance.orders || []).slice(0, 8)).map(o => `<div class="event-impact"><strong>${escapeHtml(o.action)} · ${escapeHtml(o.security_name)}</strong><span>${o.change >= 0 ? "+" : ""}${Number(o.change || 0).toFixed(2)}% → ${Number(o.weight || 0).toFixed(2)}%</span><p>${escapeHtml(o.reason)}</p></div>`).join("") || `<div class="empty"><strong>暂无调仓动作</strong>组合权重维持。</div>`}
+      </section>
+    </div>
+    <div class="fund-layout">
+      <section class="section">
+        <div class="section-head"><h2 class="section-title">事件影响</h2><span class="section-meta">近14天消费相关事件</span></div>
+        ${(events.events || []).map(e => `<div class="event-impact"><strong>${escapeHtml(e.impact)} · ${escapeHtml(e.title)}</strong><span>${formatDate(e.date, false)} · 重要度 ${Number(e.score || 0).toFixed(2)}</span><p>${escapeHtml(e.summary)}</p></div>`).join("") || `<div class="empty"><strong>暂无新增事件</strong>当前组合主要依据评分和行情。</div>`}
+      </section>
+      <section class="section">
+        <div class="section-head"><h2 class="section-title">自动审计</h2><span class="section-meta">每次生成组合都保留可解释口径</span></div>
+        <div class="table-wrap"><table><thead><tr><th>状态</th><th>检查项</th><th>说明</th></tr></thead><tbody>${(audit.checks || []).map(c => `<tr><td>${c.ok ? "✓" : "!"}</td><td>${escapeHtml(c.item)}</td><td>${escapeHtml(c.detail)}</td></tr>`).join("")}</tbody></table></div>
+      </section>
+    </div>
+    <div class="notice warning"><strong>研究边界</strong>AI基金经理当前是“模拟组合和自动复盘模块”，用于检验规则模型表现；不自动下单，不代表真实基金持仓，也不构成投资建议。</div>
+  </div>`;
+  root.innerHTML = shell(content); bindShell();
+  document.getElementById("fund-strategy-btn")?.addEventListener("click", openFundStrategy);
+  document.querySelectorAll(".fund-stock-row[data-stock-id]").forEach(row => {
+    const open = () => row.dataset.stockId && openStockTrendDrawer(row.dataset.stockId);
+    row.addEventListener("click", open);
+    row.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); open(); } });
+  });
+}
+
 async function renderData() {
   root.innerHTML = shell(`<div class="loading">正在汇总数据状态…</div>`); bindShell();
   try { state.dataStatus = await api("/api/data-status"); } catch (error) { return renderError(error); }
@@ -1669,6 +1885,7 @@ function renderError(error) {
 async function renderView() {
   if (!state.bootstrap) return;
   if (state.view === "today") renderToday();
+  else if (state.view === "fund") await renderFundManager();
   else if (state.view === "jobs") await renderJobs();
   else if (state.view === "reports") await renderReports();
   else if (state.view === "ask") renderAsk();

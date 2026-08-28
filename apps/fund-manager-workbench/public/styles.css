@@ -716,3 +716,91 @@ tbody tr:hover { background: #faf8f1; }
 .hm-down.hm-l2 { background: #93c2a1; color: #123c25; }
 .hm-down.hm-l3 { background: #2e7a4d; color: #fff; }
 .hm-flat { background: var(--surface-muted); color: var(--ink-soft); }
+
+/* AI基金经理 */
+.fund-page { max-width: 1180px; margin: 0 auto; }
+.fund-hero { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 18px; align-items: stretch; margin: -8px 0 18px; }
+.fund-hero h2 { margin: 6px 0 8px; font-family: var(--serif); font-size: 32px; letter-spacing: -.04em; }
+.fund-hero p { margin: 0; color: var(--ink-soft); line-height: 1.8; }
+.fund-hero-actions { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+.fund-llm-card { border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 16px; background: var(--surface-muted); display: grid; gap: 7px; }
+.fund-llm-card.on { background: var(--teal-soft); border-color: rgba(42, 113, 80, .35); }
+.fund-llm-card strong { color: var(--ink); }
+.fund-llm-card span { font-weight: 800; color: var(--teal); }
+.fund-llm-card small { color: var(--ink-faint); line-height: 1.7; }
+.fund-grid { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface); margin-bottom: 20px; }
+.fund-tile { padding: 14px 12px; border-right: 1px solid var(--line); }
+.fund-tile:last-child { border-right: 0; }
+.fund-tile span { display: block; color: var(--ink-faint); font-size: 12px; margin-bottom: 8px; }
+.fund-tile strong { font-size: 21px; letter-spacing: -.03em; }
+.fund-tile em { display: block; margin-top: 4px; color: var(--ink-faint); font-style: normal; font-size: 12px; }
+.fund-chart { padding: 10px; border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(180deg, #fff, #faf9f6); overflow-x: auto; }
+.fund-chart svg { width: 100%; min-width: 720px; height: auto; display: block; }
+.fund-stock-row { cursor: pointer; }
+.fund-stock-row:hover { background: var(--surface-muted); }
+.fund-stock-row:focus-visible { outline: 2px solid var(--teal); outline-offset: -2px; }
+.grid-line { stroke: #e8e6df; stroke-width: 1; stroke-dasharray: 6 8; }
+.nav-line { fill: none; stroke: #1d88d2; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.benchmark-line { fill: none; stroke: #b9b3aa; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 6 6; }
+.benchmark-line.b0 { stroke: #7d756b; }
+.benchmark-line.b1 { stroke: #2f7d63; }
+.benchmark-line.b2 { stroke: #a3212b; }
+.nav-dot { fill: #1d88d2; stroke: #fff; stroke-width: 2; }
+.chart-label { fill: #8d9696; font-size: 12px; }
+.fund-chart-legend { display: flex; gap: 16px; flex-wrap: wrap; padding: 0 10px 8px; color: var(--ink-faint); font-size: 12px; }
+.fund-chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.fund-chart-legend i { width: 20px; height: 3px; border-radius: 999px; display: inline-block; }
+.fund-chart-legend i.nav { background: #1d88d2; }
+.fund-chart-legend i.bench { background: repeating-linear-gradient(90deg, #b9b3aa 0 6px, transparent 6px 10px); }
+.fund-chart-legend i.bench.b0 { background: repeating-linear-gradient(90deg, #7d756b 0 6px, transparent 6px 10px); }
+.fund-chart-legend i.bench.b1 { background: repeating-linear-gradient(90deg, #2f7d63 0 6px, transparent 6px 10px); }
+.fund-chart-legend i.bench.b2 { background: repeating-linear-gradient(90deg, #a3212b 0 6px, transparent 6px 10px); }
+.fund-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+.bar-list { display: grid; gap: 11px; }
+.bar-row { display: grid; grid-template-columns: 120px minmax(120px, 1fr) 70px; gap: 10px; align-items: center; font-size: 13px; }
+.bar-row div { height: 9px; border-radius: 999px; background: var(--surface-muted); overflow: hidden; }
+.bar-row i { display: block; height: 100%; border-radius: inherit; background: var(--teal); }
+.bar-row strong { text-align: right; }
+.event-impact { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.event-impact:last-child { border-bottom: 0; }
+.event-impact strong { display: block; margin-bottom: 4px; }
+.event-impact span { color: var(--ink-faint); font-size: 12px; }
+.event-impact p { margin: 7px 0 0; color: var(--ink-soft); line-height: 1.75; }
+.fund-strategy-drawer .drawer-body { padding-bottom: 30px; }
+.ai-strategy-box { border: 1px solid rgba(42, 113, 80, .32); background: linear-gradient(180deg, #f4fbf7, #fff); border-radius: var(--radius); padding: 16px; }
+.ai-strategy-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.ai-strategy-head h3 { margin: 0; }
+.ai-strategy-head span { color: var(--teal); font-size: 12px; font-weight: 700; }
+.ai-headline { margin: 0 0 14px; font-size: 17px; line-height: 1.7; color: var(--ink); font-weight: 800; }
+.ai-strategy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 18px; }
+.ai-strategy-grid h4 { margin: 0 0 6px; font-size: 13px; color: var(--ink); }
+.ai-strategy-grid ol { margin: 0; padding-left: 20px; color: var(--ink-soft); line-height: 1.75; }
+.ai-cost-note { margin: 14px 0 0; padding-top: 10px; border-top: 1px solid rgba(42, 113, 80, .18); color: var(--ink-soft); }
+.strategy-list { display: grid; gap: 10px; }
+.strategy-item { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--surface); }
+.strategy-item strong { display: block; margin-bottom: 5px; }
+.strategy-item p { margin: 0; color: var(--ink-soft); line-height: 1.75; }
+.strategy-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.strategy-chips span { border-radius: 999px; background: var(--surface-muted); border: 1px solid var(--line); padding: 5px 10px; font-size: 12px; color: var(--ink-soft); }
+.strategy-steps { margin: 0; padding-left: 22px; color: var(--ink-soft); line-height: 1.85; }
+.fund-layout.compact { gap: 22px; }
+.fund-layout.compact h4 { margin: 0 0 8px; }
+.muted { color: var(--ink-faint); }
+.up { color: var(--red); }
+.down { color: var(--teal); }
+
+@media (max-width: 1100px) {
+  .fund-hero, .fund-layout { grid-template-columns: 1fr; }
+  .fund-grid { grid-template-columns: repeat(4, 1fr); }
+  .fund-tile:nth-child(4n) { border-right: 0; }
+  .fund-tile:nth-child(n+5) { border-top: 1px solid var(--line); }
+}
+
+@media (max-width: 720px) {
+  .fund-grid { grid-template-columns: repeat(2, 1fr); }
+  .fund-tile:nth-child(4n) { border-right: 1px solid var(--line); }
+  .fund-tile:nth-child(even) { border-right: 0; }
+  .fund-tile:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .bar-row { grid-template-columns: 88px minmax(80px, 1fr) 58px; }
+  .ai-strategy-grid { grid-template-columns: 1fr; }
+}

@@ -4,6 +4,7 @@
 16:10 首次尝试；失败后补排 16:30、17:00，此后每半小时一次，直到成功。
 """
 import os
+import runpy
 import subprocess
 import sys
 from datetime import datetime, time, timedelta, timezone
@@ -70,6 +71,19 @@ def clear_retry_timer() -> None:
     subprocess.run(["systemctl", "reset-failed", "consumer-research-close-sync-retry.service"], check=False, capture_output=True, timeout=20)
 
 
+def sync_index_benchmarks() -> None:
+    script = PROJECT_ROOT / "tools" / "Sync-IndexBenchmarks.py"
+    if not script.exists():
+        log("指数基准同步跳过：脚本不存在")
+        return
+    try:
+        namespace = runpy.run_path(str(script), run_name="consumer_research_index_sync")
+        namespace["main"]()
+        log("指数基准同步完成：沪深300 / 中证消费指数 / 800消费指数")
+    except Exception as exc:
+        log(f"指数基准同步失败: {type(exc).__name__} {exc}")
+
+
 def main() -> int:
     now = datetime.now(BJ)
     if now.weekday() >= 5:
@@ -84,6 +98,7 @@ def main() -> int:
             schedule_retry(str(exc))
         return 1
     clear_retry_timer()
+    sync_index_benchmarks()
     log(f"收盘同步完成: 评级批次{result['date']}，行情实际交易日{result['market_date']}，{result['count']}只，分布 {result['tiers']}")
     return 0
 

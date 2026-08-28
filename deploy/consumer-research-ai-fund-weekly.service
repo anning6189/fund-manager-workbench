@@ -1,0 +1,12 @@
+[Unit]
+Description=Generate weekly AI fund-manager snapshot
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/fund-manager-workbench
+EnvironmentFile=-/opt/fund-manager-workbench/.env
+ExecStart=/usr/bin/python3 /opt/fund-manager-workbench/tools/Generate-AiFundWeeklySnapshot.py
+ExecStartPost=/bin/systemctl try-restart consumer-research.service
+StandardOutput=append:/opt/fund-manager-workbench/data/monitoring/module3-realtime-research/ai-fund-weekly.log
+StandardError=append:/opt/fund-manager-workbench/data/monitoring/module3-realtime-research/ai-fund-weekly.log

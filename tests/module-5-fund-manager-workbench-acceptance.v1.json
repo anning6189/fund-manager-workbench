@@ -1,8 +1,8 @@
 {
   "module": "5. 基金经理使用界面",
   "version": "1.0.0",
-  "status": "passed",
-  "passed": 62,
+  "status": "failed",
+  "passed": 56,
   "total": 62,
   "checks": [
     {
@@ -18,8 +18,8 @@
       "check_id": "M5-002-security-headers",
       "status": "passed",
       "detail": {
-        "Server": "ConsumerResearchWorkbench/1.0 Python/3.12.13",
-        "Date": "Thu, 13 Aug 2026 11:45:58 GMT",
+        "Server": "ConsumerResearchWorkbench/1.0 Python/3.12.10",
+        "Date": "Fri, 28 Aug 2026 06:26:29 GMT",
         "Content-Type": "application/json; charset=utf-8",
         "Content-Length": "73",
         "Cache-Control": "no-store",
@@ -31,7 +31,7 @@
     },
     {
       "check_id": "M5-003-web-interface",
-      "status": "passed",
+      "status": "failed",
       "detail": 200
     },
     {
@@ -66,9 +66,9 @@
       "check_id": "M5-008-default-yesterday-cutoff",
       "status": "passed",
       "detail": {
-        "date": "2026-08-12",
+        "date": "2026-08-28",
         "timezone": "Asia/Shanghai",
-        "rule": "正式研究最晚截止至昨天23:59:59"
+        "rule": "正式研究截止至当日08:00:00"
       }
     },
     {
@@ -77,8 +77,8 @@
       "detail": {
         "sectors": 11,
         "products": 110,
-        "open_alerts": 50,
-        "important_alerts": 27,
+        "open_alerts": 35,
+        "important_alerts": 12,
         "task_suggestions": 22,
         "internal_ready_reports": 2,
         "own_jobs": 0
@@ -90,8 +90,8 @@
       "detail": {
         "sectors": 11,
         "products": 110,
-        "open_alerts": 50,
-        "important_alerts": 27,
+        "open_alerts": 35,
+        "important_alerts": 12,
         "task_suggestions": 22,
         "internal_ready_reports": 2,
         "own_jobs": 0
@@ -287,24 +287,24 @@
       "status": "passed",
       "detail": {
         "job": {
-          "job_id": "job:71aecceb7dcf5032538d918d",
+          "job_id": "job:156ceccb14e158e3e268ede1",
           "product_id": "product:2118ad5757873b92fb74749c",
           "submitted_by": "模块五验收基金经理",
           "submitter_role": "public_fund_manager",
-          "request_hash": "sha256:32608a0938e3f6c19e37eb8c5de1433fe8d477b5a00dbb071493a8c230614b13",
-          "cutoff_timestamp": "2026-08-12T15:59:59.000Z",
-          "parameters_json": "{\"cutoff_timestamp\":\"2026-08-12T23:59:59+08:00\",\"markets\":[\"A_SHARE\"],\"priority\":\"normal\",\"research_question\":\"截至昨天，该行业景气方向、驱动和风险发生了哪些变化？\"}",
+          "request_hash": "sha256:900a1c330a8b35440d901f27fc9c0eb5648a973ca5efeefeac0ebc9cbccc54f5",
+          "cutoff_timestamp": "2026-08-28T00:00:00.000Z",
+          "parameters_json": "{\"cutoff_timestamp\":\"2026-08-28T08:00:00+08:00\",\"markets\":[\"A_SHARE\"],\"priority\":\"normal\",\"research_question\":\"截至昨天，该行业景气方向、驱动和风险发生了哪些变化？\"}",
           "priority": "normal",
           "status": "queued",
           "data_readiness": "ready_with_data_gaps",
-          "workflow_request_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-module5-t80rub9j\\workbench-data\\task-library\\jobs\\job-71aecceb7dcf5032538d918d\\workflow-request.json",
+          "workflow_request_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-module5-pf4qptj4\\workbench-data\\task-library\\jobs\\job-156ceccb14e158e3e268ede1\\workflow-request.json",
           "workflow_run_id": null,
           "result_artifact_path": null,
           "error_json": null,
-          "created_at": "2026-08-13T11:46:00.691Z",
+          "created_at": "2026-08-28T06:26:31.082Z",
           "started_at": null,
           "completed_at": null,
-          "updated_at": "2026-08-13T11:46:00.691Z"
+          "updated_at": "2026-08-28T06:26:31.082Z"
         },
         "idempotent_replay": false
       }
@@ -313,30 +313,30 @@
       "check_id": "M5-031-named-submitter",
       "status": "passed",
       "detail": {
-        "job_id": "job:71aecceb7dcf5032538d918d",
+        "job_id": "job:156ceccb14e158e3e268ede1",
         "product_id": "product:2118ad5757873b92fb74749c",
         "submitted_by": "模块五验收基金经理",
         "submitter_role": "public_fund_manager",
-        "request_hash": "sha256:32608a0938e3f6c19e37eb8c5de1433fe8d477b5a00dbb071493a8c230614b13",
-        "cutoff_timestamp": "2026-08-12T15:59:59.000Z",
-        "parameters_json": "{\"cutoff_timestamp\":\"2026-08-12T23:59:59+08:00\",\"markets\":[\"A_SHARE\"],\"priority\":\"normal\",\"research_question\":\"截至昨天，该行业景气方向、驱动和风险发生了哪些变化？\"}",
+        "request_hash": "sha256:900a1c330a8b35440d901f27fc9c0eb5648a973ca5efeefeac0ebc9cbccc54f5",
+        "cutoff_timestamp": "2026-08-28T00:00:00.000Z",
+        "parameters_json": "{\"cutoff_timestamp\":\"2026-08-28T08:00:00+08:00\",\"markets\":[\"A_SHARE\"],\"priority\":\"normal\",\"research_question\":\"截至昨天，该行业景气方向、驱动和风险发生了哪些变化？\"}",
         "priority": "normal",
         "status": "queued",
         "data_readiness": "ready_with_data_gaps",
-        "workflow_request_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-module5-t80rub9j\\workbench-data\\task-library\\jobs\\job-71aecceb7dcf5032538d918d\\workflow-request.json",
+        "workflow_request_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-module5-pf4qptj4\\workbench-data\\task-library\\jobs\\job-156ceccb14e158e3e268ede1\\workflow-request.json",
         "workflow_run_id": null,
         "result_artifact_path": null,
         "error_json": null,
-        "created_at": "2026-08-13T11:46:00.691Z",
+        "created_at": "2026-08-28T06:26:31.082Z",
         "started_at": null,
         "completed_at": null,
-        "updated_at": "2026-08-13T11:46:00.691Z"
+        "updated_at": "2026-08-28T06:26:31.082Z"
       }
     },
     {
       "check_id": "M5-032-cutoff-normalized",
       "status": "passed",
-      "detail": "2026-08-12T15:59:59.000Z"
+      "detail": "2026-08-28T00:00:00.000Z"
     },
     {
       "check_id": "M5-033-own-job-visible",
@@ -345,12 +345,29 @@
     },
     {
       "check_id": "M5-034-future-cutoff-rejected",
-      "status": "passed",
+      "status": "failed",
       "detail": {
-        "error": {
-          "code": "validation_failed",
-          "message": "正式行业研究的截止日期最晚只能是昨天"
-        }
+        "job": {
+          "job_id": "job:156ceccb14e158e3e268ede1",
+          "product_id": "product:2118ad5757873b92fb74749c",
+          "submitted_by": "模块五验收基金经理",
+          "submitter_role": "public_fund_manager",
+          "request_hash": "sha256:900a1c330a8b35440d901f27fc9c0eb5648a973ca5efeefeac0ebc9cbccc54f5",
+          "cutoff_timestamp": "2026-08-28T00:00:00.000Z",
+          "parameters_json": "{\"cutoff_timestamp\":\"2026-08-28T08:00:00+08:00\",\"markets\":[\"A_SHARE\"],\"priority\":\"normal\",\"research_question\":\"截至昨天，该行业景气方向、驱动和风险发生了哪些变化？\"}",
+          "priority": "normal",
+          "status": "queued",
+          "data_readiness": "ready_with_data_gaps",
+          "workflow_request_path": "C:\\Users\\chi\\AppData\\Local\\Temp\\consumer-module5-pf4qptj4\\workbench-data\\task-library\\jobs\\job-156ceccb14e158e3e268ede1\\workflow-request.json",
+          "workflow_run_id": null,
+          "result_artifact_path": null,
+          "error_json": null,
+          "created_at": "2026-08-28T06:26:31.082Z",
+          "started_at": null,
+          "completed_at": null,
+          "updated_at": "2026-08-28T06:26:31.082Z"
+        },
+        "idempotent_replay": true
       }
     },
     {
@@ -416,7 +433,7 @@
       "check_id": "M5-043-named-annotation",
       "status": "passed",
       "detail": {
-        "annotation_id": "annotation:5b87a3360a8fba4c4d0ecf6d",
+        "annotation_id": "annotation:d828fa69ba28b621cb96bbe4",
         "status": "open",
         "author": "模块五验收基金经理"
       }
@@ -443,7 +460,7 @@
     },
     {
       "check_id": "M5-047-license-gates-visible",
-      "status": "passed",
+      "status": "failed",
       "detail": null
     },
     {
@@ -461,7 +478,7 @@
     {
       "check_id": "M5-050-audit-log",
       "status": "passed",
-      "detail": 8
+      "detail": 9
     },
     {
       "check_id": "M5-051-loopback-session",
@@ -498,8 +515,18 @@
         "idx_workbench_annotations_run_status",
         "idx_workbench_audit_actor_time",
         "idx_workflow_runs_status_time",
+        "sqlite_autoindex_agent_recommendation_outcomes_1",
+        "sqlite_autoindex_agent_recommendation_snapshots_1",
+        "sqlite_autoindex_agent_rule_events_1",
+        "sqlite_autoindex_agent_rule_versions_1",
+        "sqlite_autoindex_agent_self_audit_runs_1",
+        "sqlite_autoindex_ai_fund_portfolio_positions_1",
+        "sqlite_autoindex_ai_fund_portfolio_versions_1",
+        "sqlite_autoindex_ai_fund_rebalance_orders_1",
         "sqlite_autoindex_backfill_partitions_1",
         "sqlite_autoindex_backfill_runs_1",
+        "sqlite_autoindex_daily_brief_sections_1",
+        "sqlite_autoindex_daily_stock_ratings_1",
         "sqlite_autoindex_document_chunks_1",
         "sqlite_autoindex_document_chunks_2",
         "sqlite_autoindex_document_entities_1",
@@ -553,6 +580,10 @@
         "sqlite_autoindex_source_catalog_1",
         "sqlite_autoindex_source_cursors_1",
         "sqlite_autoindex_source_license_decisions_1",
+        "sqlite_autoindex_stock_consensus_1",
+        "sqlite_autoindex_stock_daily_quotes_1",
+        "sqlite_autoindex_stock_fundamentals_1",
+        "sqlite_autoindex_stock_quote_sync_progress_1",
         "sqlite_autoindex_task_library_favorites_1",
         "sqlite_autoindex_task_library_job_events_1",
         "sqlite_autoindex_task_library_jobs_1",
@@ -572,6 +603,7 @@
         "sqlite_autoindex_workbench_installations_1",
         "sqlite_autoindex_workbench_report_annotations_1",
         "sqlite_autoindex_workbench_sessions_1",
+        "sqlite_autoindex_workbench_settings_1",
         "sqlite_autoindex_workbench_user_preferences_1",
         "sqlite_autoindex_workflow_artifacts_1",
         "sqlite_autoindex_workflow_claim_evidence_1",
@@ -580,7 +612,8 @@
         "sqlite_autoindex_workflow_packages_1",
         "sqlite_autoindex_workflow_reviews_1",
         "sqlite_autoindex_workflow_runs_1",
-        "sqlite_autoindex_workflow_tasks_1"
+        "sqlite_autoindex_workflow_tasks_1",
+        "uq_research_universe_security"
       ]
     },
     {
@@ -589,7 +622,7 @@
       "detail": {
         "error": {
           "code": "host_denied",
-          "message": "仅允许从本机访问"
+          "message": "当前环境不允许该主机访问"
         }
       }
     },
@@ -605,12 +638,12 @@
     },
     {
       "check_id": "M5-056-homepage-morning-brief",
-      "status": "passed",
+      "status": "failed",
       "detail": null
     },
     {
       "check_id": "M5-057-six-to-eight-priority-items",
-      "status": "passed",
+      "status": "failed",
       "detail": null
     },
     {
@@ -625,7 +658,7 @@
     },
     {
       "check_id": "M5-060-brief-detail-interaction",
-      "status": "passed",
+      "status": "failed",
       "detail": null
     }
   ]

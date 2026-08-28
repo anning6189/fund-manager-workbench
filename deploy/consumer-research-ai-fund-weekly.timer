@@ -1,0 +1,10 @@
+[Unit]
+Description=Weekly AI fund-manager snapshot timer
+
+[Timer]
+OnCalendar=Mon *-*-* 09:20:00
+Persistent=true
+Unit=consumer-research-ai-fund-weekly.service
+
+[Install]
+WantedBy=timers.target

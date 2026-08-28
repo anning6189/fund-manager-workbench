@@ -7,6 +7,7 @@ Type=simple
 WorkingDirectory=/opt/fund-manager-workbench
 Environment=CONSUMER_RESEARCH_USER=root
 Environment=CONSUMER_RESEARCH_ROLE=public_fund_manager
+EnvironmentFile=-/opt/fund-manager-workbench/.env
 ExecStart=/usr/bin/python3 /opt/fund-manager-workbench/apps/fund-manager-workbench/server.py --host 0.0.0.0 --port 8765 --db /opt/fund-manager-workbench/data/curated/consumer-research.db --data-root /opt/fund-manager-workbench/data/workbench/module5-fund-manager --user-name root --role public_fund_manager --deployment-mode internal_network
 Restart=always
 RestartSec=3

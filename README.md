@@ -1,395 +1,306 @@
 # 消费行研 Agent / Fund Manager Workbench
 
-一个面向大消费行业研究的公开 Web Agent 项目。它把消费行业的数据同步、每日晨报、股票推荐、研报库、单股走势、规则审计、自校准和公网部署整合到一个网页里，目标是做到：
+一个面向大消费行业研究的公开 Web Agent。项目把消费行业数据同步、每日晨报、股票推荐、研报库、单股走势、规则审计、自校准、AI基金经理模拟组合和公网部署整合到一个网页里。
 
-> **默认打开即用；不接大模型也能完整运行；用户接入自己的模型 Key 后获得 AI 增强解释、问答、复盘和自校对能力。**
-
-项目公网示例：
+公网示例：
 
 - [http://47.95.254.215:8765](http://47.95.254.215:8765)
 
-> 免责声明：本项目仅用于研究流程、数据工程和 Agent 产品原型展示，不构成任何投资建议、交易建议或自动交易指令。
+> 免责声明：本项目仅用于研究流程、数据工程和 Agent 产品原型展示，不构成投资建议、交易建议、真实基金持仓或自动交易指令。
 
-## 1. 项目做成了什么
+## 项目目标
 
-这个项目最终产出是一个“消费行业研究 Web Agent”：
+本项目的目标是做一个“任何人打开即用”的消费行业研究 Agent：
 
-- 给基金经理/研究员每天看消费行业晨报；
-- 自动维护消费股票池；
-- 自动生成“每日主推清单”和“股票池看板”；
-- 每只股票可点击查看走势、评级轨迹和证据链；
-- 每日自动同步数据、自动评分、自动自检；
-- 公网可访问，普通用户打开即可使用基础版；
-- 用户可自行填写大模型 API Key，启用 AI 增强能力。
+- 默认不依赖大模型，也能完成数据同步、股票评分、看板展示、走势查看和规则审计；
+- 用户可自行填写 OpenAI-compatible 模型 Key，获得 AI研究员问答、个股解释、晨报增强和规则复盘增强；
+- 站长可在服务器配置内部大模型 Key，驱动 AI基金经理的自动策略说明；
+- 公网服务器独立自动运行，本地电脑不开机也不影响每日更新。
 
-目前项目已形成完整闭环：
+整体链路：
 
 ```text
-数据源同步
+公开/商业数据源
   ↓
-研究数据库 SQLite
+每日自动同步任务
   ↓
-每日晨报 / 研报库 / 股票评分 / 热力图
+SQLite 研究数据库
   ↓
-网页 Agent 展示
+规则评分 / 股票分层 / 事件归因 / 自检
   ↓
-规则审计 / 推荐快照 / 后验复盘
+Web Agent 页面
   ↓
-自校准与规则自进化
+后验复盘 / 自校准 / AI基金经理模拟组合
 ```
 
-## 2. 核心功能
+## 已实现功能
 
-### 2.1 每日晨报
+### 1. 每日晨报
 
 - 展示消费行业每日核心观点；
-- 包含宏观政策、重点研报、行业事件、风险提示；
+- 包含政策、研报、行业事件、风险提示；
 - 支持历史日期回看；
-- 显示数据截止日期、行情日期、评分日期，避免日期错位；
-- 支持“AI晨报增强解读”：接入用户自己的模型 Key 后，可生成更像晨会口径的总结。
+- 显示研究截止日期、评级日期、行情日期；
+- 对数据新鲜度、同步异常和日期错位做页面提示。
 
-### 2.2 今日主推与股票池看板
+### 2. 今日主推与股票池看板
 
-股票推荐围绕“中期 / 中长期持有价值”展开。
+股票推荐围绕“中期 / 中长期持有价值”展开，不以一两日短线博弈为目标。
 
-当前看板分为：
+当前分层：
 
-| 分层 | 含义 | 当前定位 |
-|---|---|---|
-| 每日主推清单 | 当日最值得重点看的股票 | 最多 5 只 |
-| 可以考虑买入 | 达到推荐基础，但未进入主推 | 25 只 |
-| 等待买点 | 公司或逻辑不错，但买点还不够好 | 观察池 |
-| 长期观察 | 长期好公司，但当前不一定适合买 | 长期池 |
-| 暂不推荐 / 行业扫描 | 当前不推荐，仅保留行业覆盖 | 扫描池 |
+| 分层 | 数量口径 | 含义 |
+|---|---:|---|
+| 每日主推清单 | ≤ 5 只 | 当日最值得重点看的股票 |
+| 可以考虑买入 | 25 只 | 达到推荐基础，但未进入主推 |
+| 等待买点 | 动态 | 公司或逻辑不错，但买点不够好 |
+| 长期观察 | 动态 | 长期好公司，当前不一定适合买 |
+| 暂不推荐 / 行业扫描 | 动态 | 暂不推荐，仅保留行业覆盖和监控 |
 
 每只股票展示：
 
 - 投资分；
 - 现价；
 - 涨跌幅；
-- 核心逻辑；
-- 降级条件；
-- 数据质量。
+- 核心理由；
+- 当前分层；
+- 数据质量；
+- 近一个月评级轨迹。
 
-### 2.3 单股详情页
+### 3. 单股详情
 
-点击股票后可以查看：
+点击股票可以查看：
 
 - 1周 / 1月 / 3月 / 半年 / 1年走势；
-- 区间高点、低点、样本交易日；
+- 区间涨跌、区间高低点、样本交易日；
 - 当前评级；
-- 近一个月评价等级轨迹；
-- 推荐证据链与风险复核；
-- AI 个股解释。
+- 近一个月每天所处评价等级；
+- 相关事件和数据口径提示。
 
-走势图已做异常价格处理：过滤 0 价和孤立异常点，避免图形被错误数据拉坏。
+### 4. 研报库
 
-### 2.4 研报库
+- 按日期归档消费相关研报、新闻、政策和行业数据；
+- 支持按重要程度分类；
+- 支持来源回链和数据新鲜度提示；
+- 用于支撑每日晨报和股票推荐逻辑。
 
-- 按日期组织研报、新闻、政策和行业事件；
-- 支持板块筛选；
-- 支持历史回看；
-- 每条内容可查看分点摘要和来源。
+### 5. 数据来源
 
-### 2.5 数据来源与同步状态
+展示各数据流状态，包括：
 
-- 展示数据源目录；
-- 展示同步状态、新鲜度、异常信息；
-- 支持公网服务器每日自动同步；
-- 当前规则是：**公网服务器是唯一自动同步源，本地只拉取公网数据库做调试查看**。
+- 消费新闻；
+- 消费研报；
+- 企业风险；
+- 官方政策；
+- 官方行业数据；
+- 行情数据；
+- 股票评级；
+- 自动同步日志。
 
-### 2.6 规则与审计
+### 6. 规则与审计
 
-规则与审计模块展示：
+用于解释 Agent 为什么这么推荐、推荐效果如何。
 
-- 当前荐股规则；
-- 推荐后验表现；
-- 样本数量；
-- T+1 / T+5 平均收益；
+已包含：
+
+- 推荐规则说明；
+- 后验表现统计；
+- T+1 / T+5 收益；
 - 胜率；
-- 自动规则事件；
-- 自检状态；
-- 正式规则与影子规则；
-- AI 复盘解释。
+- 推荐快照保存；
+- 自检与自动修复；
+- 规则自进化与后验表现。
 
-后验统计中，“每日主推清单”和“可以考虑买入”作为推荐表现；“等待买点 / 长期观察 / 暂不推荐”用于校验分层是否合理。
+后验统计中，“每日主推清单”和“可以考虑买入”视为推荐表现；“等待买点 / 长期观察 / 暂不推荐”用于校验分层是否合理。
 
-### 2.7 Agent 自校准与自进化
+### 7. AI研究员增强
 
-系统已经具备自动闭环：
-
-1. 每日同步后自动自检；
-2. 自动修复低风险数据问题；
-3. 保存每日推荐快照；
-4. 计算推荐后验表现；
-5. 维护正式规则与影子规则；
-6. 记录规则事件；
-7. 接入大模型后可生成复盘解释和规则优化建议。
-
-原则：
-
-- 不需要人工批准；
-- 但大模型不直接替代规则模型；
-- 规则模型负责计算；
-- 大模型负责解释、总结、复盘和质检。
-
-## 3. 大模型增强设计
-
-本项目采用“双层 Agent”结构：
-
-```text
-基础规则层
-  ├─ 数据同步
-  ├─ 股票评分
-  ├─ 晨报
-  ├─ 研报库
-  ├─ 走势图
-  ├─ 热力图
-  └─ 规则审计
-
-大模型增强层
-  ├─ AI研究员问答
-  ├─ AI晨报增强
-  ├─ AI个股解释
-  ├─ AI规则复盘
-  └─ 后续规则自进化解释
-```
-
-默认情况下，不接入大模型也能完整使用。
-
-用户可以在网页右上角“模型增强设置”中填写自己的模型配置：
+用户可以在网页右上角设置里填写自己的 OpenAI-compatible API：
 
 - API Base URL；
-- 模型名称；
 - API Key；
-- 服务商标识。
+- 模型名称；
+- 启用 / 关闭 AI 增强；
+- 测试连接。
 
-支持 OpenAI-compatible 接口，例如：
+安全口径：
 
-```text
-https://api.openai.com/v1
-https://api.deepseek.com/v1
-https://dashscope.aliyuncs.com/compatible-mode/v1
-```
-
-安全设计：
-
-- 用户 Key 保存在当前浏览器；
+- 用户 Key 只保存在当前浏览器；
 - 不写入项目数据库；
 - 不提交 GitHub；
-- 不覆盖服务器 `.env`；
-- 页面只做脱敏展示；
-- 点击 AI 增强按钮时才调用模型，避免自动消耗 token。
+- 只在测试连接或问答时临时转发给后端。
 
-## 4. 技术栈
+### 8. AI基金经理
 
-| 层级 | 技术 |
-|---|---|
-| 后端 | Python 原生 `http.server` |
-| 前端 | 原生 HTML / CSS / JavaScript |
-| 数据库 | SQLite |
-| 数据同步 | Python 脚本 + 聚源 MCP + 官方来源采集 |
-| 部署 | 阿里云 ECS + systemd |
-| 定时任务 | systemd timer |
-| 大模型 | 用户自带 OpenAI-compatible API |
+AI基金经理是一个独立页面，位于“首页”和“AI研究员”之间。
 
-项目刻意没有引入复杂框架，目的是方便部署、复现和二次开发。
+它是一个全自动模拟组合模块：
 
-## 5. 项目结构
+- 每周自动生成一版 30 只消费股模拟持仓；
+- 根据投资分、分层、风险、行业分散度和换手约束自动分配权重；
+- 计算扣费后净值；
+- 计算成立以来收益、年化收益率、最大回撤、日胜率、模拟换手率；
+- 模拟交易成本；
+- 展示当前 30 只持仓；
+- 支持点击持仓股票查看单股走势；
+- 展示本周策略与相比上一版的优化；
+- 支持历史组合复盘。
 
-```text
-.
-├─ apps/fund-manager-workbench/       # Web Agent 后端和前端
-│  ├─ server.py                       # Python 服务端
-│  └─ public/                         # 前端页面
-├─ data/                              # 示例/运行研究数据
-│  └─ curated/consumer-research.db    # 当前演示 SQLite 数据库
-├─ deploy/                            # 公网部署与 systemd 服务
-├─ docs/                              # 项目文档
-│  ├─ design/                         # 股票推荐框架与 Agent 系统设计
-│  ├─ deploy/                         # 本地/公网部署说明
-│  └─ assets/demo-screenshots/        # 页面截图
-├─ specs/                             # 数据源、模型、规则、产品规格
-├─ sql/                               # 数据库建表与迁移 SQL
-├─ tools/                             # 同步、评分、回填、自校准脚本
-├─ tests/                             # 测试用例与验收报告
-├─ .env.example                       # 环境变量模板，不含真实密钥
-└─ README.md
-```
+AI基金经理净值对比基准：
 
-## 6. 快速开始
+- 沪深300：`000300.SH`
+- 中证消费指数：`000990.SH`
+- 800消费指数：`000932.SH`
 
-### 6.1 本地运行
+AI基金经理使用站长在服务器配置的内部模型 Key；AI研究员问答使用用户自己的 Key。两套模型通道隔离。
 
-需要 Python 3.11+。
+## 自动更新机制
 
-```bash
-python apps/fund-manager-workbench/server.py --host 127.0.0.1 --port 8765
-```
+正式口径：公网服务器是唯一自动同步源，本地只从公网同步数据库用于查看和调试。
 
-打开：
+公网 systemd 定时任务：
 
-```text
-http://127.0.0.1:8765/#today
-```
+| 任务 | 时间 | 作用 |
+|---|---:|---|
+| `consumer-research-daily-sync.timer` | 交易日 08:40 | 同步晨报、研报、事件、股票评级等早盘数据 |
+| `consumer-research-close-sync.timer` | 交易日 16:10 | 同步收盘行情并刷新评级 |
+| 收盘重试任务 | 16:30、17:00、之后每半小时 | 如果行情覆盖不足，自动重试直到成功 |
+| `consumer-research-ai-fund-weekly.timer` | 每周一 09:20 | 生成 AI基金经理周度持仓快照 |
 
-### 6.2 配置数据源
-
-复制环境变量模板：
-
-```bash
-cp .env.example .env
-```
-
-填写自己的聚源配置：
-
-```text
-GILDATA_MCP_URL=...
-GILDATA_MCP_TOKEN=...
-```
-
-注意：
-
-- `.env` 已被 `.gitignore` 忽略；
-- 不要把真实 token 提交到 GitHub；
-- 公开仓库只保留 `.env.example`。
-
-### 6.3 手动同步数据
-
-```bash
-python tools/Invoke-DailyMorningBriefSync.py
-```
-
-单独运行股票评分：
-
-```bash
-python tools/consumer_stock_focus.py --historical-local
-```
-
-运行 Agent 自校准：
-
-```bash
-python tools/agent_self_calibration.py --backfill-days 30
-```
-
-### 6.4 从公网同步数据库到本地
-
-当前推荐架构是公网服务器每日自动同步，本地只用于查看和调试：
+本地同步公网数据库：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/Sync-PublicDbToLocal.ps1
+powershell -ExecutionPolicy Bypass -File .\tools\Sync-PublicDbToLocal.ps1
 ```
 
-## 7. 公网部署
+## 技术栈
 
-公网部署目录：
+- Python 标准库 HTTP 服务；
+- SQLite 本地研究数据库；
+- 原生 HTML / CSS / JavaScript 前端；
+- systemd 定时任务；
+- 阿里云公网服务器；
+- 聚源数据接口；
+- 东方财富指数行情接口；
+- OpenAI-compatible 大模型接口。
+
+## 项目结构
 
 ```text
+apps/fund-manager-workbench/
+  server.py                 # Web Agent 后端服务
+  public/
+    index.html              # 单页应用入口
+    app.js                  # 前端交互
+    styles.css              # 页面样式
+
+data/
+  curated/consumer-research.db              # 研究数据库
+  workbench/module5-fund-manager/           # Web 工作台数据
+
+tools/
+  Invoke-DailyMorningBriefSync.py           # 每日早盘同步
+  Invoke-CloseSync.py                       # 收盘同步与重试
+  Sync-IndexBenchmarks.py                   # 三个公开指数基准同步
+  Generate-AiFundWeeklySnapshot.py          # AI基金经理周度快照
+  Sync-PublicDbToLocal.ps1                  # 本地从公网同步数据库
+  Start-FundManagerWorkbench.ps1            # 本地启动
+
+deploy/
+  consumer-research.service
+  consumer-research-daily-sync.*
+  consumer-research-close-sync.*
+  consumer-research-ai-fund-weekly.*
+  install-daily-sync.sh
+  nginx-consumer-agent.conf
+
+docs/
+  design/                                   # 股票推荐与系统设计文档
+  deploy/                                   # 部署文档
+```
+
+## 本地运行
+
+进入项目目录：
+
+```powershell
+cd "C:\Users\chi\Documents\ChatGPT\New project"
+```
+
+启动本地服务：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\tools\Start-FundManagerWorkbench.ps1
+```
+
+访问：
+
+- [http://127.0.0.1:8765/#today](http://127.0.0.1:8765/#today)
+- [http://127.0.0.1:8765/#fund](http://127.0.0.1:8765/#fund)
+
+## 服务器部署要点
+
+服务器目录：
+
+```bash
 /opt/fund-manager-workbench
 ```
 
-核心服务：
-
-```text
-consumer-research.service
-consumer-research-daily-sync.service
-consumer-research-daily-sync.timer
-consumer-research-close-sync.service
-consumer-research-close-sync.timer
-```
-
-自动同步时间：
-
-```text
-周一至周五 08:40：早盘总同步，更新晨报、研报、新闻、政策、企业风险、行情快照、股票评级和自校准。
-周一至周五 16:10：收盘同步，更新收盘行情快照与股票评级，不改写早盘晨报口径。
-```
-
-部署脚本：
-
-```text
-deploy/consumer-research.service
-deploy/consumer-research-daily-sync.service
-deploy/consumer-research-daily-sync.timer
-deploy/consumer-research-close-sync.service
-deploy/consumer-research-close-sync.timer
-deploy/install-daily-sync.sh
-deploy/update-server.sh
-deploy/nginx-consumer-agent.conf
-```
-
-常用命令：
+环境变量放在服务器 `.env`，不要提交 GitHub：
 
 ```bash
-systemctl status consumer-research.service
-systemctl status consumer-research-daily-sync.timer
-systemctl status consumer-research-close-sync.timer
+GILDATA_MCP_TOKEN=你的聚源token
+SYSTEM_LLM_PROVIDER=openai-compatible
+SYSTEM_LLM_BASE_URL=https://open.bigmodel.cn/api/paas/v4
+SYSTEM_LLM_MODEL=glm-4-flash
+SYSTEM_LLM_API_KEY=你的站长内部模型key
+```
+
+安装/更新自动任务：
+
+```bash
+cd /opt/fund-manager-workbench
+bash deploy/install-daily-sync.sh
 systemctl restart consumer-research.service
 ```
 
-详细说明见：
-
-- [公网部署指南](docs/deploy/public-agent-deploy-guide.md)
-- [本地同步到阿里云方案](docs/deploy/local-windows-sync-to-aliyun.md)
-
-## 8. 重要文档
-
-- [股票推荐思路](docs/design/股票推荐思路.md)
-- [AutoInvest Agent 系统设计文档](docs/design/AutoInvest_Agent_系统设计文档.md)
-- [基金经理工作台快速开始](docs/fund-manager-workbench-quick-start.md)
-- [模块 5：基金经理用户界面](docs/module-5-fund-manager-user-interface.md)
-- [Stage 8：研究工作流与 Agent 编排](docs/stage-8-research-workflow-and-agent-orchestration.md)
-
-## 9. 数据与安全说明
-
-本仓库包含演示数据库：
-
-```text
-data/curated/consumer-research.db
-```
-
-但不包含真实密钥：
-
-```text
-.env
-*.log
-data/curated/backups/
-```
-
-公开部署前建议自行补充：
-
-- HTTPS；
-- 访问限流；
-- 日志脱敏；
-- 数据授权边界说明；
-- 服务器防火墙规则。
-
-## 10. 当前版本亮点
-
-- “规则 Agent + 大模型增强”的双层架构；
-- 不依赖大模型也能完整运行；
-- 用户自带 Key，避免站长承担 token 成本；
-- 每日主推清单与股票池看板解耦；
-- 更重视中期 / 中长期持有价值，而非短线动量；
-- 单股支持走势、评级轨迹、证据链、AI解释；
-- 规则审计支持推荐后验、胜率、平均收益和 AI复盘；
-- 公网服务器自动同步，本地只做调试镜像；
-- Agent 自校准具备自动自检、自动修复、快照、后验和规则事件。
-
-## 11. GitHub 复现建议
-
-克隆后：
+查看任务：
 
 ```bash
-git clone https://github.com/anning6189/fund-manager-workbench.git
-cd fund-manager-workbench
-python apps/fund-manager-workbench/server.py --host 127.0.0.1 --port 8765
+systemctl list-timers 'consumer-research*' --all --no-pager
+systemctl status consumer-research.service --no-pager
 ```
 
-然后打开：
+## 数据与安全
 
-```text
-http://127.0.0.1:8765/#today
-```
+- `.env` 不提交 GitHub；
+- 不在日志中打印真实 token；
+- 用户自己的模型 Key 不进入数据库；
+- 公网服务默认允许游客查看；
+- 写操作使用页面会话 token；
+- 数据库可用于演示和复现，但应在公开前确认不包含敏感凭据。
 
-如果要接入自己的数据源，请配置 `.env`；如果只想看演示效果，可以直接使用仓库内随附的 SQLite 数据库。
+## 交付状态
+
+当前版本已经具备：
+
+- 公网访问；
+- 每日自动更新；
+- 收盘自动补同步和重试；
+- 股票推荐看板；
+- 单股走势图和评级轨迹；
+- 研报库；
+- 数据来源监控；
+- 规则审计；
+- AI研究员用户 Key 增强；
+- AI基金经理模拟组合；
+- AI基金经理内部模型增强；
+- GitHub 复现文档和部署脚本。
+
+建议后续迭代方向：
+
+- 接入更权威的 P0 财务/一致预期数据源；
+- 增加更完整的行业指数和子行业基准；
+- 扩展 AI基金经理的历史回测区间；
+- 增加更细的规则版本对比；
+- 增加 HTTPS、域名和访问限流。
