@@ -891,21 +891,43 @@ function openRulesDrawer() {
     <div class="drawer-head"><div><span>今日主推与股票池看板 · AutoInvest Agent</span><h2>规则与审计</h2></div><button class="drawer-close" aria-label="关闭详情">×</button></div>
     <div class="drawer-body">
       <section class="drawer-section"><h3>自动输出对象</h3><p>Agent 每日自动从全消费 A 股研究池生成两份结果：第一屏为“每日主推清单”（≤5 只，只放明确建仓/小仓位观察），第二屏为“消费股票池看板”（可考虑买入 25 只、等待买点、长期观察、暂不推荐）。</p></section>
-      <section class="drawer-section"><h3>当前落地口径</h3>
+      <section class="drawer-section"><h3>当前落地口径 · V2 中长期量化框架</h3>
         <ul class="doc-list">
           <li><strong>核心目标</strong>：围绕中期 / 中长期持有价值评价，不再使用旧的“当日动量40%/估值30%/事件30%”作为推荐模型。</li>
-          <li><strong>主推生成</strong>：Agent 从“可考虑买入”中自动挑选 ≤5 只明确动作标的，并写入正式标签、建议动作、核心逻辑、降级条件；暂缓买入不进入主推。</li>
-          <li><strong>看板状态</strong>：【核心·时机满足】/【跟踪·等信号】/【长期·好公司】/【暂不推荐·继续扫描】代表投资研究状态，不是每日热度排名。</li>
-          <li><strong>审计责任</strong>：每条输出必须带决策依据、数据质量、未进主推原因或降级条件。</li>
+          <li><strong>因子主轴</strong>：质量、风险控制、中长期稳定性为核心 Alpha；估值作为买点与安全边际；催化和市场适配只做小幅辅助修正。</li>
+          <li><strong>主推生成</strong>：Agent 从“可以考虑买入”中自动挑选 ≤5 只明确建仓价值标的；暂缓买入、等待买点、长期观察、行业扫描不进入主推。</li>
+          <li><strong>看板状态</strong>：【可以考虑买入】/【等待买点】/【长期观察】/【暂不推荐/行业扫描】代表投资研究状态，不是每日热度排名。</li>
+          <li><strong>量化审计</strong>：每条规则变化必须接受 IC / Rank IC、行业中性 IC、分组回测、滚动样本外、交易成本敏感性和组合风险归因检验。</li>
         </ul>
       </section>
-      <section class="drawer-section"><h3>新评判标准</h3>
+      <section class="drawer-section"><h3>最新评判标准</h3>
         <table class="data-table">
-          <tr><td><strong>投资价值分</strong></td><td class="num"><strong>核心</strong></td><td>以估值质量、跨日稳定性、催化质量和少量时点参考综合形成，代表中期/中长期是否值得纳入推荐体系。</td></tr>
-          <tr><td><strong>稳定分</strong></td><td class="num"><strong>跨日</strong></td><td>参考最近评级日的持续表现和历史池位，防止长期好公司因为单日行情波动被频繁踢出。</td></tr>
-          <tr><td><strong>时点参考</strong></td><td class="num"><strong>辅助</strong></td><td>涨跌幅、量比、换手只用于判断买入时点和短期拥挤度，不再主导股票是否值得推荐。</td></tr>
-          <tr><td><strong>风险扣分</strong></td><td class="num"><strong>硬约束</strong></td><td>ST/退市风险、重大负面事件、治理风险会降低层级或进入暂不推荐/行业扫描，不进入主推。</td></tr>
+          <tr><td><strong>质量因子</strong></td><td class="num"><strong>核心</strong></td><td>衡量公司经营质量和长期可持有基础，是当前模型中最重要的主因子之一。</td></tr>
+          <tr><td><strong>风险控制因子</strong></td><td class="num"><strong>核心</strong></td><td>识别高波动、极端涨跌、ST/治理风险和潜在回撤压力，决定能否进入高层级池。</td></tr>
+          <tr><td><strong>中长期稳定性因子</strong></td><td class="num"><strong>核心</strong></td><td>参考跨日评级延续性、低波动、低回撤和池位稳定性，防止好公司因单日行情被频繁踢出。</td></tr>
+          <tr><td><strong>估值/买点因子</strong></td><td class="num"><strong>约束</strong></td><td>不再单独主导 Alpha，只用于判断安全边际、买入时机和是否需要暂缓买入。</td></tr>
+          <tr><td><strong>催化因子</strong></td><td class="num"><strong>辅助</strong></td><td>只保留基本面催化的辅助加分；交易型热点不直接推高推荐等级，风险型事件直接扣分。</td></tr>
+          <tr><td><strong>市场适配因子</strong></td><td class="num"><strong>辅助</strong></td><td>参考消费指数、相对强弱、拥挤度和市场状态，只做风格校准，不做追涨信号。</td></tr>
         </table>
+      </section>
+      <section class="drawer-section"><h3>当前因子权重</h3>
+        <table class="data-table">
+          <tr><td><strong>质量</strong></td><td class="num"><strong>约30%</strong></td><td>主排序核心，优先保留。</td></tr>
+          <tr><td><strong>风险控制</strong></td><td class="num"><strong>约22%—25%</strong></td><td>既是扣分项，也是消费中长期组合的重要 Alpha 来源。</td></tr>
+          <tr><td><strong>中长期稳定性</strong></td><td class="num"><strong>约15%—20%</strong></td><td>解决“今天好、明天消失”的问题，强调跨日延续。</td></tr>
+          <tr><td><strong>估值/买点</strong></td><td class="num"><strong>约8%—15%</strong></td><td>用于安全边际和买点判断，防止高位追入。</td></tr>
+          <tr><td><strong>催化 + 市场适配</strong></td><td class="num"><strong>合计约5%</strong></td><td>当前后验表现偏弱，已降为辅助解释和小幅修正。</td></tr>
+        </table>
+      </section>
+      <section class="drawer-section"><h3>量化验证口径</h3>
+        <ul class="doc-list">
+          <li><strong>IC / Rank IC</strong>：检验因子分数与未来收益/收益排名的相关性，主看 T+20 / T+60。</li>
+          <li><strong>行业中性 IC</strong>：在各消费子行业内部重新排序，避免把行业 Beta 误判成选股 Alpha。</li>
+          <li><strong>分组回测</strong>：将股票按因子分成 Q1—Q5，观察高分组是否持续跑赢低分组。</li>
+          <li><strong>滚动样本外验证</strong>：用过去 120 个交易日训练，在随后 20 个交易日验证，降低过拟合风险。</li>
+          <li><strong>交易成本敏感性</strong>：用 5bp / 15bp / 30bp 三档成本检验策略是否被换手和滑点吞噬。</li>
+          <li><strong>组合风险归因</strong>：拆解 AI基金经理组合的行业暴露和因子暴露，解释收益与风险来源。</li>
+        </ul>
       </section>
       <section class="drawer-section"><h3>看板映射</h3>
         <ul class="doc-list">
