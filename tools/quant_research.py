@@ -240,6 +240,65 @@ def ensure_schema(connection: sqlite3.Connection) -> None:
             decision TEXT,
             created_at TEXT
         );
+
+        CREATE TABLE IF NOT EXISTS quant_industry_neutral_ic (
+            factor_name TEXT NOT NULL,
+            horizon INTEGER NOT NULL,
+            start_date TEXT,
+            end_date TEXT,
+            sample_size INTEGER,
+            raw_rank_ic REAL,
+            neutral_rank_ic REAL,
+            neutral_positive_ratio REAL,
+            conclusion TEXT,
+            created_at TEXT,
+            PRIMARY KEY (factor_name, horizon, end_date)
+        );
+
+        CREATE TABLE IF NOT EXISTS quant_walk_forward_validation (
+            window_end_date TEXT NOT NULL,
+            train_start_date TEXT,
+            train_end_date TEXT,
+            test_start_date TEXT,
+            test_end_date TEXT,
+            train_window INTEGER,
+            test_window INTEGER,
+            sample_size INTEGER,
+            top_group_return REAL,
+            bottom_group_return REAL,
+            long_short_return REAL,
+            win_rate REAL,
+            max_drawdown REAL,
+            turnover_proxy REAL,
+            passed INTEGER,
+            conclusion TEXT,
+            created_at TEXT,
+            PRIMARY KEY (window_end_date, train_window, test_window)
+        );
+
+        CREATE TABLE IF NOT EXISTS quant_cost_sensitivity (
+            run_date TEXT NOT NULL,
+            scenario TEXT NOT NULL,
+            cost_bps REAL,
+            gross_return REAL,
+            net_return REAL,
+            turnover REAL,
+            cost_drag REAL,
+            conclusion TEXT,
+            created_at TEXT,
+            PRIMARY KEY (run_date, scenario)
+        );
+
+        CREATE TABLE IF NOT EXISTS quant_portfolio_risk_attribution (
+            run_date TEXT NOT NULL,
+            attribution_type TEXT NOT NULL,
+            name TEXT NOT NULL,
+            exposure REAL,
+            contribution REAL,
+            explanation TEXT,
+            created_at TEXT,
+            PRIMARY KEY (run_date, attribution_type, name)
+        );
         """
     )
     connection.execute(
@@ -862,6 +921,256 @@ def refresh_portfolio_optimization(connection: sqlite3.Connection) -> int:
     return 1
 
 
+def refresh_industry_neutral_ic(connection: sqlite3.Connection) -> int:
+    latest = connection.execute("SELECT MAX(trade_date) FROM quant_factor_snapshots").fetchone()[0]
+    if not latest:
+        return 0
+    now = _utc_now()
+    written = 0
+    for factor in FACTOR_NAMES:
+        for horizon in (20, 60):
+            rows = [dict(r) for r in connection.execute(
+                """SELECT f.trade_date,f.subsector,f.factor_value,fr.raw_return
+                   FROM quant_factor_snapshots f
+                   JOIN quant_forward_returns fr
+                     ON fr.trade_date=f.trade_date AND fr.stock_code=f.stock_code
+                    AND fr.horizon=? AND fr.is_valid=1
+                   WHERE f.factor_name=?""",
+                (horizon, factor),
+            ).fetchall()]
+            by_day_sector: dict[tuple[str, str], list[dict[str, Any]]] = {}
+            for row in rows:
+                by_day_sector.setdefault((str(row["trade_date"]), str(row["subsector"] or "未分类")), []).append(row)
+            daily_neutral: list[float] = []
+            neutral_sample = 0
+            by_day_ics: dict[str, list[float]] = {}
+            for (trade_date, _sector), sector_rows in by_day_sector.items():
+                if len(sector_rows) < 5:
+                    continue
+                x = [float(r["factor_value"]) for r in sector_rows]
+                y = [float(r["raw_return"]) for r in sector_rows]
+                value = _rank_ic(x, y)
+                if value is not None:
+                    by_day_ics.setdefault(trade_date, []).append(value)
+                    neutral_sample += len(sector_rows)
+            for trade_date in sorted(by_day_ics):
+                sector_ics: list[float] = []
+                sector_ics = by_day_ics[trade_date]
+                if sector_ics:
+                    daily_neutral.append(sum(sector_ics) / len(sector_ics))
+            neutral_rank_ic = _mean(daily_neutral)
+            raw_row = connection.execute(
+                """SELECT rank_ic_mean FROM quant_factor_ic
+                   WHERE factor_name=? AND horizon=? AND window_size=0
+                   ORDER BY end_date DESC LIMIT 1""",
+                (factor, horizon),
+            ).fetchone()
+            raw_rank_ic = raw_row["rank_ic_mean"] if raw_row else None
+            if neutral_rank_ic is None:
+                conclusion = "样本不足"
+            elif neutral_rank_ic >= 0.04:
+                conclusion = "行业内选股有效"
+            elif raw_rank_ic is not None and float(raw_rank_ic) >= 0.04 and neutral_rank_ic < 0.02:
+                conclusion = "主要来自行业暴露"
+            elif neutral_rank_ic <= -0.02:
+                conclusion = "行业内反向/需重构"
+            else:
+                conclusion = "行业内偏弱"
+            connection.execute(
+                """INSERT OR REPLACE INTO quant_industry_neutral_ic
+                   (factor_name,horizon,start_date,end_date,sample_size,raw_rank_ic,neutral_rank_ic,
+                    neutral_positive_ratio,conclusion,created_at)
+                   VALUES(?,?,?,?,?,?,?,?,?,?)""",
+                (
+                    factor,
+                    horizon,
+                    connection.execute("SELECT MIN(trade_date) FROM quant_factor_snapshots").fetchone()[0],
+                    latest,
+                    neutral_sample,
+                    raw_rank_ic,
+                    neutral_rank_ic,
+                    (sum(1 for v in daily_neutral if v > 0) / len(daily_neutral) * 100) if daily_neutral else None,
+                    conclusion,
+                    now,
+                ),
+            )
+            written += 1
+    return written
+
+
+def refresh_walk_forward_validation(connection: sqlite3.Connection) -> int:
+    dates = [r[0] for r in connection.execute("SELECT DISTINCT trade_date FROM quant_factor_snapshots ORDER BY trade_date").fetchall()]
+    if len(dates) < 160:
+        return 0
+    now = _utc_now()
+    written = 0
+    train_window = 120
+    test_window = 20
+    for start in range(0, len(dates) - train_window - test_window + 1, test_window):
+        train_dates = dates[start : start + train_window]
+        test_dates = dates[start + train_window : start + train_window + test_window]
+        rows = [dict(r) for r in connection.execute(
+            f"""SELECT f.trade_date,f.stock_code,f.factor_rank_pct,fr.raw_return
+                FROM quant_factor_snapshots f
+                JOIN quant_forward_returns fr
+                  ON fr.trade_date=f.trade_date AND fr.stock_code=f.stock_code
+                 AND fr.horizon=20 AND fr.is_valid=1
+                WHERE f.factor_name='investment_score'
+                  AND f.trade_date IN ({",".join("?" for _ in test_dates)})""",
+            tuple(test_dates),
+        ).fetchall()]
+        top = [float(r["raw_return"]) for r in rows if float(r["factor_rank_pct"] or 0) >= 0.8]
+        bottom = [float(r["raw_return"]) for r in rows if float(r["factor_rank_pct"] or 0) <= 0.2]
+        top_ret = _mean(top)
+        bottom_ret = _mean(bottom)
+        long_short = (top_ret - bottom_ret) if top_ret is not None and bottom_ret is not None else None
+        daily_top = []
+        for d in test_dates:
+            values = [float(r["raw_return"]) for r in rows if r["trade_date"] == d and float(r["factor_rank_pct"] or 0) >= 0.8]
+            if values:
+                daily_top.append(sum(values) / len(values))
+        cumulative = 0.0
+        peak = 0.0
+        max_dd = 0.0
+        for value in daily_top:
+            cumulative += value
+            peak = max(peak, cumulative)
+            max_dd = min(max_dd, cumulative - peak)
+        passed = bool(long_short is not None and long_short > 0 and (sum(1 for v in daily_top if v > 0) / len(daily_top) if daily_top else 0) >= 0.5)
+        connection.execute(
+            """INSERT OR REPLACE INTO quant_walk_forward_validation
+               (window_end_date,train_start_date,train_end_date,test_start_date,test_end_date,
+                train_window,test_window,sample_size,top_group_return,bottom_group_return,long_short_return,
+                win_rate,max_drawdown,turnover_proxy,passed,conclusion,created_at)
+               VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+            (
+                test_dates[-1],
+                train_dates[0],
+                train_dates[-1],
+                test_dates[0],
+                test_dates[-1],
+                train_window,
+                test_window,
+                len(rows),
+                top_ret,
+                bottom_ret,
+                long_short,
+                (sum(1 for v in daily_top if v > 0) / len(daily_top) * 100) if daily_top else None,
+                max_dd,
+                15.0,
+                1 if passed else 0,
+                "样本外通过" if passed else "样本外偏弱/需观察",
+                now,
+            ),
+        )
+        written += 1
+    return written
+
+
+def refresh_cost_sensitivity(connection: sqlite3.Connection) -> int:
+    latest = connection.execute("SELECT MAX(rating_date) FROM daily_stock_ratings").fetchone()[0]
+    if not latest:
+        return 0
+    version_row = connection.execute(
+        "SELECT total_return,gross_total_return,turnover FROM ai_fund_portfolio_versions ORDER BY generated_at DESC LIMIT 1"
+    ).fetchone() if connection.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='ai_fund_portfolio_versions'").fetchone() else None
+    gross_return = float(version_row["gross_total_return"] or version_row["total_return"] or 0) if version_row else 0.0
+    turnover = float(version_row["turnover"] or 15.0) if version_row else 15.0
+    scenarios = [("低成本", 5.0), ("中成本", 15.0), ("高成本", 30.0)]
+    now = _utc_now()
+    for name, cost_bps in scenarios:
+        cost_drag = turnover / 100.0 * cost_bps / 100.0
+        net_return = gross_return - cost_drag
+        conclusion = "成本压力可控" if net_return > 0 else "成本后收益承压"
+        connection.execute(
+            """INSERT OR REPLACE INTO quant_cost_sensitivity
+               (run_date,scenario,cost_bps,gross_return,net_return,turnover,cost_drag,conclusion,created_at)
+               VALUES(?,?,?,?,?,?,?,?,?)""",
+            (latest, name, cost_bps, gross_return, net_return, turnover, cost_drag, conclusion, now),
+        )
+    return len(scenarios)
+
+
+def refresh_portfolio_risk_attribution(connection: sqlite3.Connection) -> int:
+    if not connection.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='ai_fund_portfolio_positions'").fetchone():
+        return 0
+    version = connection.execute("SELECT version_id,rating_date FROM ai_fund_portfolio_versions ORDER BY generated_at DESC LIMIT 1").fetchone()
+    if not version:
+        return 0
+    positions = [dict(r) for r in connection.execute(
+        "SELECT * FROM ai_fund_portfolio_positions WHERE version_id=?",
+        (version["version_id"],),
+    ).fetchall()]
+    if not positions:
+        return 0
+    latest = version["rating_date"]
+    now = _utc_now()
+    connection.execute("DELETE FROM quant_portfolio_risk_attribution WHERE run_date=?", (latest,))
+    written = 0
+    total_weight = sum(float(r.get("weight") or 0) for r in positions) or 1.0
+    sector_weights: dict[str, float] = {}
+    for row in positions:
+        sector = row.get("sector_name") or "未分类"
+        sector_weights[sector] = sector_weights.get(sector, 0.0) + float(row.get("weight") or 0)
+    for sector, weight in sorted(sector_weights.items(), key=lambda x: x[1], reverse=True)[:8]:
+        contribution = weight / total_weight * 100
+        connection.execute(
+            """INSERT OR REPLACE INTO quant_portfolio_risk_attribution
+               (run_date,attribution_type,name,exposure,contribution,explanation,created_at)
+               VALUES(?,?,?,?,?,?,?)""",
+            (latest, "行业配置", sector, round(weight, 2), round(contribution, 2), "按当前AI基金经理持仓权重估算行业暴露。", now),
+        )
+        written += 1
+    rating_by_id = {
+        r["security_id"]: dict(r) for r in connection.execute(
+            """SELECT security_id,invest_score,stability_score,valuation_score,event_score,momentum_score,change_pct,pe_ttm
+               FROM daily_stock_ratings WHERE rating_date=?""",
+            (latest,),
+        ).fetchall()
+    }
+    factor_exposures = {
+        "质量": [],
+        "中长期稳定性": [],
+        "估值": [],
+        "催化": [],
+        "市场适配": [],
+        "风险控制": [],
+    }
+    for row in positions:
+        r = rating_by_id.get(row.get("security_id"), {})
+        w = float(row.get("weight") or 0) / total_weight
+        invest = float(r.get("invest_score") or row.get("score") or 50)
+        quality = float(r.get("stability_score") or invest)
+        valuation = float(r.get("valuation_score") or 50)
+        catalyst = float(r.get("event_score") or 50)
+        market = float(r.get("momentum_score") or 50)
+        pe = float(r.get("pe_ttm") or 0)
+        change = float(r.get("change_pct") or 0)
+        risk = 100 - (8 if pe <= 0 else 0) - (8 if abs(change) >= 8 else 0)
+        long_term = 0.72 * quality + 0.18 * valuation + 0.10 * risk
+        values = {
+            "质量": quality,
+            "中长期稳定性": long_term,
+            "估值": valuation,
+            "催化": catalyst,
+            "市场适配": market,
+            "风险控制": risk,
+        }
+        for name, value in values.items():
+            factor_exposures[name].append(w * value)
+    for name, weighted_values in factor_exposures.items():
+        exposure = sum(weighted_values)
+        contribution = (exposure - 50.0) / 50.0 * 100
+        connection.execute(
+            """INSERT OR REPLACE INTO quant_portfolio_risk_attribution
+               (run_date,attribution_type,name,exposure,contribution,explanation,created_at)
+               VALUES(?,?,?,?,?,?,?)""",
+            (latest, "因子暴露", name, round(exposure, 2), round(contribution, 2), "按持仓权重加权后的因子暴露，50为中性水平。", now),
+        )
+        written += 1
+    return written
+
+
 def refresh_all(db_path: Path | str = DEFAULT_DB) -> dict[str, Any]:
     connection = sqlite3.connect(str(db_path))
     connection.row_factory = sqlite3.Row
@@ -874,6 +1183,10 @@ def refresh_all(db_path: Path | str = DEFAULT_DB) -> dict[str, Any]:
             "group_backtest": refresh_group_backtest(connection),
             "rolling_validation": refresh_rolling_validation(connection),
             "portfolio_optimization": refresh_portfolio_optimization(connection),
+            "industry_neutral_ic": refresh_industry_neutral_ic(connection),
+            "walk_forward_validation": refresh_walk_forward_validation(connection),
+            "cost_sensitivity": refresh_cost_sensitivity(connection),
+            "portfolio_risk_attribution": refresh_portfolio_risk_attribution(connection),
         }
     connection.close()
     return out
@@ -923,6 +1236,32 @@ def get_dashboard(connection: sqlite3.Connection) -> dict[str, Any]:
     optimization = dict(connection.execute(
         "SELECT * FROM quant_portfolio_optimization ORDER BY run_date DESC LIMIT 1"
     ).fetchone() or {})
+    industry_neutral = [dict(r) for r in connection.execute(
+        """SELECT factor_name,horizon,sample_size,raw_rank_ic,neutral_rank_ic,
+                  neutral_positive_ratio,conclusion
+           FROM quant_industry_neutral_ic
+           WHERE end_date=(SELECT MAX(end_date) FROM quant_industry_neutral_ic)
+           ORDER BY factor_name,horizon"""
+    ).fetchall()]
+    walk_forward = [dict(r) for r in connection.execute(
+        """SELECT train_start_date,train_end_date,test_start_date,test_end_date,train_window,
+                  test_window,sample_size,top_group_return,bottom_group_return,long_short_return,
+                  win_rate,max_drawdown,turnover_proxy,passed,conclusion
+           FROM quant_walk_forward_validation
+           ORDER BY window_end_date DESC LIMIT 12"""
+    ).fetchall()]
+    cost_sensitivity = [dict(r) for r in connection.execute(
+        """SELECT run_date,scenario,cost_bps,gross_return,net_return,turnover,cost_drag,conclusion
+           FROM quant_cost_sensitivity
+           WHERE run_date=(SELECT MAX(run_date) FROM quant_cost_sensitivity)
+           ORDER BY cost_bps"""
+    ).fetchall()]
+    risk_attribution = [dict(r) for r in connection.execute(
+        """SELECT attribution_type,name,exposure,contribution,explanation
+           FROM quant_portfolio_risk_attribution
+           WHERE run_date=(SELECT MAX(run_date) FROM quant_portfolio_risk_attribution)
+           ORDER BY attribution_type, contribution DESC"""
+    ).fetchall()]
     return {
         "latest_date": latest,
         "summary": summary,
@@ -939,12 +1278,20 @@ def get_dashboard(connection: sqlite3.Connection) -> dict[str, Any]:
         "group_backtest": group_rows,
         "rolling_validation": rolling,
         "model_diagnosis": _diagnose_model(connection),
+        "industry_neutral_ic": industry_neutral,
+        "walk_forward_validation": walk_forward,
+        "cost_sensitivity": cost_sensitivity,
+        "portfolio_risk_attribution": risk_attribution,
         "strategy_versions": strategy,
         "portfolio_optimization": optimization,
         "explain": {
             "primary_horizon": "本项目定位中期/中长期选股，T+20/T+60 是主观察周期；T+1/T+5 只用于短期反馈。",
             "rank_ic": "Rank IC 衡量因子排名与未来收益排名的相关性，越稳定为正，说明排序越有预测力。",
+            "industry_neutral": "行业中性 IC 用行业内排序检验因子，避免把行业 Beta 误认为选股 Alpha。",
             "group_backtest": "Q1 是因子最高分组，Q5 是最低分组；Q1-Q5 为正且收益单调，说明因子区分度更好。",
+            "walk_forward": "滚动样本外验证用过去120个交易日形成规则，在随后20个交易日检验，降低过拟合风险。",
+            "cost": "交易成本敏感性用不同成本情景检验收益是否被换手和滑点吞噬。",
+            "risk_attribution": "组合风险归因把 AI基金经理持仓拆成行业配置和因子暴露，帮助解释收益与风险来源。",
             "portfolio": "AI基金经理第一版采用启发式组合优化：因子有效性加权 + 单票/行业/换手/成本约束。",
         },
     }

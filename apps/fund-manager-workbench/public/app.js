@@ -1941,6 +1941,12 @@ async function renderQuantResearch() {
   const rolling = (data.rolling_validation || []).filter(r => Number(r.horizon) === 20 && [20, 60, 120].includes(Number(r.window_size)));
   const opt = data.portfolio_optimization || {};
   const factorWeights = parseMaybeJson(opt.factor_weights_json, {});
+  const industryNeutral = data.industry_neutral_ic || [];
+  const walkForward = data.walk_forward_validation || [];
+  const costRows = data.cost_sensitivity || [];
+  const riskRows = data.portfolio_risk_attribution || [];
+  const sectorRisk = riskRows.filter(r => r.attribution_type === "行业配置");
+  const factorRisk = riskRows.filter(r => r.attribution_type === "因子暴露");
   const content = `<div class="fund-page quant-page">
     ${hero("量化研究", "因子研究 · 分组回测 · 滚动验证 · 组合优化", "把消费行研 Agent 的选股逻辑升级为可检验、可回测、可归因、可迭代的量化研究框架。")}
     <div class="fund-grid">
@@ -1966,6 +1972,12 @@ async function renderQuantResearch() {
       </tbody></table></div>
     </section>
     <section class="section">
+      <div class="section-head"><h2 class="section-title">行业中性检验</h2><span class="section-meta">${escapeHtml(data.explain?.industry_neutral || "")}</span></div>
+      <div class="table-wrap"><table><thead><tr><th>因子</th><th>周期</th><th>样本</th><th>原始Rank IC</th><th>行业中性Rank IC</th><th>正IC占比</th><th>结论</th></tr></thead><tbody>
+        ${industryNeutral.map(r => `<tr><td><div class="table-primary">${escapeHtml(factorLabel(data, r.factor_name))}</div><div class="table-secondary mono">${escapeHtml(r.factor_name)}</div></td><td>T+${r.horizon}</td><td>${r.sample_size || 0}</td><td>${fmtNum(r.raw_rank_ic)}</td><td>${fmtNum(r.neutral_rank_ic)}</td><td>${r.neutral_positive_ratio == null ? "—" : `${Number(r.neutral_positive_ratio).toFixed(1)}%`}</td><td>${status(r.conclusion, String(r.conclusion || "").includes("有效") ? "good" : "watch")}</td></tr>`).join("") || `<tr><td colspan="7">暂无行业中性检验结果。</td></tr>`}
+      </tbody></table></div>
+    </section>
+    <section class="section">
       <div class="section-head"><h2 class="section-title">分组回测：Q1-Q5</h2><span class="section-meta">${escapeHtml(data.explain?.group_backtest || "")}</span></div>
       <div class="quant-group-grid">
         ${groupBlocks.map(([key, rows]) => {
@@ -1980,6 +1992,25 @@ async function renderQuantResearch() {
       <div class="table-wrap"><table><thead><tr><th>因子</th><th>窗口</th><th>样本</th><th>T+20 Rank IC</th><th>IC_IR</th><th>Q1-Q5</th><th>正IC占比</th><th>状态</th></tr></thead><tbody>
         ${rolling.map(r => `<tr><td>${escapeHtml(factorLabel(data, r.factor_name))}</td><td>${r.window_size}D</td><td>${r.sample_size || 0}</td><td>${fmtNum(r.rank_ic)}</td><td>${fmtNum(r.ic_ir)}</td><td class="${Number(r.q1_minus_q5 || 0) >= 0 ? "up" : "down"}">${fmtPct(r.q1_minus_q5)}</td><td>${r.positive_ic_ratio == null ? "—" : `${Number(r.positive_ic_ratio).toFixed(1)}%`}</td><td>${status(r.status, r.status === "稳定有效" || r.status === "偏正" ? "good" : "watch")}</td></tr>`).join("") || `<tr><td colspan="8">暂无滚动验证，等待样本积累。</td></tr>`}
       </tbody></table></div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2 class="section-title">滚动样本外验证</h2><span class="section-meta">${escapeHtml(data.explain?.walk_forward || "")}</span></div>
+      <div class="table-wrap"><table><thead><tr><th>训练窗口</th><th>验证窗口</th><th>样本</th><th>Top组收益</th><th>Bottom组收益</th><th>多空差</th><th>胜率</th><th>最大回撤</th><th>结论</th></tr></thead><tbody>
+        ${walkForward.map(r => `<tr><td>${escapeHtml(r.train_start_date || "—")} 至 ${escapeHtml(r.train_end_date || "—")}</td><td>${escapeHtml(r.test_start_date || "—")} 至 ${escapeHtml(r.test_end_date || "—")}</td><td>${r.sample_size || 0}</td><td class="${Number(r.top_group_return || 0) >= 0 ? "up" : "down"}">${fmtPct(r.top_group_return)}</td><td class="${Number(r.bottom_group_return || 0) >= 0 ? "up" : "down"}">${fmtPct(r.bottom_group_return)}</td><td class="${Number(r.long_short_return || 0) >= 0 ? "up" : "down"}">${fmtPct(r.long_short_return)}</td><td>${r.win_rate == null ? "—" : `${Number(r.win_rate).toFixed(1)}%`}</td><td class="down">${fmtPct(r.max_drawdown)}</td><td>${status(r.conclusion, r.passed ? "good" : "watch")}</td></tr>`).join("") || `<tr><td colspan="9">暂无样本外验证结果。</td></tr>`}
+      </tbody></table></div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2 class="section-title">交易成本敏感性</h2><span class="section-meta">${escapeHtml(data.explain?.cost || "")}</span></div>
+      <div class="table-wrap"><table><thead><tr><th>成本情景</th><th>成本假设</th><th>毛收益</th><th>扣费后收益</th><th>换手率</th><th>成本拖累</th><th>结论</th></tr></thead><tbody>
+        ${costRows.map(r => `<tr><td>${escapeHtml(r.scenario)}</td><td>${Number(r.cost_bps || 0).toFixed(1)}bp</td><td class="${Number(r.gross_return || 0) >= 0 ? "up" : "down"}">${fmtPct(r.gross_return)}</td><td class="${Number(r.net_return || 0) >= 0 ? "up" : "down"}">${fmtPct(r.net_return)}</td><td>${Number(r.turnover || 0).toFixed(1)}%</td><td class="down">${fmtPct(r.cost_drag)}</td><td>${status(r.conclusion, String(r.conclusion || "").includes("可控") ? "good" : "watch")}</td></tr>`).join("") || `<tr><td colspan="7">暂无成本敏感性结果。</td></tr>`}
+      </tbody></table></div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2 class="section-title">组合风险归因</h2><span class="section-meta">${escapeHtml(data.explain?.risk_attribution || "")}</span></div>
+      <div class="fund-layout">
+        <div class="quant-card"><h3>行业配置暴露</h3><div class="table-wrap compact"><table><thead><tr><th>行业</th><th>暴露</th><th>贡献估算</th></tr></thead><tbody>${sectorRisk.map(r => `<tr><td>${escapeHtml(r.name)}</td><td>${Number(r.exposure || 0).toFixed(2)}%</td><td>${Number(r.contribution || 0).toFixed(2)}%</td></tr>`).join("") || `<tr><td colspan="3">暂无行业归因</td></tr>`}</tbody></table></div></div>
+        <div class="quant-card"><h3>因子暴露归因</h3><div class="table-wrap compact"><table><thead><tr><th>因子</th><th>暴露</th><th>相对中性</th></tr></thead><tbody>${factorRisk.map(r => `<tr><td>${escapeHtml(r.name)}</td><td>${Number(r.exposure || 0).toFixed(2)}</td><td class="${Number(r.contribution || 0) >= 0 ? "up" : "down"}">${Number(r.contribution || 0).toFixed(2)}%</td></tr>`).join("") || `<tr><td colspan="3">暂无因子归因</td></tr>`}</tbody></table></div></div>
+      </div>
     </section>
     <section class="section">
       <div class="section-head"><h2 class="section-title">组合优化输入</h2><span class="section-meta">${escapeHtml(data.explain?.portfolio || "")}</span></div>

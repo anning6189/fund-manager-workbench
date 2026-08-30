@@ -79,12 +79,25 @@ def main() -> int:
     check("规则审计可用", bool(audit), list(audit.keys()))
 
     quant = get("/api/quant-research")
-    check("量化研究框架可用", bool(quant.get("factor_ic")) and bool(quant.get("group_backtest")) and bool(quant.get("rolling_validation")), {
+    quant_ok = (
+        bool(quant.get("factor_ic"))
+        and bool(quant.get("group_backtest"))
+        and bool(quant.get("rolling_validation"))
+        and bool(quant.get("industry_neutral_ic"))
+        and bool(quant.get("walk_forward_validation"))
+        and bool(quant.get("cost_sensitivity"))
+        and bool(quant.get("portfolio_risk_attribution"))
+    )
+    check("量化研究框架可用", quant_ok, {
         "latest_date": quant.get("latest_date"),
         "factors": (quant.get("summary") or {}).get("factors"),
         "ic_rows": len(quant.get("factor_ic") or []),
         "group_rows": len(quant.get("group_backtest") or []),
         "rolling_rows": len(quant.get("rolling_validation") or []),
+        "industry_neutral_rows": len(quant.get("industry_neutral_ic") or []),
+        "walk_forward_rows": len(quant.get("walk_forward_validation") or []),
+        "cost_rows": len(quant.get("cost_sensitivity") or []),
+        "risk_attribution_rows": len(quant.get("portfolio_risk_attribution") or []),
     })
 
     llm_status = get("/api/llm/status")
