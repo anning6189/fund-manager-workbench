@@ -5,6 +5,7 @@
 覆盖当前公开版核心能力：
 - 首页/晨报/股票池/研报库/数据来源/规则审计；
 - AI基金经理 30 只持仓、净值、三条公开指数基准；
+- 量化研究 IC/Rank IC、分组回测、滚动验证；
 - 用户模型配置接口与系统模型隔离状态；
 - 数据库关键表与敏感信息边界。
 """
@@ -76,6 +77,15 @@ def main() -> int:
 
     audit = get("/api/self-calibration")
     check("规则审计可用", bool(audit), list(audit.keys()))
+
+    quant = get("/api/quant-research")
+    check("量化研究框架可用", bool(quant.get("factor_ic")) and bool(quant.get("group_backtest")) and bool(quant.get("rolling_validation")), {
+        "latest_date": quant.get("latest_date"),
+        "factors": (quant.get("summary") or {}).get("factors"),
+        "ic_rows": len(quant.get("factor_ic") or []),
+        "group_rows": len(quant.get("group_backtest") or []),
+        "rolling_rows": len(quant.get("rolling_validation") or []),
+    })
 
     llm_status = get("/api/llm/status")
     check("用户模型接口可用", "enabled" in llm_status, llm_status)

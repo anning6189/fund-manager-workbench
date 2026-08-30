@@ -789,12 +789,18 @@ tbody tr:hover { background: #faf8f1; }
 .strategy-steps { margin: 0; padding-left: 22px; color: var(--ink-soft); line-height: 1.85; }
 .fund-layout.compact { gap: 22px; }
 .fund-layout.compact h4 { margin: 0 0 8px; }
+.quant-page .hero-copy { max-width: 840px; }
+.quant-group-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.quant-card { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 15px; }
+.quant-card h3 { margin: 0 0 10px; font-size: 16px; }
+.quant-card p { margin: 10px 0 0; color: var(--ink-soft); line-height: 1.7; }
 .muted { color: var(--ink-faint); }
 .up { color: var(--red); }
 .down { color: var(--teal); }
 
 @media (max-width: 1100px) {
   .fund-hero, .fund-layout { grid-template-columns: 1fr; }
+  .quant-group-grid { grid-template-columns: 1fr; }
   .fund-grid { grid-template-columns: repeat(4, 1fr); }
   .fund-tile:nth-child(4n) { border-right: 0; }
   .fund-tile:nth-child(n+5) { border-top: 1px solid var(--line); }

@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Consumer Research Quant Factor Research every trading day
+
+[Timer]
+OnCalendar=Mon..Fri 17:30:00
+Persistent=true
+Unit=consumer-research-quant-research.service
+
+[Install]
+WantedBy=timers.target

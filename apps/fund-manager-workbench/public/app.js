@@ -5,7 +5,7 @@ const root = document.getElementById("app");
 const toastNode = document.getElementById("toast");
 
 const state = {
-  view: ["today", "fund", "ask", "library", "models", "reports", "data"].includes(location.hash.replace("#", "")) ? location.hash.replace("#", "") : "today",
+  view: ["today", "fund", "quant", "ask", "library", "models", "reports", "data"].includes(location.hash.replace("#", "")) ? location.hash.replace("#", "") : "today",
   bootstrap: null,
   llmConfig: loadLlmConfig(),
   llmStatus: null,
@@ -21,6 +21,7 @@ const state = {
 const nav = [
   ["today", "首页"],
   ["fund", "AI基金经理"],
+  ["quant", "量化研究"],
   ["ask", "AI研究员"],
   ["library", "研报库"],
   ["data", "数据来源"],
@@ -1900,6 +1901,87 @@ async function renderFundManager() {
   });
 }
 
+function factorLabel(data, name) {
+  return (data.factor_labels && data.factor_labels[name]) || name;
+}
+
+function fmtPct(value, digits = 2) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return "—";
+  return `${Number(value) >= 0 ? "+" : ""}${Number(value).toFixed(digits)}%`;
+}
+
+function fmtNum(value, digits = 3) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return "—";
+  return Number(value).toFixed(digits);
+}
+
+async function renderQuantResearch() {
+  root.innerHTML = shell(`<div class="loading">正在计算量化研究指标…</div>`); bindShell();
+  let data;
+  try { data = await api("/api/quant-research"); } catch (error) { return renderError(error); }
+  const summary = data.summary || {};
+  const icRows = data.factor_ic || [];
+  const primaryIc = icRows.filter(r => [20, 60].includes(Number(r.horizon)));
+  const grouped = {};
+  (data.group_backtest || []).forEach(r => {
+    const key = `${r.factor_name}-${r.horizon}`;
+    grouped[key] = grouped[key] || [];
+    grouped[key].push(r);
+  });
+  const groupBlocks = Object.entries(grouped)
+    .filter(([key]) => key.includes("investment_score-20") || key.includes("quality_score-20") || key.includes("valuation_score-20"))
+    .slice(0, 3);
+  const rolling = (data.rolling_validation || []).filter(r => Number(r.horizon) === 20 && [20, 60, 120].includes(Number(r.window_size)));
+  const opt = data.portfolio_optimization || {};
+  const factorWeights = opt.factor_weights_json ? JSON.parse(opt.factor_weights_json) : {};
+  const content = `<div class="fund-page quant-page">
+    ${hero("量化研究", "因子研究 · 分组回测 · 滚动验证 · 组合优化", "把消费行研 Agent 的选股逻辑升级为可检验、可回测、可归因、可迭代的量化研究框架。")}
+    <div class="fund-grid">
+      <div class="fund-tile"><span>最新研究日</span><strong>${escapeHtml(data.latest_date || "—")}</strong><em>因子快照日期</em></div>
+      <div class="fund-tile"><span>样本股票</span><strong>${summary.stocks || 0}</strong><em>消费股票池</em></div>
+      <div class="fund-tile"><span>因子数量</span><strong>${summary.factors || 0}</strong><em>第一版核心因子</em></div>
+      <div class="fund-tile"><span>核心周期</span><strong>T+20 / T+60</strong><em>匹配中期持有</em></div>
+    </div>
+    <section class="section">
+      <div class="section-head"><h2 class="section-title">因子有效性：IC / Rank IC</h2><span class="section-meta">${escapeHtml(data.explain?.rank_ic || "")}</span></div>
+      <div class="table-wrap"><table><thead><tr><th>因子</th><th>周期</th><th>样本</th><th>IC</th><th>Rank IC</th><th>IC_IR</th><th>正IC占比</th><th>状态</th></tr></thead><tbody>
+        ${primaryIc.map(r => `<tr><td><div class="table-primary">${escapeHtml(factorLabel(data, r.factor_name))}</div><div class="table-secondary mono">${escapeHtml(r.factor_name)}</div></td><td>T+${r.horizon}</td><td>${r.sample_size || 0}</td><td>${fmtNum(r.ic_mean)}</td><td>${fmtNum(r.rank_ic_mean)}</td><td>${fmtNum(r.ic_ir)}</td><td>${r.positive_ic_ratio == null ? "—" : `${Number(r.positive_ic_ratio).toFixed(1)}%`}</td><td>${status(r.status, r.status === "稳定有效" || r.status === "偏正" ? "good" : "watch")}</td></tr>`).join("") || `<tr><td colspan="8">暂无可计算 IC，等待未来收益样本回填。</td></tr>`}
+      </tbody></table></div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2 class="section-title">分组回测：Q1-Q5</h2><span class="section-meta">${escapeHtml(data.explain?.group_backtest || "")}</span></div>
+      <div class="quant-group-grid">
+        ${groupBlocks.map(([key, rows]) => {
+          const sorted = rows.sort((a, b) => String(a.group_name).localeCompare(String(b.group_name)));
+          const first = sorted[0] || {};
+          return `<div class="quant-card"><h3>${escapeHtml(factorLabel(data, first.factor_name))} · T+${first.horizon}</h3><div class="table-wrap"><table><thead><tr><th>组别</th><th>样本</th><th>平均收益</th><th>胜率</th></tr></thead><tbody>${sorted.map(r => `<tr><td>${escapeHtml(r.group_name)}</td><td>${r.stock_count || 0}</td><td class="${Number(r.avg_return || 0) >= 0 ? "up" : "down"}">${fmtPct(r.avg_return)}</td><td>${r.win_rate == null ? "—" : `${Number(r.win_rate).toFixed(1)}%`}</td></tr>`).join("")}</tbody></table></div><p>${escapeHtml(first.monotonicity || "—")}</p></div>`;
+        }).join("") || `<div class="empty"><strong>暂无分组回测</strong>等待量化研究脚本生成。</div>`}
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2 class="section-title">滚动窗口验证</h2><span class="section-meta">观察 20D / 60D / 120D 因子稳定性</span></div>
+      <div class="table-wrap"><table><thead><tr><th>因子</th><th>窗口</th><th>样本</th><th>T+20 Rank IC</th><th>IC_IR</th><th>Q1-Q5</th><th>正IC占比</th><th>状态</th></tr></thead><tbody>
+        ${rolling.map(r => `<tr><td>${escapeHtml(factorLabel(data, r.factor_name))}</td><td>${r.window_size}D</td><td>${r.sample_size || 0}</td><td>${fmtNum(r.rank_ic)}</td><td>${fmtNum(r.ic_ir)}</td><td class="${Number(r.q1_minus_q5 || 0) >= 0 ? "up" : "down"}">${fmtPct(r.q1_minus_q5)}</td><td>${r.positive_ic_ratio == null ? "—" : `${Number(r.positive_ic_ratio).toFixed(1)}%`}</td><td>${status(r.status, r.status === "稳定有效" || r.status === "偏正" ? "good" : "watch")}</td></tr>`).join("") || `<tr><td colspan="8">暂无滚动验证，等待样本积累。</td></tr>`}
+      </tbody></table></div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2 class="section-title">组合优化输入</h2><span class="section-meta">${escapeHtml(data.explain?.portfolio || "")}</span></div>
+      <div class="fund-layout">
+        <div class="quant-card"><h3>当前优化状态</h3><p>${escapeHtml(opt.constraint_status || "等待生成")}</p><div class="strategy-chips"><span>候选 ${opt.candidate_count || 0}</span><span>选中 ${opt.selected_count || 0}</span><span>换手约束 ≤30%</span><span>单票 1%-6%</span></div></div>
+        <div class="quant-card"><h3>因子有效性加权</h3><div class="strategy-chips">${Object.entries(factorWeights).map(([k, v]) => `<span>${escapeHtml(factorLabel(data, k))} ${(Number(v) * 100).toFixed(1)}%</span>`).join("") || "<span>暂无</span>"}</div></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h2 class="section-title">策略版本</h2><span class="section-meta">每次规则变化都要可追溯</span></div>
+      <div class="table-wrap"><table><thead><tr><th>版本</th><th>生效日</th><th>状态</th><th>说明</th></tr></thead><tbody>
+        ${(data.strategy_versions || []).map(v => `<tr><td><div class="table-primary">${escapeHtml(v.version_name)}</div><div class="table-secondary mono">${escapeHtml(v.version_id)}</div></td><td>${escapeHtml(v.effective_date || "—")}</td><td>${v.is_active ? status("当前启用", "good") : status("历史", "info")}</td><td>${escapeHtml(v.description || "")}</td></tr>`).join("")}
+      </tbody></table></div>
+    </section>
+    <div class="notice warning"><strong>研究边界</strong>${escapeHtml(data.explain?.primary_horizon || "")} 量化研究页用于验证和改进策略，不构成真实交易建议。</div>
+  </div>`;
+  root.innerHTML = shell(content); bindShell();
+}
+
 async function renderData() {
   root.innerHTML = shell(`<div class="loading">正在汇总数据状态…</div>`); bindShell();
   try { state.dataStatus = await api("/api/data-status"); } catch (error) { return renderError(error); }
@@ -1932,6 +2014,7 @@ async function renderView() {
   if (!state.bootstrap) return;
   if (state.view === "today") renderToday();
   else if (state.view === "fund") await renderFundManager();
+  else if (state.view === "quant") await renderQuantResearch();
   else if (state.view === "jobs") await renderJobs();
   else if (state.view === "reports") await renderReports();
   else if (state.view === "ask") renderAsk();

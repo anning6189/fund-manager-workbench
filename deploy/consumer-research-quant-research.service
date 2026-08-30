@@ -1,0 +1,15 @@
+[Unit]
+Description=Consumer Research Quant Factor Research
+After=network-online.target consumer-research-close-sync.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/fund-manager-workbench
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=-/opt/fund-manager-workbench/.env
+ExecStart=/usr/bin/python3 /opt/fund-manager-workbench/tools/Compute-QuantResearch.py
+ExecStartPost=/bin/systemctl try-restart consumer-research.service
+TimeoutStartSec=1800
+StandardOutput=append:/opt/fund-manager-workbench/data/monitoring/module3-realtime-research/quant-research.log
+StandardError=append:/opt/fund-manager-workbench/data/monitoring/module3-realtime-research/quant-research.log

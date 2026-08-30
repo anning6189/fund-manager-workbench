@@ -38,6 +38,7 @@ if str(TOOLS_ROOT) not in sys.path:
 import consumer_task_library as task_library  # noqa: E402
 import consumer_workflow_engine as workflow  # noqa: E402
 import agent_self_calibration as self_calibration  # noqa: E402
+import quant_research  # noqa: E402
 
 
 SHANGHAI = ZoneInfo("Asia/Shanghai")
@@ -3115,6 +3116,10 @@ class WorkbenchService:
         ]
         return {"checks": checks}
 
+    def quant_research_dashboard(self) -> dict[str, Any]:
+        with self.connect() as connection:
+            return quant_research.get_dashboard(connection)
+
 
     FACT_DATE = re.compile(r"(今天|今日).*(周几|星期几|几号|日期)|今天周几|今天星期几")
     FACT_TIME = re.compile(r"(现在|当前).*(几点|时间)")
@@ -3777,6 +3782,8 @@ body{{margin:0;background:#f7f6f4;color:#171717;font-family:"Segoe UI","Microsof
                 self.json_response(self.app.data_sources())
             elif parsed.path == "/api/model-forecasts":
                 self.json_response(self.app.model_forecasts())
+            elif parsed.path == "/api/quant-research":
+                self.json_response(self.app.quant_research_dashboard())
             elif parsed.path == "/api/ai-fund/overview":
                 self.json_response(self.app.ai_fund_overview())
             elif parsed.path == "/api/ai-fund/positions":
