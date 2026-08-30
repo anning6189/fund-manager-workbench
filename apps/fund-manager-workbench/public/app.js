@@ -1928,6 +1928,7 @@ async function renderQuantResearch() {
   const summary = data.summary || {};
   const icRows = data.factor_ic || [];
   const primaryIc = icRows.filter(r => [20, 60].includes(Number(r.horizon)));
+  const diagnosis = data.model_diagnosis || {};
   const grouped = {};
   (data.group_backtest || []).forEach(r => {
     const key = `${r.factor_name}-${r.horizon}`;
@@ -1935,8 +1936,8 @@ async function renderQuantResearch() {
     grouped[key].push(r);
   });
   const groupBlocks = Object.entries(grouped)
-    .filter(([key]) => key.includes("investment_score-20") || key.includes("quality_score-20") || key.includes("valuation_score-20"))
-    .slice(0, 3);
+    .filter(([key]) => key.includes("investment_score-20") || key.includes("quality_score-20") || key.includes("long_term_stability_score-20") || key.includes("risk_control_score-20"))
+    .slice(0, 4);
   const rolling = (data.rolling_validation || []).filter(r => Number(r.horizon) === 20 && [20, 60, 120].includes(Number(r.window_size)));
   const opt = data.portfolio_optimization || {};
   const factorWeights = parseMaybeJson(opt.factor_weights_json, {});
@@ -1948,6 +1949,16 @@ async function renderQuantResearch() {
       <div class="fund-tile"><span>因子数量</span><strong>${summary.factors || 0}</strong><em>第一版核心因子</em></div>
       <div class="fund-tile"><span>核心周期</span><strong>T+20 / T+60</strong><em>匹配中期持有</em></div>
     </div>
+    <section class="section quant-diagnosis">
+      <div class="section-head"><h2 class="section-title">模型体检结论</h2><span class="section-meta">主评价周期：${escapeHtml(diagnosis.primary_horizon || "T+20/T+60")}</span></div>
+      <div class="fund-layout">
+        <div class="quant-card"><h3>总体判断</h3><p>${escapeHtml(diagnosis.overall || "等待量化研究脚本生成模型诊断。")}</p><div class="strategy-chips">${(diagnosis.next_actions || []).map(x => `<span>${escapeHtml(x)}</span>`).join("")}</div></div>
+        <div class="quant-card"><h3>因子状态</h3>
+          <div class="strategy-chips"><span>稳定有效：${(diagnosis.stable_factors || []).map(x => factorLabel(data, x)).join("、") || "—"}</span><span>需要降权/重构：${(diagnosis.weak_factors || []).map(x => factorLabel(data, x)).join("、") || "—"}</span></div>
+          <div class="table-wrap compact"><table><thead><tr><th>因子</th><th>平均Rank IC</th><th>正IC占比</th><th>建议</th></tr></thead><tbody>${(diagnosis.factor_summary || []).map(r => `<tr><td>${escapeHtml(factorLabel(data, r.factor_name))}</td><td>${fmtNum(r.avg_rank_ic)}</td><td>${r.avg_positive_ic_ratio == null ? "—" : `${Number(r.avg_positive_ic_ratio).toFixed(1)}%`}</td><td>${escapeHtml(r.suggestion || "")}</td></tr>`).join("") || `<tr><td colspan="4">暂无诊断</td></tr>`}</tbody></table></div>
+        </div>
+      </div>
+    </section>
     <section class="section">
       <div class="section-head"><h2 class="section-title">因子有效性：IC / Rank IC</h2><span class="section-meta">${escapeHtml(data.explain?.rank_ic || "")}</span></div>
       <div class="table-wrap"><table><thead><tr><th>因子</th><th>周期</th><th>样本</th><th>IC</th><th>Rank IC</th><th>IC_IR</th><th>正IC占比</th><th>状态</th></tr></thead><tbody>
@@ -1974,7 +1985,7 @@ async function renderQuantResearch() {
       <div class="section-head"><h2 class="section-title">组合优化输入</h2><span class="section-meta">${escapeHtml(data.explain?.portfolio || "")}</span></div>
       <div class="fund-layout">
         <div class="quant-card"><h3>当前优化状态</h3><p>${escapeHtml(opt.constraint_status || "等待生成")}</p><div class="strategy-chips"><span>候选 ${opt.candidate_count || 0}</span><span>选中 ${opt.selected_count || 0}</span><span>换手约束 ≤30%</span><span>单票 1%-6%</span></div></div>
-        <div class="quant-card"><h3>因子有效性加权</h3><div class="strategy-chips">${Object.entries(factorWeights).map(([k, v]) => `<span>${escapeHtml(factorLabel(data, k))} ${(Number(v) * 100).toFixed(1)}%</span>`).join("") || "<span>暂无</span>"}</div></div>
+        <div class="quant-card"><h3>因子有效性加权</h3><div class="strategy-chips">${Object.entries(factorWeights).map(([k, v]) => `<span>${escapeHtml(factorLabel(data, k))} ${(Number(v) * 100).toFixed(1)}%</span>`).join("") || "<span>暂无</span>"}</div><p>权重根据 T+20/T+60 Rank IC 自动校准，但设定上下限，避免短期噪声把模型带偏。</p></div>
       </div>
     </section>
     <section class="section">

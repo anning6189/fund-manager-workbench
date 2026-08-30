@@ -1880,11 +1880,28 @@ class WorkbenchService:
         event = float(row.get("event_score") or 0)
         pe = float(row.get("pe_ttm") or 0)
         change = float(row.get("change_pct") or 0)
-        quality_bonus = min(8, stable / 12) if stable else 0
-        event_bonus = min(6, event / 8) if event else 0
-        valuation_penalty = 4 if pe > 45 else 2 if pe > 30 else 0
-        chase_penalty = 3 if change > 7 else 0
-        return round(invest + quality_bonus + event_bonus - valuation_penalty - chase_penalty, 2)
+        quality = stable if stable else invest
+        risk_control = 100.0
+        if pe <= 0:
+            risk_control -= 8
+        if abs(change) >= 8:
+            risk_control -= 8
+        if "ST" in str(row.get("security_name") or "").upper():
+            risk_control -= 50
+        valuation = 82 if 0 < pe <= 25 else 70 if pe <= 35 else 58 if pe <= 45 else 45 if pe else 55
+        long_term_stability = max(0.0, min(100.0, 0.72 * quality + 0.18 * valuation + 0.10 * risk_control))
+        event_component = max(0.0, min(100.0, 50.0 + (event - 50.0) * 0.45)) if event else 50.0
+        market_fit = max(0.0, min(100.0, 50.0 - max(0.0, change - 3.0) * 2.0 + max(0.0, -change) * 0.4))
+        score = (
+            invest * 0.12
+            + quality * 0.30
+            + long_term_stability * 0.15
+            + valuation * 0.13
+            + risk_control * 0.22
+            + event_component * 0.04
+            + market_fit * 0.04
+        )
+        return round(max(0.0, min(100.0, score)), 2)
 
     def _ai_fund_current_positions(self) -> tuple[str | None, list[dict[str, Any]]]:
         with self.connect() as connection:
@@ -2891,16 +2908,16 @@ class WorkbenchService:
             "summary": [
                 "本周继续坚持中期、中长期好股票优先，不做一两日情绪博弈。",
                 f"组合固定为30只消费股，平均投资分约 {avg_score}，每周自动复核一次。",
-                f"选股先看公司质量和中长期稳定性，再看估值位置、事件催化、行情状态和风险扣分；本周模拟交易成本约 {trade_cost.get('weekly_cost', 0)}%。",
+                f"选股权重已切换为中长期导向：质量30%、风控22%、稳定性15%、估值13%、原投资分12%、催化/市场各4%；本周模拟交易成本约 {trade_cost.get('weekly_cost', 0)}%。",
             ],
             "strategy": [
                 {
                     "name": "核心选股口径",
-                    "detail": "优先选择“每日主推清单”和“可以考虑买入”中的股票；若数量不足，再少量纳入“等待买点”作为观察型配置，不把“暂不推荐/行业扫描”纳入组合。",
+                    "detail": "优先选择“每日主推清单”和“可以考虑买入”中的股票；同时要求质量、风险控制和中长期稳定性占主导，避免因短期事件或单日涨跌进入组合。",
                 },
                 {
                     "name": "权重分配口径",
-                    "detail": "按投资分、稳定性、事件强度和估值风险自动加权；单票目标约1%—7%，避免单只股票过度影响组合。",
+                    "detail": "按质量、风险控制、中长期稳定性、估值买点和原投资分综合加权；催化与市场适配只做小幅修正，单票目标约1%—7%。",
                 },
                 {
                     "name": "行业分散口径",

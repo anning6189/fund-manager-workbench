@@ -11,17 +11,38 @@ from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DB = PROJECT_ROOT / "data" / "curated" / "consumer-research.db"
-FACTOR_VERSION = "quant-factor-v1"
-STRATEGY_VERSION = "quant-strategy-v1-current-agent-rule"
+FACTOR_VERSION = "quant-factor-v2-long-term-quality"
+STRATEGY_VERSION = "quant-strategy-v2-long-term-quality"
 HORIZONS = (1, 5, 20, 60)
 FACTOR_NAMES = (
     "investment_score",
     "quality_score",
+    "long_term_stability_score",
     "valuation_score",
     "catalyst_score",
     "risk_control_score",
     "market_fit_score",
 )
+
+BASE_LONG_TERM_WEIGHTS = {
+    "investment_score": 0.12,
+    "quality_score": 0.30,
+    "long_term_stability_score": 0.15,
+    "valuation_score": 0.13,
+    "catalyst_score": 0.04,
+    "risk_control_score": 0.22,
+    "market_fit_score": 0.04,
+}
+
+WEIGHT_BOUNDS = {
+    "quality_score": (0.25, 0.45),
+    "risk_control_score": (0.18, 0.35),
+    "long_term_stability_score": (0.10, 0.25),
+    "valuation_score": (0.08, 0.22),
+    "investment_score": (0.10, 0.25),
+    "catalyst_score": (0.00, 0.08),
+    "market_fit_score": (0.00, 0.06),
+}
 
 
 def _utc_now() -> str:
@@ -222,26 +243,23 @@ def ensure_schema(connection: sqlite3.Connection) -> None:
         """
     )
     connection.execute(
-        """INSERT OR IGNORE INTO quant_strategy_versions
+        """INSERT OR REPLACE INTO quant_strategy_versions
            (version_id,version_name,effective_date,factor_weights_json,gate_rules_json,
             portfolio_constraints_json,description,is_active,created_at)
            VALUES (?,?,?,?,?,?,?,?,?)""",
         (
             STRATEGY_VERSION,
-            "当前 Agent 规则量化化版本",
+            "中长期好公司优先的因子重构版本",
             connection.execute("SELECT MAX(rating_date) FROM daily_stock_ratings").fetchone()[0],
+            json.dumps(BASE_LONG_TERM_WEIGHTS, ensure_ascii=False),
             json.dumps(
                 {
-                    "investment_score": 0.30,
-                    "quality_score": 0.25,
-                    "valuation_score": 0.20,
-                    "catalyst_score": 0.15,
-                    "risk_control_score": 0.05,
-                    "market_fit_score": 0.05,
+                    "hard_gate": "沿用当前每日主推/买入候选准入规则",
+                    "primary_horizon": "T+20/T+60",
+                    "factor_policy": "质量/风控/稳定性为核心Alpha，估值作为买点约束，催化/市场适配仅作辅助修正。",
                 },
                 ensure_ascii=False,
             ),
-            json.dumps({"hard_gate": "沿用当前每日主推/买入候选准入规则"}, ensure_ascii=False),
             json.dumps(
                 {
                     "holdings": 30,
@@ -252,10 +270,14 @@ def ensure_schema(connection: sqlite3.Connection) -> None:
                 },
                 ensure_ascii=False,
             ),
-            "把现有消费行研 Agent 的评分与分层结果固化为可做 IC、Rank IC、分组回测和滚动验证的第一版量化策略。",
+            "基于 IC、Rank IC、分组回测结果重构权重：提高质量、风险控制和中长期稳定性，降低短期催化与市场适配。",
             1,
             _utc_now(),
         ),
+    )
+    connection.execute(
+        "UPDATE quant_strategy_versions SET is_active=0 WHERE version_id<>?",
+        (STRATEGY_VERSION,),
     )
 
 
@@ -287,6 +309,7 @@ def _extract_factor_points(connection: sqlite3.Connection) -> list[FactorPoint]:
         catalyst = _safe_float(row.get("event_score")) or _safe_float(components.get("catalyst")) or min(100.0, 45.0 + float(row.get("event_hits") or 0) * 8)
         market_fit = _safe_float(row.get("momentum_score")) or _safe_float(components.get("timing")) or 50.0
         quality = _safe_float(row.get("stability_score")) or _safe_float(components.get("stability")) or max(0.0, investment - 5)
+        long_term_stability = max(0.0, min(100.0, 0.70 * quality + 0.30 * valuation))
         risk_control = 100.0
         if row.get("pe_ttm") is None or float(row.get("pe_ttm") or 0) <= 0:
             risk_control -= 8
@@ -297,6 +320,7 @@ def _extract_factor_points(connection: sqlite3.Connection) -> list[FactorPoint]:
         values = {
             "investment_score": investment,
             "quality_score": quality,
+            "long_term_stability_score": long_term_stability,
             "valuation_score": valuation,
             "catalyst_score": catalyst,
             "risk_control_score": max(0.0, min(100.0, risk_control)),
@@ -395,10 +419,20 @@ def _extract_quote_proxy_points(connection: sqlite3.Connection, existing_dates: 
             catalyst = mom5[sid]
             risk = 0.65 * low_vol[sid] + 0.35 * low_dd[sid]
             market_fit = mom20[sid]
-            investment = 0.25 * quality + 0.20 * valuation + 0.20 * catalyst + 0.20 * risk + 0.15 * market_fit
+            long_term_stability = 0.45 * quality + 0.35 * risk + 0.20 * low_dd[sid]
+            investment = (
+                0.30 * quality
+                + 0.22 * risk
+                + 0.15 * long_term_stability
+                + 0.13 * valuation
+                + 0.12 * float(m["investment_score"] or 50)
+                + 0.04 * catalyst
+                + 0.04 * market_fit
+            )
             values = {
                 "investment_score": investment,
                 "quality_score": quality,
+                "long_term_stability_score": long_term_stability,
                 "valuation_score": valuation,
                 "catalyst_score": catalyst,
                 "risk_control_score": risk,
@@ -531,6 +565,96 @@ def _status(rank_ic: float | None, sample_size: int) -> str:
     if rank_ic <= -0.02:
         return "反向/衰减"
     return "偏弱"
+
+
+def _normalize_weights(weights: dict[str, float]) -> dict[str, float]:
+    cleaned = {k: max(0.0, float(v or 0)) for k, v in weights.items() if k in FACTOR_NAMES}
+    total = sum(cleaned.values()) or 1.0
+    return {k: round(cleaned.get(k, 0.0) / total, 4) for k in FACTOR_NAMES}
+
+
+def _bounded_adaptive_weights(ic_rows: list[dict[str, Any]]) -> dict[str, float]:
+    """Use T+20/T+60 Rank IC evidence to tilt the long-term base weights.
+
+    Negative/weak short-term factors are not allowed to dominate. This keeps the
+    model aligned with the project's stated medium/long-term objective.
+    """
+    score_by_factor: dict[str, float] = {}
+    for factor in FACTOR_NAMES:
+        related = [r for r in ic_rows if r.get("factor_name") == factor]
+        evidence = 0.0
+        for row in related:
+            horizon = int(row.get("horizon") or 0)
+            if horizon not in (20, 60):
+                continue
+            weight = 0.45 if horizon == 20 else 0.55
+            rank_ic = float(row.get("rank_ic_mean") or 0)
+            positive_ratio = float(row.get("positive_ic_ratio") or 0) / 100
+            evidence += weight * max(0.0, rank_ic) * max(0.0, positive_ratio)
+        score_by_factor[factor] = evidence
+    total_evidence = sum(score_by_factor.values())
+    tilted = dict(BASE_LONG_TERM_WEIGHTS)
+    if total_evidence > 0:
+        for factor in FACTOR_NAMES:
+            evidence_weight = score_by_factor.get(factor, 0.0) / total_evidence
+            tilted[factor] = 0.65 * BASE_LONG_TERM_WEIGHTS.get(factor, 0.0) + 0.35 * evidence_weight
+    for factor, bounds in WEIGHT_BOUNDS.items():
+        lo, hi = bounds
+        tilted[factor] = min(hi, max(lo, tilted.get(factor, 0.0)))
+    return _normalize_weights(tilted)
+
+
+def _diagnose_model(connection: sqlite3.Connection) -> dict[str, Any]:
+    latest = connection.execute("SELECT MAX(end_date) FROM quant_factor_ic").fetchone()[0]
+    if not latest:
+        return {}
+    rows = [dict(r) for r in connection.execute(
+        """SELECT factor_name,horizon,sample_size,rank_ic_mean,ic_ir,positive_ic_ratio,status
+           FROM quant_factor_ic
+           WHERE end_date=? AND window_size=0 AND horizon IN (20,60)
+           ORDER BY factor_name,horizon""",
+        (latest,),
+    ).fetchall()]
+    factor_summary = []
+    for factor in FACTOR_NAMES:
+        related = [r for r in rows if r["factor_name"] == factor]
+        if not related:
+            continue
+        avg_rank_ic = _mean([float(r["rank_ic_mean"] or 0) for r in related]) or 0.0
+        avg_positive = _mean([float(r["positive_ic_ratio"] or 0) for r in related]) or 0.0
+        status = "稳定有效" if avg_rank_ic >= 0.06 and avg_positive >= 60 else "偏正" if avg_rank_ic >= 0.02 else "反向/衰减" if avg_rank_ic <= -0.02 else "偏弱"
+        factor_summary.append(
+            {
+                "factor_name": factor,
+                "avg_rank_ic": avg_rank_ic,
+                "avg_positive_ic_ratio": avg_positive,
+                "status": status,
+                "suggestion": (
+                    "保留并提高权重" if status == "稳定有效"
+                    else "保留但作为辅助" if status == "偏正"
+                    else "降权并重构定义" if status == "反向/衰减"
+                    else "保留为约束，不单独主导排序"
+                ),
+            }
+        )
+    adaptive_weights = _bounded_adaptive_weights(rows)
+    stable = [x for x in factor_summary if x["status"] == "稳定有效"]
+    weak = [x for x in factor_summary if x["status"] in {"偏弱", "反向/衰减"}]
+    return {
+        "as_of": latest,
+        "primary_horizon": "T+20/T+60",
+        "overall": "当前模型的中长期方向有效，质量、风控和稳定性应作为主轴；短期催化和市场适配表现偏弱，不能主导推荐排序。",
+        "stable_factors": [x["factor_name"] for x in stable],
+        "weak_factors": [x["factor_name"] for x in weak],
+        "factor_summary": factor_summary,
+        "recommended_weights": adaptive_weights,
+        "next_actions": [
+            "主排序继续以质量、风险控制、中长期稳定性为核心。",
+            "估值改为安全边际和买点约束，不作为单独强Alpha。",
+            "催化因子拆分为基本面催化、交易型催化和风险型催化。",
+            "市场适配因子加入拥挤度反向约束，避免追涨。",
+        ],
+    }
 
 
 def refresh_factor_ic(connection: sqlite3.Connection) -> int:
@@ -699,21 +823,12 @@ def refresh_portfolio_optimization(connection: sqlite3.Connection) -> int:
     if not latest:
         return 0
     ic_rows = [dict(r) for r in connection.execute(
-        "SELECT factor_name,rank_ic_mean FROM quant_factor_ic WHERE horizon=20 AND window_size=60 ORDER BY factor_name"
+        """SELECT factor_name,horizon,rank_ic_mean,positive_ic_ratio
+           FROM quant_factor_ic
+           WHERE horizon IN (20,60) AND window_size=0
+           ORDER BY factor_name,horizon"""
     ).fetchall()]
-    base_weights = {
-        "investment_score": 0.30,
-        "quality_score": 0.25,
-        "valuation_score": 0.20,
-        "catalyst_score": 0.15,
-        "risk_control_score": 0.05,
-        "market_fit_score": 0.05,
-    }
-    if ic_rows:
-        positives = {r["factor_name"]: max(0.0, float(r["rank_ic_mean"] or 0)) for r in ic_rows}
-        total = sum(positives.values())
-        if total > 0:
-            base_weights = {k: round(0.5 * base_weights.get(k, 0.0) + 0.5 * positives.get(k, 0.0) / total, 4) for k in base_weights}
+    base_weights = _bounded_adaptive_weights(ic_rows) if ic_rows else _normalize_weights(BASE_LONG_TERM_WEIGHTS)
     selected = connection.execute("SELECT COUNT(*) FROM ai_fund_portfolio_positions").fetchone()[0] if connection.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='ai_fund_portfolio_positions'").fetchone() else 0
     candidate = connection.execute("SELECT COUNT(*) FROM daily_stock_ratings WHERE rating_date=?", (latest,)).fetchone()[0]
     connection.execute(
@@ -725,12 +840,21 @@ def refresh_portfolio_optimization(connection: sqlite3.Connection) -> int:
             latest,
             selected,
             candidate,
-            100.0 * base_weights.get("investment_score", 0),
-            100.0 * (base_weights.get("investment_score", 0) + base_weights.get("quality_score", 0)),
+            100.0 * (
+                base_weights.get("quality_score", 0)
+                + base_weights.get("risk_control_score", 0)
+                + base_weights.get("long_term_stability_score", 0)
+            ),
+            100.0 * (
+                base_weights.get("quality_score", 0)
+                + base_weights.get("risk_control_score", 0)
+                + base_weights.get("long_term_stability_score", 0)
+                + base_weights.get("valuation_score", 0)
+            ),
             100.0 * base_weights.get("risk_control_score", 0),
             30.0,
             0.12,
-            "第一版启发式优化：因子有效性加权 + 单票/行业/换手/成本约束",
+            "V2中长期导向优化：T+20/T+60 Rank IC 自适应权重 + 质量/风控/稳定性主轴 + 单票/行业/换手/成本约束",
             json.dumps(base_weights, ensure_ascii=False),
             _utc_now(),
         ),
@@ -805,6 +929,7 @@ def get_dashboard(connection: sqlite3.Connection) -> dict[str, Any]:
         "factor_labels": {
             "investment_score": "综合Alpha",
             "quality_score": "质量",
+            "long_term_stability_score": "中长期稳定性",
             "valuation_score": "估值",
             "catalyst_score": "催化",
             "risk_control_score": "风险控制",
@@ -813,6 +938,7 @@ def get_dashboard(connection: sqlite3.Connection) -> dict[str, Any]:
         "factor_ic": factor_ic,
         "group_backtest": group_rows,
         "rolling_validation": rolling,
+        "model_diagnosis": _diagnose_model(connection),
         "strategy_versions": strategy,
         "portfolio_optimization": optimization,
         "explain": {
