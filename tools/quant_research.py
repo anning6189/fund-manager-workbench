@@ -317,8 +317,112 @@ def _extract_factor_points(connection: sqlite3.Connection) -> list[FactorPoint]:
     return points
 
 
+def _extract_quote_proxy_points(connection: sqlite3.Connection, existing_dates: set[str]) -> list[FactorPoint]:
+    """Use available historical quotes to backfill price-derived factor history.
+
+    This is intentionally marked as historical_quote_proxy. It is not a replacement
+    for point-in-time fundamentals; it lets the quant page use the long price
+    history that already exists while keeping data provenance explicit.
+    """
+    universe = [dict(r) for r in connection.execute(
+        """SELECT security_id,security_name,sector_code,sector_name,
+                  COALESCE(invest_score,total_score,50) investment_score,
+                  COALESCE(stability_score,50) quality_score,
+                  COALESCE(valuation_score,50) valuation_score
+           FROM (
+             SELECT r.*,p.sector_name,
+                    ROW_NUMBER() OVER (PARTITION BY r.security_id ORDER BY r.rating_date DESC) rn
+             FROM daily_stock_ratings r
+             LEFT JOIN research_sector_packs p ON p.sector_code=r.sector_code
+           ) WHERE rn=1"""
+    ).fetchall()]
+    if not universe:
+        return []
+    meta = {r["security_id"]: r for r in universe}
+    rows = [dict(r) for r in connection.execute(
+        f"""SELECT security_id,trade_date,close_price,change_pct
+            FROM stock_daily_quotes
+            WHERE close_price > 0
+              AND security_id IN ({",".join("?" for _ in meta)})
+            ORDER BY security_id,trade_date""",
+        tuple(meta),
+    ).fetchall()]
+    by_stock: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        by_stock.setdefault(row["security_id"], []).append(row)
+
+    per_date_values: dict[str, dict[str, dict[str, float]]] = {}
+    for sid, series in by_stock.items():
+        closes = [float(r["close_price"]) for r in series]
+        for i, row in enumerate(series):
+            trade_date = row["trade_date"]
+            if trade_date in existing_dates:
+                continue
+            if i < 20:
+                continue
+            ret_5 = closes[i] / closes[max(0, i - 5)] - 1 if closes[max(0, i - 5)] else 0.0
+            ret_20 = closes[i] / closes[i - 20] - 1 if closes[i - 20] else 0.0
+            window = closes[i - 20 : i + 1]
+            returns = [(window[j] / window[j - 1] - 1) for j in range(1, len(window)) if window[j - 1]]
+            vol = _std(returns) or 0.0
+            peak = max(window) if window else closes[i]
+            drawdown = closes[i] / peak - 1 if peak else 0.0
+            per_date_values.setdefault(trade_date, {})[sid] = {
+                "ret_5": ret_5,
+                "ret_20": ret_20,
+                "vol_20": vol,
+                "drawdown_20": drawdown,
+            }
+
+    points: list[FactorPoint] = []
+    for trade_date, stock_values in per_date_values.items():
+        if len(stock_values) < 50:
+            continue
+
+        def percentile_scores(key: str, reverse: bool = False) -> dict[str, float]:
+            ordered = sorted(stock_values.items(), key=lambda item: item[1][key], reverse=reverse)
+            n = max(1, len(ordered) - 1)
+            return {sid: 100.0 * (1.0 - i / n) for i, (sid, _) in enumerate(ordered)}
+
+        mom20 = percentile_scores("ret_20", reverse=True)
+        mom5 = percentile_scores("ret_5", reverse=True)
+        low_vol = percentile_scores("vol_20", reverse=False)
+        low_dd = percentile_scores("drawdown_20", reverse=True)
+        for sid, vals in stock_values.items():
+            m = meta[sid]
+            quality = 0.55 * float(m["quality_score"] or 50) + 0.45 * low_vol[sid]
+            valuation = float(m["valuation_score"] or 50)
+            catalyst = mom5[sid]
+            risk = 0.65 * low_vol[sid] + 0.35 * low_dd[sid]
+            market_fit = mom20[sid]
+            investment = 0.25 * quality + 0.20 * valuation + 0.20 * catalyst + 0.20 * risk + 0.15 * market_fit
+            values = {
+                "investment_score": investment,
+                "quality_score": quality,
+                "valuation_score": valuation,
+                "catalyst_score": catalyst,
+                "risk_control_score": risk,
+                "market_fit_score": market_fit,
+            }
+            for factor, value in values.items():
+                points.append(
+                    FactorPoint(
+                        trade_date=trade_date,
+                        stock_code=sid,
+                        stock_name=str(m.get("security_name") or ""),
+                        subsector=str(m.get("sector_name") or m.get("sector_code") or ""),
+                        factor_name=factor,
+                        raw_value=float(max(0.0, min(100.0, value))),
+                        data_quality="historical_quote_proxy",
+                    )
+                )
+    return points
+
+
 def refresh_factor_snapshots(connection: sqlite3.Connection) -> int:
     points = _extract_factor_points(connection)
+    existing_dates = {p.trade_date for p in points}
+    points.extend(_extract_quote_proxy_points(connection, existing_dates))
     grouped: dict[tuple[str, str], list[FactorPoint]] = {}
     for point in points:
         grouped.setdefault((point.trade_date, point.factor_name), []).append(point)

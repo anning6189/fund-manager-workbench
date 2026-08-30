@@ -1915,6 +1915,12 @@ function fmtNum(value, digits = 3) {
   return Number(value).toFixed(digits);
 }
 
+function parseMaybeJson(value, fallback = {}) {
+  if (!value) return fallback;
+  if (typeof value === "object") return value;
+  try { return JSON.parse(value); } catch (e) { return fallback; }
+}
+
 async function renderQuantResearch() {
   root.innerHTML = shell(`<div class="loading">正在计算量化研究指标…</div>`); bindShell();
   let data;
@@ -1933,7 +1939,7 @@ async function renderQuantResearch() {
     .slice(0, 3);
   const rolling = (data.rolling_validation || []).filter(r => Number(r.horizon) === 20 && [20, 60, 120].includes(Number(r.window_size)));
   const opt = data.portfolio_optimization || {};
-  const factorWeights = opt.factor_weights_json ? JSON.parse(opt.factor_weights_json) : {};
+  const factorWeights = parseMaybeJson(opt.factor_weights_json, {});
   const content = `<div class="fund-page quant-page">
     ${hero("量化研究", "因子研究 · 分组回测 · 滚动验证 · 组合优化", "把消费行研 Agent 的选股逻辑升级为可检验、可回测、可归因、可迭代的量化研究框架。")}
     <div class="fund-grid">
