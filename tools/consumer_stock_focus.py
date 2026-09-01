@@ -19,6 +19,25 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DB = PROJECT_ROOT / "data" / "curated" / "consumer-research.db"
+
+
+def load_project_env() -> None:
+    """Load project .env for standalone/systemd runs without printing secrets."""
+    env_path = PROJECT_ROOT / ".env"
+    if not env_path.exists():
+        return
+    for raw in env_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip().strip("\"'")
+        if key and key not in os.environ:
+            os.environ[key] = value
+
+
+load_project_env()
 MCP_URL = os.environ.get("GILDATA_MCP_URL") or (
     f"https://api.gildata.com/mcp-servers/aidata-assistant-srv-tool?token={os.environ.get('GILDATA_MCP_TOKEN', '')}"
 )
@@ -123,13 +142,14 @@ def parse_realtime(text: str) -> dict[str, dict]:
             if not line.startswith("|") or "股票名称" in line or line.startswith("|-"):
                 continue
             cells = [c.strip() for c in line.strip("|").split("|")]
-            if len(cells) < 20 or not re.fullmatch(r"\d{6}", cells[1] or ""):
+            code_match = re.search(r"\d{6}", cells[1] or "")
+            if len(cells) < 20 or not code_match:
                 continue
             try:
                 price = float(cells[4])
                 if price <= 0:
                     continue
-                out[cells[1]] = {
+                out[code_match.group(0)] = {
                     "quote_time": cells[2],
                     "price": price,
                     "change_pct": float(cells[7]),
